@@ -22,6 +22,7 @@ For HT and MET triggers --> https://fwyzard.web.cern.ch/fwyzard/hlt/2016/summary
 10. HLT_PFMET500
 11. HLT_PFMET600
 
+
 For electron triggers →
 1. HLT_Ele32_eta2p1_WPTight_Gsf_v  (active lumi: 36.47 fb-1 & eff. lumi: 36.47 fb-1
 2. HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
@@ -32,7 +33,8 @@ For electron triggers →
 7. HLT_Ele105_CaloIdVT_GsfTrkIdT_v
 7. HLT_Ele115_CaloIdVT_GsfTrkIdT_v
 
-For electron triggers →
+
+For Muon triggers →
 1. HLT_IsoMu20_v
 2. HLT_IsoMu22_v
 3. HLT_IsoMu24_v
