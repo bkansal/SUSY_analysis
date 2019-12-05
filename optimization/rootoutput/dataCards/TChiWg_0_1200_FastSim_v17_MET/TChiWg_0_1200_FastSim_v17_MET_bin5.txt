@@ -1,0 +1,22 @@
+# - - - - - - - - - - - - - - - - - - -
+# Datacard for mChi10= 0 mNLSP= 1200
+# - - - - - - - - - - - - - - - - - - - 
+imax 1 number of channels
+jmax *  number of backgrounds('*' = automatic)
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+bin MET5
+observation 1
+------------
+bin MET5 MET5 MET5 MET5 MET5 MET5 MET5 
+process TChiWg_0_1200_FastSim_v17 WGJetsToLNuG_v17 WJetsToLNu_v17 TTJetsHT_v17 TTGJets_v17 ZGJetsToNuNuG_v17 GJetsQCD_new_v17 
+process 0 1 2 3 4 5 6 
+rate 0.335418 10.2413 28.195 20.2746 5.36096 52.3257 4.12971 
+------------
+TChiWg_0_1200_FastSim_v17bin5 lnN 1.22486 - - - - - - 
+WGJetsToLNuG_v17bin5 lnN - 1.26565 - - - - - 
+WJetsToLNu_v17bin5 lnN - - 1.25266 - - - - 
+TTJetsHT_v17bin5 lnN - - - 1.42417 - - - 
+TTGJets_v17bin5 lnN - - - - 1.26412 - - 
+ZGJetsToNuNuG_v17bin5 lnN - - - - - 1.30949 - 
+GJetsQCD_new_v17bin5 lnN - - - - - - 1.73987 

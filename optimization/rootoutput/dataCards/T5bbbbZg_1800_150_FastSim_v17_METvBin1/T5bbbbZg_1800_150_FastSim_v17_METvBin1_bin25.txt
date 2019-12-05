@@ -1,0 +1,22 @@
+# - - - - - - - - - - - - - - - - - - -
+# Datacard for mGl= 1800 mNLSP= 150
+# - - - - - - - - - - - - - - - - - - - 
+imax 1 number of channels
+jmax *  number of backgrounds('*' = automatic)
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+bin METvBin125
+observation 1
+------------
+bin METvBin125 METvBin125 METvBin125 METvBin125 METvBin125 METvBin125 METvBin125 
+process T5bbbbZg_1800_150_FastSim_v17 WGJetsToLNuG_v17 WJetsToLNu_v17 TTJetsHT_v17 TTGJets_v17 ZGJetsToNuNuG_v17 GJetsQCD_new_v17 
+process 0 1 2 3 4 5 6 
+rate 0.41233 0 0.425955 0.0287283 0 1.30689 0 
+------------
+T5bbbbZg_1800_150_FastSim_v17bin25 lnN 1.28026 - - - - - - 
+WGJetsToLNuG_v17bin25 lnN - 1.20 - - - - - 
+WJetsToLNu_v17bin25 lnN - - 1.32549 - - - - 
+TTJetsHT_v17bin25 lnN - - - 1.46961 - - - 
+TTGJets_v17bin25 lnN - - - - 1.20 - - 
+ZGJetsToNuNuG_v17bin25 lnN - - - - - 1.90711 - 
+GJetsQCD_new_v17bin25 lnN - - - - - - 1.20 

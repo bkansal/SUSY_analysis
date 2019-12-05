@@ -1,0 +1,4 @@
+skimmed_BR_v17/SR_Summer16v3.GJets_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
+skimmed_BR_v17/SR_Summer16v3.GJets_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
+skimmed_BR_v17/SR_Summer16v3.GJets_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
+skimmed_BR_v17/SR_Summer16v3.GJets_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
