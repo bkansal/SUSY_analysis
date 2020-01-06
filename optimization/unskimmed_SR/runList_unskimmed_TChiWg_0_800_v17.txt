@@ -1,1 +1,0 @@
-./unskimmed_SR/SR_Summer16v3Fast.SMS-TChiWG_mMother-0_mLSP-800_TuneCUETP8M1_13TeV-madgraphMLM-pythia.root
