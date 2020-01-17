@@ -1,6 +1,5 @@
 #ifndef AnalyzeLightBSM_H
 #define AnalyzeLightBSM_H
-
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -47,9 +46,12 @@ class AnalyzeLightBSM : public NtupleVariables{
   //  vector<double> HTBinLowEdge ={0,100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,2500};
   //  vector<double> MHTBinLowEdge={0,20,40,60,80,100,120,160,200,270,350,500};
   vector<double> STBinLowEdge ={0,200,220,240,260,300,360,420,500,600,700,850,1000,1200,1500,2000,2500,3000};
-  vector<double> METLowEdge={0,20,40,60,80,100,120,160,200,220,240,260,300,340,380,420,480,520,560,600,660,720,800,900,1000,1200};
-  vector<double> METLowEdge1={0,20,40,60,80,100,120,160,200,220,240,260,300,340,380,420,460,520,580,640,700,780,860,940,1000,1200};
-  vector<double> METLowEdge2={0,20,40,60,80,100,120,160,200,220,240,260,280,300,340,380,420,480,540,600,700,800,900,1000,1200};
+  // vector<double> METLowEdge={0,20,40,60,80,100,120,160,200,220,240,260,300,340,380,420,480,520,560,600,660,720,800,900,1000,1200};
+  vector<double> METLowEdge={100,120,160,200,270,350,450,750,2000};
+  vector<double> METLowEdge1={100,200,270,350,450,750,2000};
+  vector<double> METLowEdge2={100,200,270,350,450,2000};
+  // vector<double> METLowEdge1={0,20,40,60,80,100,120,160,200,220,240,260,300,340,380,420,460,520,580,640,700,780,860,940,1000,1200};
+  // vector<double> METLowEdge2={0,20,40,60,80,100,120,160,200,220,240,260,280,300,340,380,420,480,540,600,700,800,900,1000,1200};
   // vector<double> METLowEdge={0,200,210,220,240,260,280,300,320,340,360,380,400,450,500,600,1000,1400};
   vector<double> METBinLowEdgeV4_njLow={0,100,125,160,200,270,350,450,750,900};//{0,100,200,270,350,450,750,900}; 
   vector<double> METBinLowEdgeV4={0,100,125,160,200,270,350,450,750};
@@ -107,18 +109,44 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH1D *h_METvBin_nj1;
   TH1D *h_METvBin1_nj1;
   TH1D *h_METvBin2_nj1;
-  TH1D *h_MET_nj2to4;
-  TH1D *h_METvBin_nj2to4;
-  TH1D *h_METvBin1_nj2to4;
-  TH1D *h_METvBin2_nj2to4;
-  TH1D *h_MET_nj5to7;
-  TH1D *h_METvBin_nj5to7;
-  TH1D *h_METvBin1_nj5to7;
-  TH1D *h_METvBin2_nj5to7;
-  TH1D *h_MET_nj8toinf;
-  TH1D *h_METvBin_nj8toinf;
-  TH1D *h_METvBin1_nj8toinf;
-  TH1D *h_METvBin2_nj8toinf;
+  TH1D *h_MET_nj2to4_nbjet0;
+  TH1D *h_METvBin_nj2to4_nbjet0;
+  TH1D *h_METvBin1_nj2to4_nbjet0;
+  TH1D *h_METvBin2_nj2to4_nbjet0;
+  TH1D *h_MET_nj5to6_nbjet0;
+  TH1D *h_METvBin_nj5to6_nbjet0;
+  TH1D *h_METvBin1_nj5to6_nbjet0;
+  TH1D *h_METvBin2_nj5to6_nbjet0;
+  TH1D *h_MET_nj7toinf_nbjet0;
+  TH1D *h_METvBin_nj7toinf_nbjet0;
+  TH1D *h_METvBin1_nj7toinf_nbjet0;
+  TH1D *h_METvBin2_nj7toinf_nbjet0;
+
+  TH1D *h_MET_nj2to4_nbjet1;
+  TH1D *h_METvBin_nj2to4_nbjet1;
+  TH1D *h_METvBin1_nj2to4_nbjet1;
+  TH1D *h_METvBin2_nj2to4_nbjet1;
+  TH1D *h_MET_nj5to6_nbjet1;
+  TH1D *h_METvBin_nj5to6_nbjet1;
+  TH1D *h_METvBin1_nj5to6_nbjet1;
+  TH1D *h_METvBin2_nj5to6_nbjet1;
+  TH1D *h_MET_nj7toinf_nbjet1;
+  TH1D *h_METvBin_nj7toinf_nbjet1;
+  TH1D *h_METvBin1_nj7toinf_nbjet1;
+  TH1D *h_METvBin2_nj7toinf_nbjet1;
+
+  TH1D *h_MET_nj2to4_nbjetnot0;
+  TH1D *h_METvBin_nj2to4_nbjetnot0;
+  TH1D *h_METvBin1_nj2to4_nbjetnot0;
+  TH1D *h_METvBin2_nj2to4_nbjetnot0;
+  TH1D *h_MET_nj5to6_nbjetnot0;
+  TH1D *h_METvBin_nj5to6_nbjetnot0;
+  TH1D *h_METvBin1_nj5to6_nbjetnot0;
+  TH1D *h_METvBin2_nj5to6_nbjetnot0;
+  TH1D *h_MET_nj7toinf_nbjetnot0;
+  TH1D *h_METvBin_nj7toinf_nbjetnot0;
+  TH1D *h_METvBin1_nj7toinf_nbjetnot0;
+  TH1D *h_METvBin2_nj7toinf_nbjetnot0;
 
   TH1D *h_PhovBin;
   TH1D *h_PhovBin_nocut;
@@ -126,7 +154,7 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH1D *h_PhovBin_nocut1;
   TH1D *h_PhovBin2;
   TH1D *h_PhovBin_nocut2;
-
+  TH1D *h_hadAk8Mass;
   /* TH2D *h2_STvsHT; */
 
   /* TH1D *h_dPhi_METBestPhoton; */
@@ -154,7 +182,7 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH1D *h_dR_jet1andW;
   TH1D *h_dR_jet2andW;
   TH1D *h_dR_jet1andjet2;
-
+  TH1D *h_dR_Genpho_Genjet;
   TH2D *h2_PtPhotonvsMET_num;
   TH1D *h_mTPhoMET_num;
 
@@ -202,6 +230,10 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH1F *h_selectBaselineYields_;
   TH1F *h_selectBaselineYields_2;
 
+  TH1D *h_GmatchedObj;
+  TH1D *h_PdgIdPhoParent;
+
+  
   TFile *oFile;
   
 };
@@ -224,7 +256,7 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
   h_RunNum=new TH1I("runs","Run nos.",300000,0,300000);
   h_intLumi=new TH1D("intLumi","integrated luminosity in /fb",2500,25,50); 
   h_ST=new TH1D("ST","ST",400,0,4000);
-  h_MET=new TH1D("MET","MET",200,0,1200);
+  h_MET=new TH1D("MET","MET",200,0,2000);
   h_GenWpt=new TH1D("GenWpt","Gen W Pt",200,0,2000);
   h_GenWeta=new TH1D("GenWeta","Gen W #eta",200,0,5);
   h_GenWpt1=new TH1D("GenWpt1","Gen W Pt (for events only have 1 had jet)",200,0,2000);
@@ -240,6 +272,7 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
   h_GenWpt2=new TH1D("GenWpt2","Gen W Pt (for events only have 2 had jet)",200,0,2000);
   h_GenWeta2=new TH1D("GenWeta2","Gen W #eta (for events only have 2 had jet)",200,0,5);
   /* h_nHadJets=new TH1D("nHadJets","no. of jets(only hadronic jets,not counting photon)",25,0,25); */
+  h_hadAk8Mass=new TH1D("hadAk8Mass","Soft ropped Mass of AK8 Jet",2000,0,200);
   h_BTags=new TH1D("nBTags","no. of B tags",10,0,10);
   h_BestPhotonPt=new TH1D("BestPhotonPt","Pt of the Best Photon",150,0,1500);
 
@@ -262,6 +295,7 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
   h_dR_jet1andW=new TH1D("dR_jet1andW","dR between jet1 and W (for events only have 2 had jet)",200,0,5);
   h_dR_jet2andW=new TH1D("dR_jet2andW","dR between jet2 and W (for events only have 2 had jet)",200,0,5);
   h_dR_jet1andjet2=new TH1D("dR_jet1andjet2","dR between jet1 and jet2 (for events only have 2 had jet)",200,0,5);
+  h_dR_Genpho_Genjet=new TH1D("dR_Genpho_Genjet","dR between gen photon and gen jet",100,0,5);
 
 
   // for numerator
@@ -286,20 +320,51 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
   h_METvBin1_nj1=new TH1D("METvBin1_nj1","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
   h_METvBin2_nj1=new TH1D("METvBin2_nj1","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
 
-  h_MET_nj2to4=new TH1D("MET_nj2to4","MET",200,0,1200);  
-  h_METvBin_nj2to4=new TH1D("METvBin_nj2to4","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
-  h_METvBin1_nj2to4=new TH1D("METvBin1_nj2to4","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
-  h_METvBin2_nj2to4=new TH1D("METvBin2_nj2to4","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+  h_MET_nj2to4_nbjet0=new TH1D("MET_nj2to4_nbjet0","MET",200,0,1200);  
+  h_METvBin_nj2to4_nbjet0=new TH1D("METvBin_nj2to4_nbjet0","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj2to4_nbjet0=new TH1D("METvBin1_nj2to4_nbjet0","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj2to4_nbjet0=new TH1D("METvBin2_nj2to4_nbjet0","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
 
-  h_MET_nj5to7=new TH1D("MET_nj5to7","MET",200,0,1200);  
-  h_METvBin_nj5to7=new TH1D("METvBin_nj5to7","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
-  h_METvBin1_nj5to7=new TH1D("METvBin1_nj5to7","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
-  h_METvBin2_nj5to7=new TH1D("METvBin2_nj5to7","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+  h_MET_nj5to6_nbjet0=new TH1D("MET_nj5to6_nbjet0","MET",200,0,1200);  
+  h_METvBin_nj5to6_nbjet0=new TH1D("METvBin_nj5to6_nbjet0","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj5to6_nbjet0=new TH1D("METvBin1_nj5to6_nbjet0","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj5to6_nbjet0=new TH1D("METvBin2_nj5to6_nbjet0","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
 
-  h_MET_nj8toinf=new TH1D("MET_nj8toinf","MET",200,0,1200);  
-  h_METvBin_nj8toinf=new TH1D("METvBin_nj8toinf","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
-  h_METvBin1_nj8toinf=new TH1D("METvBin1_nj8toinf","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
-  h_METvBin2_nj8toinf=new TH1D("METvBin2_nj8toinf","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+  h_MET_nj7toinf_nbjet0=new TH1D("MET_nj7toinf_nbjet0","MET",200,0,1200);  
+  h_METvBin_nj7toinf_nbjet0=new TH1D("METvBin_nj7toinf_nbjet0","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj7toinf_nbjet0=new TH1D("METvBin1_nj7toinf_nbjet0","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj7toinf_nbjet0=new TH1D("METvBin2_nj7toinf_nbjet0","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+
+  h_MET_nj2to4_nbjet1=new TH1D("MET_nj2to4_nbjet1","MET",200,0,1200);  
+  h_METvBin_nj2to4_nbjet1=new TH1D("METvBin_nj2to4_nbjet1","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj2to4_nbjet1=new TH1D("METvBin1_nj2to4_nbjet1","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj2to4_nbjet1=new TH1D("METvBin2_nj2to4_nbjet1","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+
+  h_MET_nj5to6_nbjet1=new TH1D("MET_nj5to6_nbjet1","MET",200,0,1200);  
+  h_METvBin_nj5to6_nbjet1=new TH1D("METvBin_nj5to6_nbjet1","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj5to6_nbjet1=new TH1D("METvBin1_nj5to6_nbjet1","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj5to6_nbjet1=new TH1D("METvBin2_nj5to6_nbjet1","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+
+  h_MET_nj7toinf_nbjet1=new TH1D("MET_nj7toinf_nbjet1","MET",200,0,1200);  
+  h_METvBin_nj7toinf_nbjet1=new TH1D("METvBin_nj7toinf_nbjet1","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj7toinf_nbjet1=new TH1D("METvBin1_nj7toinf_nbjet1","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj7toinf_nbjet1=new TH1D("METvBin2_nj7toinf_nbjet1","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+
+  h_MET_nj2to4_nbjetnot0=new TH1D("MET_nj2to4_nbjetnot0","MET",200,0,1200);  
+  h_METvBin_nj2to4_nbjetnot0=new TH1D("METvBin_nj2to4_nbjetnot0","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj2to4_nbjetnot0=new TH1D("METvBin1_nj2to4_nbjetnot0","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj2to4_nbjetnot0=new TH1D("METvBin2_nj2to4_nbjetnot0","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+
+  h_MET_nj5to6_nbjetnot0=new TH1D("MET_nj5to6_nbjetnot0","MET",200,0,1200);  
+  h_METvBin_nj5to6_nbjetnot0=new TH1D("METvBin_nj5to6_nbjetnot0","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj5to6_nbjetnot0=new TH1D("METvBin1_nj5to6_nbjetnot0","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj5to6_nbjetnot0=new TH1D("METvBin2_nj5to6_nbjetnot0","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+
+  h_MET_nj7toinf_nbjetnot0=new TH1D("MET_nj7toinf_nbjetnot0","MET",200,0,1200);  
+  h_METvBin_nj7toinf_nbjetnot0=new TH1D("METvBin_nj7toinf_nbjetnot0","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin1_nj7toinf_nbjetnot0=new TH1D("METvBin1_nj7toinf_nbjetnot0","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
+  h_METvBin2_nj7toinf_nbjetnot0=new TH1D("METvBin2_nj7toinf_nbjetnot0","MET in variable bins",METLowEdge2.size()-1,&(METLowEdge2[0]));
+
   
   h_PhovBin=new TH1D("PhovBin","Pho in variable bins",PhoLowEdge.size()-1,&(PhoLowEdge[0]));
   h_PhovBin_nocut=new TH1D("PhovBin_nocut","Pho in variable bins without any cut",PhoLowEdge.size()-1,&(PhoLowEdge[0]));
@@ -349,6 +414,10 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
   h_dPhi_phojet2_nocut=new TH1D("dPhi_phojet2_nocut","dphi between photon and Jet2",40,0,4);
   h_dPhi_phoMET_nocut=new TH1D("dPhi_phoMET_nocut","dphi between photon and MET",40,0,4);
   
+
+  h_GmatchedObj=new TH1D("GmatchedObj","Gen Obj close to Reco-Gamma",62,-0.75,30.25);
+  h_PdgIdPhoParent = new TH1D("PdgIdPhoParent","PdgID of the Photon's parent",62,-0.75,30.25);
+
   //---------------Search Bins ----------------------------
   /* h_MET_R_v2[0] =new TH1D("MET_R1_v2","MET for 0b, NJ=2to4 ",METBinLowEdge.size()-1,&(METBinLowEdge[0])); */
   /* h_MET_R_v2[1] =new TH1D("MET_R2_v2","MET for 0b, NJ>=5 ",METBinLowEdge.size()-1,&(METBinLowEdge[0])); */
@@ -371,10 +440,10 @@ AnalyzeLightBSM::AnalyzeLightBSM(const TString &inputFileList, const char *outFi
   string nameData=dataset;//vvv
 
   TChain *tree = new TChain("PreSelection");
-  if(nameData=="signalH") tree = new TChain("TreeMaker2/PreSelection");//vvv
-  if(nameData=="FastSim_TChiWg_0_400_v17") tree = new TChain("tree");//vvv
-  if(nameData=="FastSim_TChiWg_0_800_v17") tree = new TChain("tree");//vvv
-  if(nameData=="FastSim_TChiWg_0_1200_v17") tree = new TChain("tree");//vvv
+  /* if(nameData=="bkg") tree = new TChain("TreeMaker2/PreSelection");//vvv */
+  /* if(nameData=="FastSim_TChiWg_0_400_v17") tree = new TChain("tree");//vvv */
+  /* if(nameData=="FastSim_TChiWg_0_800_v17") tree = new TChain("tree");//vvv */
+  /* if(nameData=="FastSim_TChiWg_0_1200_v17") tree = new TChain("tree");//vvv */
   if( ! FillChain(tree, inputFileList) ) {
     std::cerr << "Cannot get the tree " << std::endl;
   } else {
