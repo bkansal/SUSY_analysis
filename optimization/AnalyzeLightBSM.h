@@ -233,6 +233,7 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH1D *h_GmatchedObj;
   TH1D *h_PdgIdPhoParent;
 
+  TH1D *h_SBins_v7_CD;
   
   TFile *oFile;
   
@@ -417,6 +418,7 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
 
   h_GmatchedObj=new TH1D("GmatchedObj","Gen Obj close to Reco-Gamma",62,-0.75,30.25);
   h_PdgIdPhoParent = new TH1D("PdgIdPhoParent","PdgID of the Photon's parent",62,-0.75,30.25);
+  h_SBins_v7_CD = new TH1D("AllSBins_v7_CD","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
 
   //---------------Search Bins ----------------------------
   /* h_MET_R_v2[0] =new TH1D("MET_R1_v2","MET for 0b, NJ=2to4 ",METBinLowEdge.size()-1,&(METBinLowEdge[0])); */

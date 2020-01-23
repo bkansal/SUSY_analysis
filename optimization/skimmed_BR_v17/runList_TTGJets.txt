@@ -1,1 +1,1 @@
-skimmed_BR_v17/SR_Summer16v3.TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8.root
+/home/work/bhumika/work/MET_analysis/SUSY_Photon_by_bhumi2/Analysis/SignalRegion/skimmed_BR_v17/SR_Summer16v3.TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8.root

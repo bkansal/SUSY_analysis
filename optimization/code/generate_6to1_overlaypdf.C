@@ -1,0 +1,277 @@
+#include"TFile.h"
+#include"TH1.h"
+#include"TVirtualPad.h"
+void generate_6to1_overlaypdf(){
+  char* plot_name = new char[200];
+  char* plot_name1 = new char[200];
+  char* plot_name2 = new char[200];
+  char* ext = new char[200];
+  char* path = new char[200];
+  char* path1 = new char[200];
+  char* path2 = new char[200];
+  char* rootfile = new char[200];
+  char* rootfile1 = new char[200];
+  char* rootfile2 = new char[200];
+  // sprintf(ext,"_FastSim_nocut");
+  // sprintf(plot_name,"T5bbbbZg_1800_150");
+  // sprintf(rootfile,"rootoutput/%s%s.root",plot_name,ext);
+  // sprintf(plot_name1,"T5bbbbZg_1800_1750");
+  // sprintf(rootfile1,"rootoutput/%s%s.root",plot_name1,ext);
+  // sprintf(plot_name2,"TChiWg_0_800");
+  // sprintf(rootfile2,"rootoutput/%s%s.root",plot_name2,ext);
+
+  // sprintf(ext,"_v17");
+  // sprintf(plot_name,"QCD");
+  // sprintf(rootfile,"rootoutput/%s%s.root",plot_name,ext);
+  // sprintf(plot_name1,"GJets");
+  // sprintf(rootfile1,"rootoutput/%s%s.root",plot_name1,ext);
+  // sprintf(plot_name2,"TTJetsHT");
+  // sprintf(rootfile2,"rootoutput/%s%s.root",plot_name2,ext);
+
+  // // sprintf(plot_name1,"T5bbbbZg_1800_1750_FastSim_v12.root");
+  // sprintf(rootfile1,"rootoutput/%s.root",plot_name1);
+  // sprintf(plot_name2,"T5bbbbZg_1800_1750_FastSim_v17.root");
+  // sprintf(rootfile2,"rootoutput/%s.root",plot_name2);
+  
+  sprintf(plot_name,"ZGZJ_NuNuG_v17");
+  sprintf(rootfile,"../rootoutput/%s.root",plot_name);
+  sprintf(plot_name1,"ZGZJ_NuNuG_v12");
+  sprintf(rootfile1,"../rootoutput/%s.root",plot_name1);
+  sprintf(plot_name2,"ZGZJ_NuNuG");
+  sprintf(rootfile2,"../rootoutput/%s.root",plot_name2);
+
+
+  sprintf(path,"../plots/pdf/%s_vs_%s_vs_%s_plot.pdf",plot_name,plot_name1,plot_name2);
+  sprintf(path1,"../plots/png/%s_vs_%s_vs_%s_plot.png",plot_name,plot_name1,plot_name2);
+  sprintf(path2,"../plots/gif/%s_vs_%s_vs_%s_plot.gif",plot_name,plot_name1,plot_name2);
+  // TFile *f1=new TFile("rootoutput/T5bbbbZg_1800_150_FastSim.root");
+  TFile *f1=new TFile(rootfile);
+  TFile *f2=new TFile(rootfile1);
+  TFile *f3=new TFile(rootfile2);
+  
+
+  // TH1F *h1=(TH1F*)f1->FindObjectAny("selectBaselineYields_");
+  // // TH1F *h2=(TH1F*)f1->FindObjectAny("selectBaselineYields_");
+
+  
+  TH1F *h1=(TH1F*)f1->FindObjectAny("cutflows");
+  TH1F *h7=(TH1F*)f1->FindObjectAny("cutflows2");
+  TH1F *h2=(TH1F*)f1->FindObjectAny("nJets");
+  TH1F *h3=(TH1F*)f1->FindObjectAny("MET");
+  TH1F *h4=(TH1F*)f1->FindObjectAny("BestPhotonPt");
+  TH1F *h5=(TH1F*)f1->FindObjectAny("nBTags");
+  TH1F *h6=(TH1F*)f1->FindObjectAny("ST");
+
+  TH1F *h_1=(TH1F*)f2->FindObjectAny("cutflows");
+  TH1F *h_7=(TH1F*)f2->FindObjectAny("cutflows2");
+  TH1F *h_2=(TH1F*)f2->FindObjectAny("nJets");
+  TH1F *h_3=(TH1F*)f2->FindObjectAny("MET");
+  TH1F *h_4=(TH1F*)f2->FindObjectAny("BestPhotonPt");
+  TH1F *h_5=(TH1F*)f2->FindObjectAny("nBTags");
+  TH1F *h_6=(TH1F*)f2->FindObjectAny("ST");
+
+  TH1F *h__1=(TH1F*)f3->FindObjectAny("cutflows");
+  TH1F *h__7=(TH1F*)f3->FindObjectAny("cutflows2");
+  TH1F *h__2=(TH1F*)f3->FindObjectAny("nJets");
+  TH1F *h__3=(TH1F*)f3->FindObjectAny("MET");
+  TH1F *h__4=(TH1F*)f3->FindObjectAny("BestPhotonPt");
+  TH1F *h__5=(TH1F*)f3->FindObjectAny("nBTags");
+  TH1F *h__6=(TH1F*)f3->FindObjectAny("ST");
+
+  
+   TCanvas *c1 = new TCanvas("c1", "c1",65,24,1680,1056);
+   c1->Range(-1.981819,-20.70421,12.90736,118.2711);
+   c1->SetFillColor(0);
+   c1->SetBorderMode(0);
+   c1->SetBorderSize(2);
+   //   c1->SetGridx();
+   c1->SetBottomMargin(0.1489776);
+   c1->SetFrameBorderMode(0);
+   c1->SetFrameBorderMode(0);
+
+   c1->Divide(3,2);
+
+   // char* plot_name = new char[200];
+   c1->cd(1); 
+   gStyle->SetOptStat(0);  
+   c1->SetBorderMode(0);
+   c1->SetGridx();
+   c1->SetFrameBorderMode(0);
+   c1->SetFrameBorderMode(0);
+  TPaveStats *p = new TPaveStats(0.6303725,0.6934461,0.8710602,0.832135,"brNDC");
+  p->SetName("stats");
+  p->SetBorderSize(0);
+  // p->SetOptStat(10);  
+  p->SetFillColor(0);
+  p->SetTextAlign(12);
+  p->SetTextFont(42);
+  p->SetTextColor(1);
+  p->SetLineColor(1);
+  // p->Draw();
+  h1->GetListOfFunctions()->Add(p);
+  p->SetParent(h1);
+   // h1->SetLineColor(1);
+  h__1->GetXaxis()->SetRange(1,10);
+  h__1->GetXaxis()->SetNdivisions(-510);
+  h1->Draw("text");
+  h_1->SetLineColor(2);
+  h__1->SetLineColor(3);
+  h1->Divide(h7);
+  h_1->Divide(h_7);
+  h__1->Divide(h__7);
+  h__1->Draw("text");
+  h_1->Draw("same");
+  h1->Draw("same");
+  TLegend* legends = new TLegend(0.44, 0.7, 0.9, 0.9,"","brNDC"); // the numbers determine the position of the box 
+  legends->SetFillColor(0); 
+  // legends->SetHeader(legendname); 
+  legends->AddEntry(h2,plot_name,"l");//(name of hist,what you want it called in legend, l=line, p=polymarker, f=boxy thing ) 
+  legends->AddEntry(h_2,plot_name1,"l");
+  legends->AddEntry(h__2,plot_name2,"l");
+  legends->SetTextSize(0.04);
+   //   legends->SetMarkerStyle(1);
+  legends->Draw();
+
+  c1->cd(2);
+  h_2->SetLineColor(2);
+  h__2->SetLineColor(3);
+  h__2->Draw("hist");
+  h2->Draw("hist same");
+  h_2->Draw("hist same");
+  TLegend* l2 = new TLegend(0.44, 0.7, 0.9, 0.9,"","brNDC"); // the numbers determine the position of the box 
+  l2->SetFillColor(0); 
+  // l2->SetHeader(legendname); 
+  l2->AddEntry(h2,plot_name,"l");//(name of hist,what you want it called in legend, l=line, p=polymarker, f=boxy thing ) 
+  l2->AddEntry(h_2,plot_name1,"l");
+  l2->AddEntry(h__2,plot_name2,"l");
+  l2->SetTextSize(0.04);
+   //   l2->SetMarkerStyle(1);
+  l2->Draw();
+  
+  c1->cd(3);
+  h3->RebinX(5);
+  h_3->RebinX(5);
+  h__3->RebinX(5);
+  h_3->SetLineColor(2);
+  h__3->SetLineColor(3);
+  h__3->Draw("hist");
+  h3->Draw("hist same");
+  h_3->Draw("hist same");
+  TLegend* l3 = new TLegend(0.44, 0.7, 0.9, 0.9,"","brNDC"); // the numbers determine the position of the box 
+  l3->SetFillColor(0); 
+  // l3->SetHeader(legendname); 
+  l3->AddEntry(h2,plot_name,"l");//(name of hist,what you want it called in legend, l=line, p=polymarker, f=boxy thing ) 
+  l3->AddEntry(h_2,plot_name1,"l");
+  l3->AddEntry(h__2,plot_name2,"l");
+  l3->SetTextSize(0.04);
+   //   l3->SetMarkerStyle(1);
+  l3->Draw();
+
+  c1->cd(4);
+  h4->RebinX(1);
+  h_4->RebinX(1);
+  h__4->RebinX(1);
+  h_4->SetLineColor(2);
+  h__4->SetLineColor(3);
+  h__4->Draw("hist");
+  h4->Draw("hist same");
+  h_4->Draw("hist same");
+  TLegend* l4 = new TLegend(0.44, 0.7, 0.9, 0.9,"","brNDC"); // the numbers determine the position of the box 
+  l4->SetFillColor(0); 
+  // l4->SetHeader(legendname); 
+  l4->AddEntry(h2,plot_name,"l");//(name of hist,what you want it called in legend, l=line, p=polymarker, f=boxy thing ) 
+  l4->AddEntry(h_2,plot_name1,"l");
+  l4->AddEntry(h__2,plot_name2,"l");
+  l4->SetTextSize(0.04);
+   //   l4->SetMarkerStyle(1);
+  l4->Draw();
+
+  c1->cd(5);
+  h_5->SetLineColor(2);
+  h__5->SetLineColor(3);
+  h__5->Draw("hist");
+  h_5->Draw("hist same");
+  h5->Draw("hist same");
+  TLegend* l5 = new TLegend(0.44, 0.7, 0.9, 0.9,"","brNDC"); // the numbers determine the position of the box 
+  l5->SetFillColor(0); 
+  // l5->SetHeader(legendname); 
+  l5->AddEntry(h2,plot_name,"l");//(name of hist,what you want it called in legend, l=line, p=polymarker, f=boxy thing ) 
+  l5->AddEntry(h_2,plot_name1,"l");
+  l5->AddEntry(h__2,plot_name2,"l");
+  l5->SetTextSize(0.04);
+   //   l5->SetMarkerStyle(1);
+  l5->Draw();
+
+  c1->cd(6);
+  h6->RebinX(5);
+  h_6->RebinX(5);
+  h__6->RebinX(5);
+  h_6->SetLineColor(2);
+  h__6->SetLineColor(3);
+  h__6->Draw("hist");
+  h_6->Draw("hist same");
+  h6->Draw("hist same");
+  TLegend* l6 = new TLegend(0.44, 0.7, 0.9, 0.9,"","brNDC"); // the numbers determine the position of the box 
+  l6->SetFillColor(0); 
+  // l6->SetHeader(legendname); 
+  l6->AddEntry(h2,plot_name,"l");//(name of hist,what you want it called in legend, l=line, p=polymarker, f=boxy thing ) 
+  l6->AddEntry(h_2,plot_name1,"l");
+  l6->AddEntry(h__2,plot_name2,"l");
+  l6->SetTextSize(0.04);
+   //   l6->SetMarkerStyle(1);
+  l6->Draw();
+
+
+  
+  c1->SaveAs(path);
+  c1->SaveAs(path1);
+  c1->SaveAs(path2);
+
+  // TPaveStats *p2 = new TPaveStats(0.6289398,0.517167,0.8724928,0.6511628,"brNDC");
+  // p2->SetName("stats");
+  // p2->SetBorderSize(1);
+  // p2->SetFillColor(0);
+  // p2->SetTextAlign(12);
+  // p2->SetTextFont(42);
+  // p2->SetTextColor(2);
+  // p2->SetLineColor(1);
+  // // p2->GetLineWith("Entries")->SetTextColor(2);
+  // //p2->Draw();
+  // h2->GetListOfFunctions()->Add(p2);
+  // p2->SetParent(h2);
+  // h2->SetLineColor(2);
+  //  // h2->Draw("hist sames");
+
+
+
+
+
+  // TTree *t1 = (TTree*)f1->Get("PreSelection");
+  // //  TTree *t2 = (TTree*)f2->Get("PreSelection");
+  // double MET1,MET2;
+  // t1->SetBranchAddress("MET",&MET1);
+  // t2->SetBranchAddress("MET",&MET2);
+  
+  // // vector<TLorentzVector> v1,v2;
+  // // t1->SetBranchAddress("Photons",&(v1[0]));
+  // // t2->SetBranchAddress("Photons",&(v2[0]));
+  
+  // TH1D *ht1   = new TH1D("ht1","ht1 distribution",500,0,5000);
+  // TH1D *ht2   = new TH1D("ht2","ht2 distribution",500,0,5000);
+
+  // Long64_t nentries1 = t1->GetEntries();
+  // for (Long64_t i=0;i<nentries1;i++) {
+  //   t1->GetEntry(i);
+  //   ht1->Fill(MET1);
+  // }
+  // Long64_t nentries2 = t2->GetEntries();
+  // for (Long64_t i=0;i<nentries2;i++) {
+  //   t2->GetEntry(i);
+  //   ht2->Fill(MET2);
+  // }
+
+  // ht1->SetLineColor(kRed);
+  // ht2->SetLineColor(kBlue);
+  // ht1->DrawNormalized("e0");
+  // ht2->DrawNormalized("sames e0");
+}

@@ -1,2 +1,2 @@
-skimmed_BR_v17/SR_Summer16v3.WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph.root
-skimmed_BR_v17/SR_Summer16v3.WGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph.root
+/home/work/bhumika/work/MET_analysis/SUSY_Photon_by_bhumi2/Analysis/SignalRegion/skimmed_BR_v17/SR_Summer16v3.WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph.root
+/home/work/bhumika/work/MET_analysis/SUSY_Photon_by_bhumi2/Analysis/SignalRegion/skimmed_BR_v17/SR_Summer16v3.WGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph.root

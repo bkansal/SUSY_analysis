@@ -26,10 +26,6 @@ const int nfiles=8,nBG=6;    //Specify no. of files
 TFile *f[nfiles];
 bool savePlots=1;
 bool isPaper=0;
-// bool v_17=false, v_12=true, v_12_vinay= false;
-bool v_17=true, v_12=false, v_12_vinay= false;
-// bool v_17=false, v_12=false, v_12_vinay=true;
-
 //int col[11]={kTeal+9,kGreen,kYellow,kOrange,kPink+1,kMagenta+2,kBlue,kCyan,kRed,kBlue+2,kMagenta};  //Specify Colors b's
 ////int col[11]={kTeal+9,kGreen,kYellow,kOrange,kPink+1,kPink-2,kBlue,kCyan,kRed,kBlue+2,kMagenta};  //Specify Colors b's
 //int col[11]={kPink-2,kTeal+9,kGreen,kYellow,kOrange,kBlue,kCyan,kRed,kBlue+2,kMagenta,kPink+1};  //Specify Colors b's
@@ -37,7 +33,6 @@ vector<int> col={kPink+1,kTeal+9,kYellow,kGray,kOrange,kCyan,kBlue,kRed,kBlue+2,
 
 TCanvas *c_cA=new TCanvas("kinVar","plot of a kin var",1500,900);
 
-string getfname(const char *fname1){string fname=fname1;fname.pop_back();fname.pop_back();fname.pop_back();fname.pop_back();fname.pop_back();return fname;}
 void decorate(TH1D*,int,const char*);
 void decorate(THStack*,int,const char*);
 void drawlegend(TH1D*,int,const char*);
@@ -60,87 +55,52 @@ void plotKinStack(){
   gStyle->SetTitle(0);
   double yMin=0.1,yMax = 1000;
   double xMin=0.0,xMax = 2000;
-  // TString varName = "ST"; TString xLabel = "H_{T}^{#gamma} (GeV)";   int rebin=25; yMin=0.5,yMax = 1100; xMin=300.0,xMax = 3000;
-  // TString varName = "METvBin2_nj2to4_nbjetnot0"; TString xLabel = "p_{T}^{miss} (GeV)";   int rebin=1; yMin=0.005,yMax = 15000; xMin=200.0,xMax = 1000;
-  // TString varName = "MET"; TString xLabel = "p_{T}^{miss} (GeV)";   int rebin=10; yMin=0.1,yMax = 1000; xMin=100.0,xMax = 1400;
-  // TString varName = "BestPhotonPt"; TString xLabel = "p_{T}^{#gamma} (GeV)";   int rebin=10; yMin=0.5,yMax = 100000; xMin=0.0,xMax = 1200;
-  // TString varName = "PhovBin2"; TString xLabel = "p_{T}^{#gamma} (GeV)";   int rebin=1; yMin=0.4,yMax = 1000000; xMin=0.0,xMax = 1200;
-   // TString varName = "nHadJets"; TString xLabel = "N_{ jets}";   int rebin=1; yMin=0.1,yMax = 1000; xMin=0.0,xMax = 14;
-   // TString varName = "nJets"; TString xLabel = "N_{ jets}";   int rebin=1; yMin=0.1,yMax = 100000; xMin=1,xMax = 14;
-   // TString varName = "nBTags"; TString xLabel = "N_{ b-jets}";   int rebin=1; yMin=0.1,yMax = 100000; xMin=1.0,xMax = 5;
-   // TString varName = "mindPhi1dPhi2"; TString xLabel = "min(#Delta#phi_{1}, #Delta#phi_{2})";   int rebin=10; yMin=0.3,yMax = 1500; xMin=-100000.0,xMax = 100000;
+  //  TString varName = "ST"; TString xLabel = "H_{T}^{#gamma} (GeV)";   int rebin=25; yMin=0.5,yMax = 1100; xMin=300.0,xMax = 3000;
+   TString varName = "MET_nocut"; TString xLabel = "p_{T}^{miss} (GeV)";   int rebin=10; yMin=0.1,yMax = 1500; xMin=200.0,xMax = 1400;
+  // TString varName = "BestPhotonPt"; TString xLabel = "p_{T}^{#gamma} (GeV)";   int rebin=10; yMin=0.4,yMax = 1000; xMin=100.0,xMax = 1200;
+  // TString varName = "nHadJets"; TString xLabel = "N_{ jets}";   int rebin=1; yMin=0.1,yMax = 1000; xMin=2.0,xMax = 15;
+   //   TString varName = "nBTags"; TString xLabel = "N_{ b-jets}";   int rebin=1; yMin=0.1,yMax = 3000; xMin=1.0,xMax = 5;
+  //  TString varName = "mindPhi1dPhi2"; TString xLabel = "min(#Delta#phi_{1}, #Delta#phi_{2})";   int rebin=10; yMin=0.3,yMax = 1500; xMin=-100000.0,xMax = 100000;
   //"mindPhi1dPhi2";//"AllSBins_v7_CD";
-  TString varName = "AllSBins_v7_CD"; TString xLabel = "Bin no.";   int rebin=1; yMin=0.5,yMax = 1000000; xMin=-100000,xMax = 100000;
+  //  TString varName = "AllSBins_v7_CD"; TString xLabel = "Bin no.";   int rebin=1; yMin=0.5,yMax = 11000; xMin=-100000,xMax = 100000;
   //TString varName = "METvarBin";
   //  TString xLabel = "p_{T}^{miss} (GeV)";//min(#Delta#Phi_{1},#Delta#Phi_{2})
-  //TString varName = "dPhi_METjet1"; TString xLabel = "dPhi b/w Met & Jet1";   int rebin=1; yMin=0.3,yMax = 15000; xMin=-100000,xMax = 100000;
-  //  // "mindPhi1dPhi2";//"AllSBins_v7_CD";
-  //   TString varName = "dPhi_METjet2"; TString xLabel = "dPhi b/w Met & Jet2";   int rebin=1; yMin=0.3,yMax = 15000; xMin=-100000,xMax = 100000;
-  //   TString varName = "dPhi_phojet1"; TString xLabel = "dPhi b/w pho & Jet1";   int rebin=1; yMin=0.3,yMax = 15000; xMin=-100000,xMax = 100000;
-   // TString varName = "dPhi_phojet2"; TString xLabel = "dPhi b/w pho & Jet2";   int rebin=1; yMin=0.3,yMax = 15000; xMin=-100000,xMax = 100000;
-   // TString varName = "dPhi_phoMET"; TString xLabel = "dPhi b/w pho & MET";   int rebin=1; yMin=0.3,yMax = 15000; xMin=-100000,xMax = 100000;
-   // TString varName = "mTPhoMET"; TString xLabel = "mT b/w pho & MET";   int rebin=10; yMin=0.3,yMax = 15000; xMin=-100000,xMax = 100000;
-  if(v_17){
-  f[0] = new TFile("TTGJets_v17.root");
-  f[1] = new TFile("TTJetsHT_v17.root");//ZGJetsToNuNuG_v17.root
-  f[2] = new TFile("ZGZJ_NuNuG.root");
-  // f[2] = new TFile("ZJetsToNuNu_v17.root");
-  // f[2] = new TFile("ZGJetsToNuNuG_v12.root");
-  f[3] = new TFile("WGJetsToLNuG_v17.root");
-  f[4] = new TFile("WJetsToLNu_v17.root");
-  f[5] = new TFile("GJetsQCD_new_v17.root");
-  col.resize(0);
-  col={kGray,kTeal+9,kOrange,kRed,kCyan-1,kCyan,kBlue,kMagenta+2,kPink+1,kMagenta,kBlack};
-  // f[6] = new TFile("TChiWg_0_400_FastSim_v17.root");
-  // f[7] = new TFile("TChiWg_0_800_FastSim_v17.root");
-  // f[8] = new TFile("TChiWg_0_1200_FastSim_v17.root");
-  f[6] = new TFile("T5bbbbZg_1800_150_FastSim_v17.root");
-  // f[7] = new TFile("T5bbbbZg_1800_1000_FastSim_v17.root");
-  f[7] = new TFile("T5bbbbZg_1800_1750_FastSim_v17.root");
-  // f[6] = new TFile("GGM_M1M3_1100_1000_FastSim.root");
-  // f[7] = new TFile("GGM_M1M3_1100_200_FastSim.root");
-  }
-  if(v_12){
-  f[0] = new TFile("TTGJets_v12.root");
-  f[1] = new TFile("TTJetsHT_v12.root");//ZGJetsToNuNuG_v17.root
-  // f[2] = new TFile("ZGZJ_NuNuG_v12.root");
-  // f[2] = new TFile("ZJetsToNuNu_v17.root");
-   f[2] = new TFile("ZGJetsToNuNuG_v12.root");
-  f[3] = new TFile("WGJetsToLNuG_v12.root");
-  f[4] = new TFile("WJetsToLNu_v12.root");
-  f[5] = new TFile("GJetsQCD_new_v12.root");
-  col.resize(0);
-  col={kGray,kTeal+9,kOrange,kRed,kCyan-1,kCyan,kBlue,kMagenta+2,kPink+1,kMagenta,kBlack};
-  // f[6] = new TFile("TChiWg_0_400_FastSim_v17.root");
-  // f[7] = new TFile("TChiWg_0_800_FastSim_v17.root");
-  // f[8] = new TFile("TChiWg_0_1200_FastSim_v17.root");
-  f[6] = new TFile("T5bbbbZg_1800_150_FastSim_v12.root");
-  // f[7] = new TFile("T5bbbbZg_1800_1000_FastSim_v17.root");
-  f[7] = new TFile("T5bbbbZg_1800_1750_FastSim_v12.root");
-  // f[6] = new TFile("GGM_M1M3_1100_1000_FastSim.root");
-  // f[7] = new TFile("GGM_M1M3_1100_200_FastSim.root");
-  }
-  if(v_12_vinay){
-  f[0] = new TFile("TTGJets_v12_vinay.root");
-  f[1] = new TFile("TTJetsHT_v12_vinay.root");//ZGJetsToNuNuG_v17.root
-  f[2] = new TFile("ZGZJ_NuNuG_v12_vinay.root");
-  // f[2] = new TFile("ZJetsToNuNu_v17.root");
-  //  f[2] = new TFile("ZGJetsToNuNuG_v12_vinay.root");
-  f[3] = new TFile("WGJetsToLNuG_v12_vinay.root");
-  f[4] = new TFile("WJetsToLNu_v12_vinay.root");
-  f[5] = new TFile("GJetsQCD_new_v12_vinay.root");
-  col.resize(0);
-  col={kGray,kTeal+9,kOrange,kRed,kCyan-1,kCyan,kBlue,kMagenta+2,kPink+1,kMagenta,kBlack};
-  // f[6] = new TFile("TChiWg_0_400_FastSim_v17.root");
-  // f[7] = new TFile("TChiWg_0_800_FastSim_v17.root");
-  // f[8] = new TFile("TChiWg_0_1200_FastSim_v17.root");
-  f[6] = new TFile("T5bbbbZg_1800_150_FastSim_v12_vinay.root");
-  // f[7] = new TFile("T5bbbbZg_1800_1000_FastSim_v17.root");
-  f[7] = new TFile("T5bbbbZg_1800_1750_FastSim_v12_vinay.root");
-  // f[6] = new TFile("GGM_M1M3_1100_1000_FastSim.root");
-  // f[7] = new TFile("GGM_M1M3_1100_200_FastSim.root");
-  }
   
+  f[0] = new TFile("TTGJets.root");
+  f[1] = new TFile("TTJetsHT.root");
+  f[2] = new TFile("ZGZJ_NuNuG.root");
+  f[3] = new TFile("WGJetsToLNuG.root");
+  f[4] = new TFile("WJetsToLNu.root");
+  f[5] = new TFile("GJetsQCD.root");
+  col.resize(0);
+  col={kGray,kTeal+9,kOrange,kRed,kCyan-1,kCyan,kBlue,kMagenta+2,kPink+1,kMagenta,kBlack};
+  //  col={kGray,kTeal+9,kOrange,kPink+1,kYellow,kCyan,kBlue,kRed,kBlue,kMagenta,kCyan};//v1
+  // f[0] = new TFile("GJetsQCD.root");
+  // f[1] = new TFile("TTJetsHT.root");
+  // f[2] = new TFile("TTGJets.root");
+  // f[3] = new TFile("WGJetsToLNuG.root");
+  // f[4] = new TFile("ZGZJ_NuNuG.root");
+  // f[5] = new TFile("WJetsToLNu.root");
+  // f[6] = new TFile("FastSim_T5bbbbZG_1800_150.root");
+  // f[7] = new TFile("FastSim_T5bbbbZG_1800_1750.root");
+  
+  // f[6] = new TFile("FastSim_T5qqqqHg_1800_150.root");
+  // f[7] = new TFile("FastSim_T5qqqqHg_1800_1750.root");
+  // f[6] = new TFile("FastSim_T5bbbbZg_1800_150.root");
+  // f[7] = new TFile("FastSim_T5bbbbZg_1800_1750.root");
+  // f[6] = new TFile("FastSim_T5ttttZg_1800_150.root");
+  // f[7] = new TFile("FastSim_T5ttttZg_1800_1550.root");
+  // f[6] = new TFile("FastSim_T6ttZg_1000_100.root");
+  // f[7] = new TFile("FastSim_T6ttZg_1000_900.root");
+  
+  //  f[7] = new TFile("DCS_LDP_Run2016_Multijet_v2.root");
+  //  f[8] = new TFile("T5qqqqHg_1600_1000_FastSim.root");
+
+  f[6] = new TFile("T5bbbbZg_1800_150_FastSim.root");
+  f[7] = new TFile("T5bbbbZg_1800_1750_FastSim.root");
+  // f[6] = new TFile("GGM_M1M3_1100_1000_FastSim.root");
+  // f[7] = new TFile("GGM_M1M3_1100_200_FastSim.root");
+
   gStyle->SetTextSize(2);
   THStack *hs_var=new THStack("var_Stack","MET Stacked");
   //TH1D *h_R;
@@ -165,17 +125,8 @@ void plotKinStack(){
     
     TH1D *h_MET;
     if(i<=nBG-1) h_MET=(TH1D*)f[i]->FindObjectAny(varName);
-    if(i>=nBG) h_MET=(TH1D*)f[i]->FindObjectAny(varName);
-    
-    if (varName=="AllSBins_v7_CD"){
-      cout<<"filename ------->  "<<getfname(f[i]->GetName())<<endl; 
-      for(int k=1; k<h_MET->GetSize()-1; k++)
-	{
-	  cout<<"Bin content for bin "<<k<<" ---->  "<<h_MET->GetBinContent(k)<<endl;
-	}
-      cout<<"==========================================="<<endl;
-    }
-    //    couh_MET->GetNbinsX()<<" ";
+    if(i>=nBG) h_MET=(TH1D*)f[i]->FindObjectAny(varName+"");
+    //    cout<<h_MET->GetNbinsX()<<" ";
     h_MET->Rebin(rebin);
     //    h_MET->GetYaxis()->SetRangeUser(100.5,20000);
     //    h_MET->SetMinimum(100);
@@ -243,7 +194,7 @@ void plotKinStack(){
   intLumiE.DrawLatexNDC(0.7,0.91,name2);
   TLatex Tl;
   Tl.SetTextSize(0.04);
-  // if(isPaper) Tl.DrawLatexNDC(0.48,0.91,"#bf{arXiv:xxxx.xxxxx}");
+  if(isPaper) Tl.DrawLatexNDC(0.48,0.91,"#bf{arXiv:xxxx.xxxxx}");
 
   if(varName == "mindPhi1dPhi2"){
     TLine *line1=new TLine( 0.3,0.11,  0.3,yMax);
@@ -342,7 +293,6 @@ void drawlegend(TH1D *hist,int i,const char* fname){
   TString lName=fname;
   
   if(lName.Contains("ZGZJ")){lName="Z(#nu#bar{#nu}) + #gamma";}
-  else if(lName.Contains("ZJets")){lName="Z(#nu#bar{#nu}) + jets";}
   else if(lName.Contains("DYJetsToLL")){lName="DY(l^{+}l^{-})";}
   else if(lName.Contains("WJetsToLNu")){lName="W(l#nu) + jets";}
   else if(lName.Contains("RareProcess")){}
@@ -361,12 +311,10 @@ void drawlegend(TH1D *hist,int i,const char* fname){
 
   else if(lName.Contains("T5bbbbZg_1800_150")){lName = "#tilde{g} #rightarrow b #bar{b} #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G} (m_{#tilde{g}} = 1800 GeV, m_{#tilde{#chi}_{1}^{0}} = 150 GeV)";}
   else if(lName.Contains("T5bbbbZg_1800_1750")){lName = "#tilde{g} #rightarrow b #bar{b} #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G} (m_{#tilde{g}} = 1800 GeV, m_{#tilde{#chi}_{1}^{0}} = 1750 GeV)";}
-  else if(lName.Contains("T5bbbbZg_1800_1000")){lName = "#tilde{g} #rightarrow b #bar{b} #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G} (m_{#tilde{g}} = 1800 GeV, m_{#tilde{#chi}_{1}^{0}} = 1000 GeV)";}
   else if(lName.Contains("T5qqqqHg_1800_150")){lName = "#tilde{g} #rightarrow q #bar{q} #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/H #tilde{G} (m_{#tilde{g}} = 1800 GeV, m_{#tilde{#chi}_{1}^{0}} = 150 GeV)";}
   else if(lName.Contains("T5qqqqHg_1800_1750")){lName = "#tilde{g} #rightarrow q #bar{q} #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/H #tilde{G} (m_{#tilde{g}} = 1800 GeV, m_{#tilde{#chi}_{1}^{0}} = 1750 GeV)";}
   else if(lName.Contains("T5ttttZg_1800_150")){lName = "#tilde{g} #rightarrow t #bar{t} #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G} (m_{#tilde{g}} = 1800 GeV, m_{#tilde{#chi}_{1}^{0}} = 150 GeV)";}
   else if(lName.Contains("T5ttttZg_1800_1550")){lName = "#tilde{g} #rightarrow t #bar{t} #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G} (m_{#tilde{g}} = 1800 GeV, m_{#tilde{#chi}_{1}^{0}} = 1550 GeV)";}
-  else if(lName.Contains("T5ttttZg_1800_1000")){lName = "#tilde{g} #rightarrow t #bar{t} #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G} (m_{#tilde{g}} = 1800 GeV, m_{#tilde{#chi}_{1}^{0}} = 1000 GeV)";}
 
   else if(lName.Contains("T6ttZg_1000_100")){lName = "#tilde{t} #rightarrow t #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G} (m_{#tilde{g}} = 1000 GeV, m_{#tilde{#chi}_{1}^{0}} = 100 GeV)";}
   else if(lName.Contains("T6ttZg_1000_900")){lName = "#tilde{t} #rightarrow t #tilde{#chi}_{1}^{0}, #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G} (m_{#tilde{g}} = 1000 GeV, m_{#tilde{#chi}_{1}^{0}} = 900 GeV)";}
@@ -376,9 +324,6 @@ void drawlegend(TH1D *hist,int i,const char* fname){
   else if(lName.Contains("T5bbbbZg_1600_1550")){lName="T5bbbbZg 1600, 1550";}
   else if(lName.Contains("T5qqqqHg_1600_1550")){lName="T5qqqqHg_1550";}
   else if(lName.Contains("T5qqqqHg_1600_150")){lName="T5qqqqHg_150";}
-  else if(lName.Contains("TChiWg_0_400")){lName="TChiWg , M#tilde{#chi}_{1}^{0} = M#tilde{#chi}_{1}^{+/-} = 400 GeV";}
-  else if(lName.Contains("TChiWg_0_800")){lName="TChiWg , M#tilde{#chi}_{1}^{0} = M#tilde{#chi}_{1}^{+/-} = 800 GeV";}
-  else if(lName.Contains("TChiWg_0_1200")){lName="TChiWg , M#tilde{#chi}_{1}^{0} = M#tilde{#chi}_{1}^{+/-} = 1200 GeV";}
 
   // const char *l_name=lName.c_str();
   if(i<nBG)legend1->AddEntry(hist,lName,"f");
