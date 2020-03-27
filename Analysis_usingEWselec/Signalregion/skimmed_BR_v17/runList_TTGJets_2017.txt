@@ -1,0 +1,1 @@
+root://cmseos.fnal.gov//store/group/lpcsusyhad/SusyPhotonMET/Run2ProductionV17/background/skims/SR_Fall17.TTGJets_TuneCP5_13TeV-amcatnloFXFX-madspin-pythia8.root

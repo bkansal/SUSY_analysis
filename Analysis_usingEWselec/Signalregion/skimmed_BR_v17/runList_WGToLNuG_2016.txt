@@ -1,0 +1,2 @@
+root://cmseos.fnal.gov//store/group/lpcsusyhad/SusyPhotonMET/Run2ProductionV17/background/skims/SR_Summer16v3.WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph.root
+root://cmseos.fnal.gov//store/group/lpcsusyhad/SusyPhotonMET/Run2ProductionV17/background/skims/SR_Summer16v3.WGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph.root
