@@ -1,0 +1,62 @@
+======== /uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits ===============
+/cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_10_1_0
+/uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits
+TreeUtilities : FillChain 
+No. of Entries in this tree : 100911
+Initiating analysis of dataset FastSim_TChiNG_2016
+Treating the input files as BG for setting tree branches
+dataset FastSim_TChiNG_2016 
+nentries 100911
+Analyzing dataset FastSim_TChiNG_2016 
+applying PU weights.
+applying ISR weights to ttbar? 1
+10 %
+20 %
+30 %
+40 %
+50 %
+60 %
+70 %
+80 %
+90 %
+Events Survied : 36051
+Events Survied in EW selections : 12704
+Events Survied i without EW selections : 23347
+========== HiggsAnalysis/CombinedLimit ===============
+/uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits
+/uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits/CMSSW_8_1_0/src
+making datacards
+mkdir dataCards/FastSim_TChiNG_0_1200_METvBin_njet4
+
+Processing makeDatacard_SBins.C(0,1200,"FastSim_TChiNG_0_1200.root","METvBin_njet4","METvBin_EW")...
+MEt bin --> 1 bin content --> 0.48294
+MEt bin --> 2 bin content --> 0.629102
+MEt bin --> 3 bin content --> 0.971669
+MEt bin --> 4 bin content --> 3.38415
+MEt bin --> 5 bin content --> 4.68436
+file name : FastSim_TChiNG_0_1200
+dataCards/FastSim_TChiNG_0_1200_METvBin_njet4/FastSim_TChiNG_0_1200_METvBin_EW_bin1.txt
+dataCards/FastSim_TChiNG_0_1200_METvBin_njet4/FastSim_TChiNG_0_1200_METvBin_EW_bin2.txt
+dataCards/FastSim_TChiNG_0_1200_METvBin_njet4/FastSim_TChiNG_0_1200_METvBin_EW_bin3.txt
+dataCards/FastSim_TChiNG_0_1200_METvBin_njet4/FastSim_TChiNG_0_1200_METvBin_EW_bin4.txt
+dataCards/FastSim_TChiNG_0_1200_METvBin_njet4/FastSim_TChiNG_0_1200_METvBin_EW_bin5.txt
+/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_1_0
+combineCards.py /uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits/dataCards/FastSim_TChiNG_0_1200_METvBin_njet4/*.txt > dataCard_TChiNG_0_1200_METvBin_njet4.txt
+calculating limit
+.1200
+combine -M AsymptoticLimits dataCard_TChiNG_0_1200_METvBin_njet4.txt -t -1 -n TChiNG_0_1200_METvBin_njet4 -m .1200
+ <<< Combine >>> 
+>>> including systematics
+>>> method used is AsymptoticLimits
+>>> random number generator seed is 123456
+Computing results starting from expected outcome (a-priori)
+
+ -- AsymptoticLimits ( CLs ) --
+Observed Limit: r < 0.9930
+Expected  2.5%: r < 0.4630
+Expected 16.0%: r < 0.6546
+Expected 50.0%: r < 0.9961
+Expected 84.0%: r < 1.5639
+Expected 97.5%: r < 2.3880
+
+Done in 0.02 min (cpu), 0.02 min (real)

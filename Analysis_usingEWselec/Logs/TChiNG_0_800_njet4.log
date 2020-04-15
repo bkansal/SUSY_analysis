@@ -1,0 +1,66 @@
+======== /uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits ===============
+/cvmfs/cms.cern.ch/slc6_amd64_gcc630/cms/cmssw/CMSSW_10_1_0
+/uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits
+TreeUtilities : FillChain 
+No. of Entries in this tree : 100133
+Initiating analysis of dataset FastSim_TChiNG_2016
+Treating the input files as BG for setting tree branches
+dataset FastSim_TChiNG_2016 
+nentries 100133
+Analyzing dataset FastSim_TChiNG_2016 
+applying PU weights.
+applying ISR weights to ttbar? 1
+10 %
+20 %
+30 %
+40 %
+50 %
+60 %
+70 %
+80 %
+90 %
+Events Survied : 32006
+Events Survied in EW selections : 10962
+Events Survied i without EW selections : 21044
+========== HiggsAnalysis/CombinedLimit ===============
+/uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits
+/uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits/CMSSW_8_1_0/src
+making datacards
+mkdir dataCards/FastSim_TChiNG_0_800_METvBin_njet4
+
+Processing makeDatacard_SBins.C(0,800,"FastSim_TChiNG_0_800.root","METvBin_njet4","METvBin_EW")...
+MEt bin --> 1 bin content --> 8.61732
+MEt bin --> 2 bin content --> 11.6846
+MEt bin --> 3 bin content --> 16.218
+MEt bin --> 4 bin content --> 51.6234
+MEt bin --> 5 bin content --> 14.567
+file name : FastSim_TChiNG_0_800
+dataCards/FastSim_TChiNG_0_800_METvBin_njet4/FastSim_TChiNG_0_800_METvBin_EW_bin1.txt
+dataCards/FastSim_TChiNG_0_800_METvBin_njet4/FastSim_TChiNG_0_800_METvBin_EW_bin2.txt
+dataCards/FastSim_TChiNG_0_800_METvBin_njet4/FastSim_TChiNG_0_800_METvBin_EW_bin3.txt
+dataCards/FastSim_TChiNG_0_800_METvBin_njet4/FastSim_TChiNG_0_800_METvBin_EW_bin4.txt
+dataCards/FastSim_TChiNG_0_800_METvBin_njet4/FastSim_TChiNG_0_800_METvBin_EW_bin5.txt
+/cvmfs/cms.cern.ch/slc6_amd64_gcc530/cms/cmssw/CMSSW_8_1_0
+combineCards.py /uscms/home/bkansal/nobackup/SUSY_Photon_using_v17/SignalRegion_GetLimits/dataCards/FastSim_TChiNG_0_800_METvBin_njet4/*.txt > dataCard_TChiNG_0_800_METvBin_njet4.txt
+calculating limit
+.0800
+combine -M AsymptoticLimits dataCard_TChiNG_0_800_METvBin_njet4.txt -t -1 -n TChiNG_0_800_METvBin_njet4 -m .0800
+ <<< Combine >>> 
+>>> including systematics
+>>> method used is AsymptoticLimits
+>>> random number generator seed is 123456
+Computing results starting from expected outcome (a-priori)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(model_s) evaluation error, 
+ origin       : RooProdPdf::model_s[ modelObs_s * nuisancePdf ]
+ message      : getLogVal() top-level p.d.f evaluates to zero
+ server values: !pdfs=(modelObs_s = 0/1,nuisancePdf = 1)
+
+ -- AsymptoticLimits ( CLs ) --
+Observed Limit: r < 0.1717
+Expected  2.5%: r < 0.0866
+Expected 16.0%: r < 0.1186
+Expected 50.0%: r < 0.1719
+Expected 84.0%: r < 0.2555
+Expected 97.5%: r < 0.3713
+
+Done in 0.01 min (cpu), 0.02 min (real)
