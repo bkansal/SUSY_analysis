@@ -66,10 +66,10 @@ void AnalyzeLightBSM::EventLoop(const char *data,const char *inputFileList) {
     //set file for getting ISR wts for signal
   TFile *fISR;  TH2D *h2_isrWtCorr;
   if(s_data.Contains("FastSim") && s_data.Contains("2016") && applyISRWtsFastSim){
-    if(s_data.Contains("T5bbbbZg")){ fISR = new TFile("T5bbbbZg_Summer16v3_MassScan.root");
+    if(s_data.Contains("T5bbbbZg")){ fISR = new TFile("T5bbbbZg_MassScan.root");
     }
-    else if(s_data.Contains("TChiWG")) fISR = new TFile("TChiWG_Summer16v3_MassScan.root");
-    else if(s_data.Contains("TChiNG")) fISR = new TFile("TChiNG_Summer16v3_MassScan.root");
+    else if(s_data.Contains("TChiWG")) fISR = new TFile("TChiWG_MassScan.root");
+    else if(s_data.Contains("TChiNG")) fISR = new TFile("TChiNG_MassScan.root");
     else if(s_data.Contains("T5tttt")) fISR = new TFile("T5ttttZg_MassScan.root");
     else if(s_data.Contains("T5qqqq")) fISR = new TFile("T5qqqqHg_MassScan.root");
     else if(s_data.Contains("T6tt")) fISR = new TFile("T6ttZg_MassScan.root");
@@ -79,11 +79,11 @@ void AnalyzeLightBSM::EventLoop(const char *data,const char *inputFileList) {
     h2_isrWtCorr->Divide((TH2D*)fISR->Get("Nevts_ISRWt"));
   }
   // if(s_data.Contains("FastSim_T5bbbbZg_2017") && applyISRWtsFastSim){
-  //     fISR = new TFile("T5bbbbZG_Fall17_MassScan.root");
+  //     fISR = new TFile("T5bbbbZG_Fall17Fast.SMS-T5bbbbZg_TuneCP2_13TeV-madgraphMLM-pythia8_job0.root");
   //     cout<<"2017"<<endl;
   // }
   // if(s_data.Contains("FastSim_T5bbbbZg_2018") && applyISRWtsFastSim){
-  //   fISR = new TFile("T5bbbbZG_Autumn18_MassScan.root");
+  //   fISR = new TFile("T5bbbbZG_Autumn18Fast.SMS-T5bbbbZg_TuneCP2_13TeV-madgraphMLM-pythia8_job0.root");
   // }
 
   
@@ -352,21 +352,35 @@ void AnalyzeLightBSM::EventLoop(const char *data,const char *inputFileList) {
    
     //===============Ak8 Jets =====================
     bool hadAK8JetID =true;
-    int minDR4indx=-100 , Ak8ID=-100;//photonMatchingJetIndx=-100,nHadJets=0;
-    double minDR4=99999;
+    int minDR4indx=-100,minDR5indx , Ak8ID=-100;//photonMatchingJetIndx=-100,nHadJets=0;
+    double minDR4=99999,minDR5;
     vector<TLorentzVector> hadAK8Jets;
-    vector<double> hadAK8Mass;
+    vector<TLorentzVector> hadAK8Jets_matchedW;
+    vector<double> hadAK8Mass, hadAK8Mass_matchedW;
     double Ak8Mass,max=0.0;
     for(int i=0;i<JetsAK8->size();i++)
       if( ((*JetsAK8)[i].Pt() > 30.0) && (abs((*JetsAK8)[i].Eta()) <= 2.4) ){
 	double dR4=bestPhoton.DeltaR((*JetsAK8)[i]);
 	if(dR4<minDR4){minDR4=dR4;minDR4indx=i;}
+	int minDR5indx=-100;
+	double minDR5=99999;
+	for(int j=0;j<GenParticles->size();j++){
+	  if((*GenParticles)[j].Pt()!=0 && (abs((*GenParticles_PdgId)[j])==24))
+	    {
+	      double dR5=(*GenParticles)[j].DeltaR((*JetsAK8)[i]);
+	      if(dR5<minDR5){minDR5=dR5;minDR5indx=i;}
+	    }
+	}
       }
   
     for(int i=0;i<JetsAK8->size();i++)
       if( ((*JetsAK8)[i].Pt() > 30.0) && (abs((*JetsAK8)[i].Eta()) <= 2.4) ){
 	if( !(minDR4 < 0.3 && i==minDR4indx) ){
 	  hadAK8Jets.push_back((*JetsAK8)[i]);
+	  if(minDR5 < 0.3 && i==minDR5indx){
+	    hadAK8Jets_matchedW.push_back((*JetsAK8)[i]);
+	    hadAK8Mass_matchedW.push_back((*JetsAK8_softDropMass)[i]);
+	  }
 	  if(hadAK8JetID)
  	    {
 	      hadAK8JetID=(*JetsAK8_ID)[i];
@@ -382,23 +396,31 @@ void AnalyzeLightBSM::EventLoop(const char *data,const char *inputFileList) {
       {
 	for(int i=0;i<hadAK8Jets.size();i++)
 	  {
+	    EWselec=false;
 	    Ak8Mass=hadAK8Mass[i];
+
 	    if (Ak8Mass < 100 && Ak8Mass > 65) 
 	      {
 		EWselec=true;
-		//	cout<<jentry<<": "<<i<<" hadAK8Jets.size()  --> "<<hadAK8Jets.size()<<"   hadAK8Jets[i].Pt() --> "<<hadAK8Jets[i].Pt()<<"   hadAK8Mass -->  "<<hadAK8Mass[i]<<endl;
+		//	      	cout<<jentry<<": "<<i<<" hadAK8Jets.size()  --> "<<hadAK8Jets.size()<<"   hadAK8Jets[i].Pt() --> "<<hadAK8Jets[i].Pt()<<"   hadAK8Mass -->  "<<hadAK8Mass[i]<<endl;
 		break;
 		//	    h_hadAk8Mass->Fill(Ak8Mass,wt);
 	      }
 	    else
 	      EWselec=false;
 	  }
-	
-	if(hadJets.size()<=4 && (hadAK8Jets.size()==1 && hadAK8Mass[0] < 100 && hadAK8Mass[0] > 65))
-	  EWselec1=true;
-	else 
-	  EWselec1=false;
-      }
+
+      if(hadJets.size()<=4)
+	EWselec1=true;
+      else 
+	EWselec1=false;
+    }
+
+      // 	if(hadJets.size()<=4 && (hadAK8Jets.size()==1 && hadAK8Mass[0] < 100 && hadAK8Mass[0] > 65))
+      // 	  EWselec1=true;
+      // 	else 
+      // 	  EWselec1=false;
+      // }
   
 
     //cout<<"=================================================="<<endl;
@@ -469,7 +491,7 @@ void AnalyzeLightBSM::EventLoop(const char *data,const char *inputFileList) {
     // }
 
     bool process= false;
-    if(!eMatchedG && !bestPhoHasPxlSeed && bestPhoton.Pt()>=100 && ST>500 && nHadJets>=2 && MET > 100 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3)
+    if(!eMatchedG && !bestPhoHasPxlSeed && bestPhoton.Pt()>=100 && ST>500 && nHadJets>=2 && MET > 200 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3)
       process =true;
     else continue;
     if(s_data.Contains("FastSim")){
@@ -506,50 +528,109 @@ void AnalyzeLightBSM::EventLoop(const char *data,const char *inputFileList) {
       int sBin7 = getBinNoV7(nHadJets);
       h_SBins_v7_CD->Fill(sBin7,wt);
 
+      for(int i=0;i<hadAK8Jets_matchedW.size();i++)
+	{
+	  h_hadAk8Pt_matchedW->Fill(hadAK8Jets_matchedW[i].Pt(),wt);
+	  h_hadAk8Mass_matchedW->Fill(hadAK8Mass_matchedW[i],wt);
+	}
 
-      //      if(process && EWselection && (EWselec && EWselec1))
+      for(int i=0;i<hadAK8Jets.size();i++)
+	{
+	  // EWselec=false;
+	  Ak8Mass=hadAK8Mass[i];
+
+	  if (Ak8Mass < 100 && Ak8Mass > 65) 
+	    { 
+	      h_hadAk8Pt_EW_nAk8jet_ge1->Fill(hadAK8Jets[i].Pt(),wt);
+   	      h_hadAk8Mass_EW_nAk8jet_ge1->Fill(hadAK8Mass[i],wt);
+	    }
+	}
+
+      if(hadAK8Jets.size() !=0){
+	h_hadAk8Mass_Ak8jet0->Fill(hadAK8Mass[0],wt);
+	h_hadAk8Pt_Ak8jet0->Fill(hadAK8Jets[0].Pt(),wt);
+      }
+      if (process && EWselection && EWselec)                
+	{
+	  h_nHadAk8Jets_nAk8jet_ge1->Fill(hadAK8Jets.size(),wt);
+	  h_nHadJets_nAk8jet_ge1->Fill(hadJets.size(),wt);
+	  h_BTags_nAk8jet_ge1->Fill(BTags,wt);
+
+	  for(int i=0;i<GenParticles->size();i++){
+	    for(int j=0;j<GenParticles->size();j++){
+	      if (abs((*GenParticles_ParentId)[i]) == 24){
+		if (abs((*GenParticles_PdgId)[j]) == 5){
+		  double dR6=(*GenParticles)[j].DeltaR((*GenParticles)[i]);
+		  h_dR_q_b_matched->Fill(dR6,wt);
+	      }
+	      }}}
+	  if(hadAK8Jets.size() ==1) h_BTags_nAk8jet1->Fill(BTags,wt);
+	  if(hadAK8Jets.size() ==2) h_BTags_nAk8jet2->Fill(BTags,wt);
+	  if(hadAK8Jets.size() ==3) h_BTags_nAk8jet3->Fill(BTags,wt);
+	}
+
+      // if (process &&  EWselection && EWselec)
+      // 	{
+      // 	  for(int i=0;i<hadAK8Jets.size();i++)
+      // 	    { 
+      // 	      h_hadAk8Pt_EW_nAk8jet1->Fill(hadAK8Jets[i].Pt());
+      // 	      h_hadAk8Mass_EW_nAk8jet1->Fill(hadAK8Mass[i]);
+      // 	    }
+      // 	  h_hadAk8Mass_Ak8jet0->Fill(hadAK8Mass[0]);
+      // 	  h_hadAk8Pt_Ak8jet0->Fill(hadAK8Jets[0].Pt());
+      // 	  h_nHadJets_nAk8jet1->Fill(hadJets.size());
+
+      // 	}
+       if(process && EWselection && (EWselec && EWselec1))
 	//if(process && EWselection && (EWselec1))
-      if(process && EWselection && (EWselec || EWselec1))
+      //    if(process && EWselection && (EWselec || EWselec1))
 	{ EW_evtSurvived++;
 	  h_BestPhotonPt_EW->Fill(bestPhoton.Pt(),wt);    
 	  h_MET_EW->Fill(MET,wt);
 	  h_nJets_EW->Fill(nHadJets,wt);
+	  h_METvBin_EW->Fill(MET,wt);
 	  h_ST_EW->Fill(ST,wt);
 	  h_BTags_EW->Fill(BTags,wt);
 	  h_intLumi_EW->Fill(lumiInfb,wt);
 	  h_hadAk8Mass_EW->Fill(Ak8Mass,wt);
+	  int sBin7_EW = getBinNoV7(nHadJets);
+	  h_SBins_v7_CD_EW->Fill(sBin7_EW,wt);
 	}
-      //      if(process && EWselection && !(EWselec && EWselec1))
+      if(process && EWselection && !(EWselec && EWselec1))
 	//    if(process && EWselection && !(EWselec1))
-      if(process && EWselection && !(EWselec || EWselec1))
+	// if(process && EWselection && !(EWselec || EWselec1))
 	{ SP_evtSurvived++;
 	  h_BestPhotonPt_SP->Fill(bestPhoton.Pt(),wt);    
 	  h_MET_SP->Fill(MET,wt);
+	  h_METvBin_SP->Fill(MET,wt);
+
 	  h_nJets_SP->Fill(nHadJets,wt);
 	  h_ST_SP->Fill(ST,wt);
 	  h_BTags_SP->Fill(BTags,wt);
 	  h_intLumi_SP->Fill(lumiInfb,wt);
 	  h_hadAk8Mass_SP->Fill(Ak8Mass,wt);
+	  int sBin7_SP = getBinNoV7(nHadJets);
+	  h_SBins_v7_CD_SP->Fill(sBin7_SP,wt);
 	}
 
 
-      if(s_data.Contains("2016"))
-	{
-	  int sBin7_2016 = getBinNoV7(nHadJets);
-	  h_SBins_v7_CD_2016->Fill(sBin7,wt);
-	}
+      // if(s_data.Contains("2016"))
+      // 	{
+      // 	  int sBin7_2016 = getBinNoV7(nHadJets);
+      // 	  h_SBins_v7_CD_2016->Fill(sBin7,wt);
+      // 	}
 
-      if(s_data.Contains("2017"))
-	{
-	  int sBin7_2017 = getBinNoV7(nHadJets);
-	  h_SBins_v7_CD_2017->Fill(sBin7,wt);
-	}
+      // if(s_data.Contains("2017"))
+      // 	{
+      // 	  int sBin7_2017 = getBinNoV7(nHadJets);
+      // 	  h_SBins_v7_CD_2017->Fill(sBin7,wt);
+      // 	}
 
-      if(s_data.Contains("2018"))
-	{
-	  int sBin7_2018 = getBinNoV7(nHadJets);
-	  h_SBins_v7_CD_2018->Fill(sBin7,wt);
-	}
+      // if(s_data.Contains("2018"))
+      // 	{
+      // 	  int sBin7_2018 = getBinNoV7(nHadJets);
+      // 	  h_SBins_v7_CD_2018->Fill(sBin7,wt);
+      // 	}
 
 	    //===================================================================================        
       //-----------------------------------------------------------------------------------------
@@ -619,6 +700,37 @@ int AnalyzeLightBSM::getBinNoV7(int nHadJets){
       m_i++;
       if(MET >= METLowEdge2[i] && MET < METLowEdge2[i+1]){ sBin = sBin+m_i;break; }
       else if(MET >= METLowEdge2[METLowEdge2.size()-1])  { sBin = sBin+5   ;break; }
+    }
+  }
+  return sBin;
+}
+
+int AnalyzeLightBSM::getBinNoV6(int nHadJets){
+  int sBin=-100,m_i=0;
+  if(BTags==0){
+    if(nHadJets>=2 && nHadJets<=4)     { sBin=0;}
+    else if(nHadJets==5 || nHadJets==6){ sBin=5;}
+    else if(nHadJets>=7)               { sBin=9;}
+  }
+  else{
+    if(nHadJets>=2 && nHadJets<=4)     { sBin=13;}
+    else if(nHadJets==5 || nHadJets==6){ sBin=17;}
+    else if(nHadJets>=7)               { sBin=21;}
+  }
+  if(sBin==0){
+    for(int i=0;i<METLowEdge1.size()-1;i++){
+      if(METLowEdge1[i]<199.99) continue;
+      m_i++;
+      if(MET >= METLowEdge1[i] && MET < METLowEdge1[i+1]){ sBin = sBin+m_i;break; }
+      else if(MET >= METLowEdge1[METLowEdge1.size()-1])  { sBin = 5         ;break; }
+    }
+  }
+  else{
+    for(int i=0;i<METLowEdge2.size()-1;i++){
+      if(METLowEdge2[i]<199.99) continue;
+      m_i++;
+      if(MET >= METLowEdge2[i] && MET < METLowEdge2[i+1]){ sBin = sBin+m_i;break; }
+      else if(MET >= METLowEdge2[METLowEdge2.size()-1])  { sBin = sBin+4   ;break; }
     }
   }
   return sBin;

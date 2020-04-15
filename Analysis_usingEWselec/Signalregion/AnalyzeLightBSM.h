@@ -26,6 +26,7 @@ class AnalyzeLightBSM : public NtupleVariables{
   TLorentzVector getBestPhoton();
   int getBinNoV4(int);
   int getBinNoV7(int);
+  int getBinNoV6(int);
   double getGendRLepPho();
   bool check_eMatchedtoGamma();
   void print(Long64_t);
@@ -47,9 +48,11 @@ class AnalyzeLightBSM : public NtupleVariables{
   //  vector<double> MHTBinLowEdge={0,20,40,60,80,100,120,160,200,270,350,500};
   vector<double> STBinLowEdge ={0,200,220,240,260,300,360,420,500,600,700,850,1000,1200,1500,2000,2500,3000};
   // vector<double> METLowEdge={0,20,40,60,80,100,120,160,200,220,240,260,300,340,380,420,480,520,560,600,660,720,800,900,1000,1200};
-  vector<double> METLowEdge={100,120,160,200,270,350,450,750,2000};
+  vector<double> METLowEdge={200,270,350,450,750,2000};
   vector<double> METLowEdge1={100,200,270,350,450,750,2000};
   vector<double> METLowEdge2={100,200,270,350,450,2000};
+  /* vector<double> METLowEdge1={200,270,350,450,750,2000}; */
+  /* vector<double> METLowEdge2={200,270,350,450,2000}; */
   // vector<double> METLowEdge1={0,20,40,60,80,100,120,160,200,220,240,260,300,340,380,420,460,520,580,640,700,780,860,940,1000,1200};
   // vector<double> METLowEdge2={0,20,40,60,80,100,120,160,200,220,240,260,280,300,340,380,420,480,540,600,700,800,900,1000,1200};
   // vector<double> METLowEdge={0,200,210,220,240,260,280,300,320,340,360,380,400,450,500,600,1000,1400};
@@ -98,7 +101,7 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH1D *h_BestPhotonPt_2018;
   TH1D *h_nJets_2018;
 
-
+  TH1D *h_dR_q_b_matched;
   TH1D *h_GenWpt;
   TH1D *h_GenWeta;
   TH1D *h_GenWpt1;
@@ -119,6 +122,8 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH2D *h2_GenWvsnjet;
   TH1D *h_mTPhoMET;
   TH1D *h_METvBin;
+  TH1D *h_METvBin_EW;
+  TH1D *h_METvBin_SP;
   TH1D *h_METvBin_nocut;
   TH1D *h_METvBin1;
   TH1D *h_METvBin_nocut1;
@@ -174,8 +179,23 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH1D *h_PhovBin2;
   TH1D *h_PhovBin_nocut2;
   TH1D *h_hadAk8Mass;
+  TH1D *h_hadAk8Mass_matchedW;
+  TH1D *h_hadAk8Mass_EW_nAk8jet_ge1;
   TH1D *h_hadAk8Mass_EW;
   TH1D *h_hadAk8Mass_SP;
+  TH1D *h_hadAk8Mass_Ak8jet0;
+  TH1D *h_hadAk8Pt;
+  TH1D *h_hadAk8Pt_matchedW;
+  TH1D *h_hadAk8Pt_EW_nAk8jet_ge1;
+  TH1D *h_hadAk8Pt_EW;
+  TH1D *h_hadAk8Pt_SP;
+  TH1D *h_hadAk8Pt_Ak8jet0;
+  TH1D *h_nHadJets_nAk8jet_ge1;
+  TH1D *h_nHadAk8Jets_nAk8jet_ge1;
+  TH1D *h_BTags_nAk8jet_ge1;
+  TH1D *h_BTags_nAk8jet1;
+  TH1D *h_BTags_nAk8jet2;
+  TH1D *h_BTags_nAk8jet3;
   /* TH2D *h2_STvsHT; */
 
   /* TH1D *h_dPhi_METBestPhoton; */
@@ -255,8 +275,8 @@ class AnalyzeLightBSM : public NtupleVariables{
   TH1D *h_PdgIdPhoParent;
 
   TH1D *h_SBins_v7_CD;
-  TH1D *h_SBins_v7_CD_2016;
-  TH1D *h_SBins_v7_CD_2017;
+  TH1D *h_SBins_v7_CD_EW;
+  TH1D *h_SBins_v7_CD_SP;
   TH1D *h_SBins_v7_CD_2018;
   
   TFile *oFile;
@@ -323,9 +343,24 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
   h_GenWpt2=new TH1D("GenWpt2","Gen W Pt (for events only have 2 had jet)",200,0,2000);
   h_GenWeta2=new TH1D("GenWeta2","Gen W #eta (for events only have 2 had jet)",200,0,5);
   /* h_nHadJets=new TH1D("nHadJets","no. of jets(only hadronic jets,not counting photon)",25,0,25); */
-  h_hadAk8Mass=new TH1D("hadAk8Mass","Soft dropped Mass of AK8 Jet",2000,0,200);
-  h_hadAk8Mass_EW=new TH1D("hadAk8Mass_EW","Soft dropped Mass of AK8 Jet",2000,0,200);
-  h_hadAk8Mass_SP=new TH1D("hadAk8Mass_SP","Soft dropped Mass of AK8 Jet",2000,0,200);
+  h_BTags_nAk8jet1=new TH1D("BTags_nAk8jet1","no. of b jets in events having 1 Ak8 jets (atleast 1 Ak8 jet mass in 65 GeV - 100 GeV range)",25,0,25);
+  h_BTags_nAk8jet2=new TH1D("BTags_nAk8jet2","no. of b jets in events having 2 Ak8 jets (atleast 1 Ak8 jet mass in 65 GeV - 100 GeV range)",25,0,25);
+  h_BTags_nAk8jet3=new TH1D("BTags_nAk8jet3","no. of b jets in events having 3 Ak8 jets (atleast 1 Ak8 jet mass in 65 GeV - 100 GeV range)",25,0,25);
+  h_BTags_nAk8jet_ge1=new TH1D("BTags_nAk8jet_ge1","no. of b jets (after atleast 1 Ak8 jet mass in 65 GeV - 100 GeV range)",25,0,25);
+  h_nHadJets_nAk8jet_ge1=new TH1D("nHadJets_nAk8jet_ge1","no. of Ak4  jets (after atleast 1 Ak8 jet mass in 65 GeV - 100 GeV range)",25,0,25);
+  h_nHadAk8Jets_nAk8jet_ge1=new TH1D("nHadAk8Jets_nAk8jet_ge1","no. of Ak8  jets (after atleast 1 Ak8 jet mass in 65 GeV - 100 GeV range)",25,0,25);
+  h_hadAk8Mass=new TH1D("hadAk8Mass","Soft dropped Mass of AK8 Jet",1000,0,200);
+  h_hadAk8Mass_matchedW=new TH1D("hadAk8Mass_matchedW","Soft dropped Mass of AK8 Jet which are matched with W ",1000,0,200);
+  h_hadAk8Mass_Ak8jet0=new TH1D("hadAk8Mass_Ak8jet0","Soft dropped Mass of leading AK8 Jet",1000,0,200);
+  h_hadAk8Mass_EW=new TH1D("hadAk8Mass_EW","Soft dropped Mass of AK8 Jet",1000,0,200);
+  h_hadAk8Mass_EW_nAk8jet_ge1=new TH1D("hadAk8Mass_EW_nAk8jet_ge1","Soft dropped Mass of AK8 Jet after atleast 1 Ak8 jet mass in 65 GeV - 100 GeV range",1000,0,200);
+  h_hadAk8Mass_SP=new TH1D("hadAk8Mass_SP","Soft dropped Mass of AK8 Jet",1000,0,200);
+  h_hadAk8Pt=new TH1D("hadAk8Pt","Soft dropped Pt of AK8 Jet",2000,0,1000);
+  h_hadAk8Pt_matchedW=new TH1D("hadAk8Pt_matchedW"," Pt of AK8 Jet which are matched with W",2000,0,1000);
+  h_hadAk8Pt_Ak8jet0=new TH1D("hadAk8Pt_Ak8jet0","Soft dropped Pt of leading AK8 Jet",2000,0,1000);
+  h_hadAk8Pt_EW=new TH1D("hadAk8Pt_EW","Soft dropped Pt of AK8 Jet",2000,0,1000);
+  h_hadAk8Pt_EW_nAk8jet_ge1=new TH1D("hadAk8Pt_EW_nAk8jet_ge1 ","Soft dropped Pt of AK8 Jet after atleast 1 Ak8 jet mass in 65 GeV - 100 GeV range",2000,0,1000);
+  h_hadAk8Pt_SP=new TH1D("hadAk8Pt_SP","Soft dropped Pt of AK8 Jet",2000,0,1000);
 
   /* h_HT=new TH1D("HT","HT",400,0,4000); */
   /* h_MHT=new TH1D("MHT","MHT",200,0,2000); */
@@ -346,6 +381,7 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
   h_dR_jet2andW=new TH1D("dR_jet2andW","dR between jet2 and W (for events only have 2 had jet)",200,0,5);
   h_dR_jet1andjet2=new TH1D("dR_jet1andjet2","dR between jet1 and jet2 (for events only have 2 had jet)",200,0,5);
   h_dR_Genpho_Genjet=new TH1D("dR_Genpho_Genjet","dR between gen photon and gen jet",100,0,5);
+  h_dR_q_b_matched=new TH1D("dR_q_b_matched","dR between gen b quark and gen jet from W",100,0,5);
 
 
   // for numerator
@@ -359,6 +395,8 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
   h_BTags_num=new TH1D("nBTags_num","no. of B tags",10,0,10);
   h_BestPhotonPt_num=new TH1D("BestPhotonPt_num","Pt of the Best Photon",150,0,1500);
   h_METvBin=new TH1D("METvBin","MET in variable bins",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin_EW=new TH1D("METvBin_EW","MET in variable bins after EW selctions",METLowEdge.size()-1,&(METLowEdge[0]));
+  h_METvBin_SP=new TH1D("METvBin_SP","MET in variable bins after SP elections",METLowEdge.size()-1,&(METLowEdge[0]));
   h_METvBin_nocut=new TH1D("METvBin_nocut","MET in variable bins without any cut",METLowEdge.size()-1,&(METLowEdge[0]));
   h_METvBin1=new TH1D("METvBin1","MET in variable bins",METLowEdge1.size()-1,&(METLowEdge1[0]));
   h_METvBin_nocut1=new TH1D("METvBin_nocut1","MET in variable bins without any cut",METLowEdge1.size()-1,&(METLowEdge1[0]));
@@ -470,8 +508,8 @@ void AnalyzeLightBSM::BookHistogram(const char *outFileName) {
 
   h_SBins_v7_CD = new TH1D("AllSBins_v7_CD","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
 
-  h_SBins_v7_CD_2016 = new TH1D("AllSBins_v7_CD_2016","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
-  h_SBins_v7_CD_2017 = new TH1D("AllSBins_v7_CD_2017","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
+  h_SBins_v7_CD_EW = new TH1D("AllSBins_v7_CD_EW","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
+  h_SBins_v7_CD_SP = new TH1D("AllSBins_v7_CD_SP","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5 );
   h_SBins_v7_CD_2018 = new TH1D("AllSBins_v7_CD_2018","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
 
   //---------------Search Bins ----------------------------
