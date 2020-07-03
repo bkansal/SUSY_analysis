@@ -1,5 +1,5 @@
-#ifndef Single_elec_H
-#define Single_elec_H
+#ifndef MET_trig_H
+#define MET_trig_H
 
 #include <iostream>
 #include <fstream>
@@ -13,11 +13,11 @@
 #include "TLorentzVector.h"
 #include "TDirectory.h"
 
-class Single_elec : public NtupleVariables{
+class MET_trig : public NtupleVariables{
 
  public:
-  Single_elec(const TString &inputFileList="foo.txt", const char *outFileName="histo.root",const char *dataset="data");
-  ~Single_elec();
+  MET_trig(const TString &inputFileList="foo.txt", const char *outFileName="histo.root",const char *dataset="data");
+  ~MET_trig();
   Bool_t   FillChain(TChain *chain, const TString &inputFileList);
   Long64_t LoadTree(Long64_t entry);
   void     EventLoop(const char *,const char *);
@@ -114,9 +114,9 @@ class Single_elec : public NtupleVariables{
 };
 #endif
 
-#ifdef Single_elec_cxx
+#ifdef MET_trig_cxx
 
-void Single_elec::BookHistogram(const char *outFileName) {
+void MET_trig::BookHistogram(const char *outFileName) {
 
   //  char hname[200], htit[200];
   //  double xlow = 0.0,  xhigh = 2000.0;
@@ -213,7 +213,7 @@ void Single_elec::BookHistogram(const char *outFileName) {
  
 }
 
-Single_elec::Single_elec(const TString &inputFileList, const char *outFileName, const char* dataset) {
+MET_trig::MET_trig(const TString &inputFileList, const char *outFileName, const char* dataset) {
   string nameData=dataset;//vvv
   //  TChain *tree = new TChain("PreSelection");
   TChain *tree = new TChain("TreeMaker2/PreSelection");
@@ -233,7 +233,7 @@ Single_elec::Single_elec(const TString &inputFileList, const char *outFileName, 
   BookHistogram(outFileName);
 }
 
-Bool_t Single_elec::FillChain(TChain *chain, const TString &inputFileList) {
+Bool_t MET_trig::FillChain(TChain *chain, const TString &inputFileList) {
 
   ifstream infile(inputFileList, ifstream::in);
   std::string buffer;
@@ -254,7 +254,7 @@ Bool_t Single_elec::FillChain(TChain *chain, const TString &inputFileList) {
   return kTRUE;
 }
 
-Long64_t Single_elec::LoadTree(Long64_t entry) {
+Long64_t MET_trig::LoadTree(Long64_t entry) {
   // Set the environment to read one entry                                                                                          
   if (!fChain) return -5;
   Long64_t centry = fChain->LoadTree(entry);
@@ -268,7 +268,7 @@ Long64_t Single_elec::LoadTree(Long64_t entry) {
   return centry;
 }
 
-Single_elec::~Single_elec() { 
+MET_trig::~MET_trig() { 
 
   if (!fChain) return;
   delete fChain->GetCurrentFile();

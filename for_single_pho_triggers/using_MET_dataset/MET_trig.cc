@@ -1,5 +1,5 @@
-#define Single_elec_cxx
-#include "Single_elec.h"
+#define MET_trig_cxx
+#include "MET_trig.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
   const char *outFileName   = argv[2];
   const char *data          = argv[3];
 
-  Single_elec ana(inputFileList, outFileName, data);
+  MET_trig ana(inputFileList, outFileName, data);
   cout << "dataset " << data << " " << endl;
 
   ana.EventLoop(data,inputFileList);
@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
   return 0;
 }
 
-void Single_elec::EventLoop(const char *data,const char *inputFileList) {
+void MET_trig::EventLoop(const char *data,const char *inputFileList) {
   if (fChain == 0) return;
 
   Long64_t nentries = fChain->GetEntriesFast();
@@ -70,21 +70,23 @@ void Single_elec::EventLoop(const char *data,const char *inputFileList) {
       TString trgName=(*TriggerNames)[i];
    
       
-      if( trgName.Contains("HLT_Ele27_WPTight_Gsf_v") && (*TriggerPass)[i]==1 )         { h_selectBaselineYields_->Fill(1); passTrg = true;}
-      else if( trgName.Contains("HLT_Ele30_WPTight_Gsf_v") && (*TriggerPass)[i]==1 )         { h_selectBaselineYields_->Fill(2); passTrg = true;}
-      else if( trgName.Contains("HLT_Ele32_WPTight_Gsf_v") && (*TriggerPass)[i]==1 )         { h_selectBaselineYields_->Fill(3); passTrg = true;}
+      // if( trgName.Contains("HLT_Ele27_WPTight_Gsf_v") && (*TriggerPass)[i]==1 )         { h_selectBaselineYields_->Fill(1); passTrg = true;}
+      // if( trgName.Contains("HLT_Ele30_WPTight_Gsf_v") && (*TriggerPass)[i]==1 )         { h_selectBaselineYields_->Fill(2); passTrg = true;}
+      // if( trgName.Contains("HLT_Ele32_WPTight_Gsf_v") && (*TriggerPass)[i]==1 )         { h_selectBaselineYields_->Fill(2); passTrg = true;}
 
-      //------------------first trial for MET triggers efficiency-------------------------------------------//
-      if( trgName.Contains("HLT_PFMET90_PFMHT90_IDTight_v") && (*TriggerPass)[i]==1 )      { h_selectBaselineYields_->Fill(4); passReqTrg = true;}
-      else if( trgName.Contains("HLT_PFMET100_PFMHT100_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(5); passReqTrg = true;}
-      else if( trgName.Contains("HLT_PFMET110_PFMHT110_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(6); passReqTrg = true;}
-      else if( trgName.Contains("HLT_PFMET120_PFMHT120_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(7); passReqTrg = true;}
-      else if( trgName.Contains("HLT_PFMET130_PFMHT130_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(8); passReqTrg = true;}
-      else if( trgName.Contains("HLT_PFMET140_PFMHT140_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(9); passReqTrg = true;}
+      if( trgName.Contains("HLT_PFMET90_PFMHT90_IDTight_v") && (*TriggerPass)[i]==1 )        { h_selectBaselineYields_->Fill(1); passTrg = true;}
+      else if( trgName.Contains("HLT_PFMET100_PFMHT100_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(2); passTrg = true;}
+      else if( trgName.Contains("HLT_PFMET110_PFMHT110_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(3); passTrg = true;}
+      else if( trgName.Contains("HLT_PFMET120_PFMHT120_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(4); passTrg = true;}
+      else if( trgName.Contains("HLT_PFMET130_PFMHT130_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(5); passTrg = true;}
+      else if( trgName.Contains("HLT_PFMET140_PFMHT140_IDTight_v") && (*TriggerPass)[i]==1 ) { h_selectBaselineYields_->Fill(6); passTrg = true;}
 
-      else if( trgName.Contains("HLT_PFHT300_PFMET100") && (*TriggerPass)[i]==1 )      { h_selectBaselineYields_->Fill(10); passHTxPhoTrg = true;}
-      else if( trgName.Contains("HLT_PFHT300_PFMET110") && (*TriggerPass)[i]==1 )      { h_selectBaselineYields_->Fill(11); passHTxPhoTrg = true;}
+      //------------------first trial for Single photon triggers efficiency-------------------------------------------//
 
+      if( trgName.Contains("HLT_Photon165_HE10_v") && (*TriggerPass)[i]==1 )      { h_selectBaselineYields_->Fill(7); passReqTrg = true;}         
+      //      if( trgName.Contains("HLT_Photon200_v") && (*TriggerPass)[i]==1 )      { h_selectBaselineYields_->Fill(9); passReqTrg = true;}         
+
+      
     }
     if(!passTrg) continue;
     //    if(HT<800) continue;
@@ -135,9 +137,9 @@ void Single_elec::EventLoop(const char *data,const char *inputFileList) {
 
     // if (MET < 250) continue;
     if(hadJetID){
-      h_ST->Fill(ST,wt);
+      // h_ST->Fill(ST,wt);
       h_MET->Fill(MET,wt);
-      h_nHadJets->Fill(nHadJets,wt);
+      // h_nHadJets->Fill(nHadJets,wt);
       h_BTags->Fill(BTags,wt);
       h_BestPhotonPt->Fill(bestPhoton.Pt(),wt);
       h_HT->Fill(HT,wt);
@@ -145,25 +147,25 @@ void Single_elec::EventLoop(const char *data,const char *inputFileList) {
       h_nJets->Fill(NJets,wt);
       h_METvBin->Fill(MET,wt);
 
-      h_STvBin->Fill(ST,wt);
+      // h_STvBin->Fill(ST,wt);
       h_BestPhotonPt_vBin->Fill(bestPhoton.Pt(),wt);
       h_BestPhotonPt_vBin2->Fill(bestPhoton.Pt(),wt);
       h_HTvBin->Fill(HT,wt);
       // h2_PhoPtST->Fill(bestPhoton.Pt(),ST,wt);
 
       if(passTrg && passReqTrg){
-	//     if(passTrg && (passReqTrg || passHTxPhoTrg) ){
-        h_ST_Req->Fill(ST,wt);
+      // if(passTrg && (passReqTrg || passHTxPhoTrg) ){
+	// h_ST_Req->Fill(ST,wt);
 	h_MET_Req->Fill(MET,wt);
 	h_METvBin_Req->Fill(MET,wt);
-        h_nHadJets_Req->Fill(nHadJets,wt);
+	// h_nHadJets_Req->Fill(nHadJets,wt);
 	h_BTags_Req->Fill(BTags,wt);
 	h_BestPhotonPt_Req->Fill(bestPhoton.Pt(),wt);
 	h_HT_Req->Fill(HT,wt);
 	h_MHT_Req->Fill(MHT,wt);
 	h_nJets_Req->Fill(NJets,wt);
 
-        h_STvBin_Req->Fill(ST,wt);
+	// h_STvBin_Req->Fill(ST,wt);
 	h_BestPhotonPt_vBin_Req->Fill(bestPhoton.Pt(),wt);
 	h_BestPhotonPt_vBin2_Req->Fill(bestPhoton.Pt(),wt);
 	h_HTvBin_Req->Fill(HT,wt);
@@ -178,7 +180,7 @@ void Single_elec::EventLoop(const char *data,const char *inputFileList) {
   //  newtree->AutoSave();
 }
 
-TLorentzVector Single_elec::getBestPhoton(){
+TLorentzVector MET_trig::getBestPhoton(){
   vector<TLorentzVector> goodPho;
   vector<int> goodPhoIndx;
   for(int iPho=0;iPho<Photons->size();iPho++){
