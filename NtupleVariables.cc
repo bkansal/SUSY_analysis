@@ -22,9 +22,9 @@ void NtupleVariables::sortTLorVec(vector<TLorentzVector> *vec){
   for(int i=1;i<vec->size();i++){
     for(int j=i;j<vec->size();j++){
       if( (*vec)[i-1].Pt() < (*vec)[j].Pt() ){
-        temp = (*vec)[i-1];
-        (*vec)[i-1] = (*vec)[j];
-        (*vec)[j] = temp;
+	temp = (*vec)[i-1];
+	(*vec)[i-1] = (*vec)[j];
+	(*vec)[j] = temp;
       }
     }
   }
