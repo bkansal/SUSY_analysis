@@ -3,11 +3,11 @@ CXX      = g++
 CXXFLAGS= $(shell root-config --cflags)
 LIBS    = $(shell root-config --libs) 
 
-SOURCES = NtupleVariables.cc MET_trig.cc 
-HEADERS = NtupleVariables.h MET_trig.h 
+SOURCES = NtupleVariables.cc AnalyzeLightBSM.cc 
+HEADERS = NtupleVariables.h AnalyzeLightBSM.h 
 OBJECTS = $(SOURCES:.cc=.o)
 
-EXECUTABLE = met_trig
+EXECUTABLE = analyzeLightBSM
 
 all: $(SOURCES) $(EXECUTABLE)
 
@@ -31,4 +31,4 @@ clean:
 
 ###
 NtupleVariables.o: NtupleVariables.h
-MET_trig.o:NtupleVariables.h MET_trig.h
+AnalyzeLightBSM.o:NtupleVariables.h AnalyzeLightBSM.h
