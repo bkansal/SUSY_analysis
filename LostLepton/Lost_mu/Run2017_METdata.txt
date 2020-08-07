@@ -1,0 +1,5 @@
+../METdata_samples/Run2017B_MET_31Mar2018.root
+../METdata_samples/Run2017C_MET_31Mar2018.root
+../METdata_samples/Run2017D_MET_31Mar2018.root
+../METdata_samples/Run2017E_MET_31Mar2018.root
+../METdata_samples/Run2017F_MET_31Mar2018.root
