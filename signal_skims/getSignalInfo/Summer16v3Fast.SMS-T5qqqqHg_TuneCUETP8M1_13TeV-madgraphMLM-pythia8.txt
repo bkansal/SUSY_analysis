@@ -1,0 +1,3 @@
+root://cmseos.fnal.gov//store/group/lpcsusyhad/SusyPhotonMET/Run2ProductionV17/signals/unskimmed_SortedSignalscans/T5qqqqHg/Summer16v3Fast.SMS-T5qqqqHg_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_270_RA2AnalysisTree.root
+root://cmseos.fnal.gov//store/group/lpcsusyhad/SusyPhotonMET/Run2ProductionV17/signals/unskimmed_SortedSignalscans/T5qqqqHg/Summer16v3Fast.SMS-T5qqqqHg_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_467_RA2AnalysisTree.root
+root://cmseos.fnal.gov//store/group/lpcsusyhad/SusyPhotonMET/Run2ProductionV17/signals/unskimmed_SortedSignalscans/T5qqqqHg/Summer16v3Fast.SMS-T5qqqqHg_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_613_RA2AnalysisTree.root
