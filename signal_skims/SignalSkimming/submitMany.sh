@@ -1,0 +1,12 @@
+#!/bin/sh    
+# root -l -q 'splitRunList.C("Summer16v3Fast.SMS-T5bbbbZg_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.txt",1)'
+#root -l -q 'splitRunList.C("Summer16v3Fast.SMS-T5qqqqHg_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.txt",1)'
+#root -l -q 'splitRunList.C("Summer16v3Fast.SMS-TChiWG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.txt",1)'
+#root -l -q 'splitRunList.C("Fall17Fast.SMS-T5bbbbZg_TuneCP2_13TeV-madgraphMLM-pythia8.txt",1)'
+#root -l -q 'splitRunList.C("Autumn18Fast.SMS-T5bbbbZg_TuneCP2_13TeV-madgraphMLM-pythia8.txt",1)'
+#root -l -q 'splitRunList.C("smallrunList.txt",1)'
+#root -l -q 'splitRunList.C("Summer16v3Fast.SMS-TChiNG_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.txt",1)'
+#root -l -q 'splitRunList.C("Fall17Fast.SMS-TChiNG_TuneCP2_13TeV-madgraphMLM-pythia8.txt",1)'
+#root -l -q 'splitRunList.C("smallrunList.txt",1)'
+#root -l -q 'splitRunList.C("Summer16v3Fast.SMS-T5ttttZg_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.txt",1)'
+root -l -q 'splitRunList.C("Summer16v3Fast.SMS-T6ttZg_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.txt",1)'
