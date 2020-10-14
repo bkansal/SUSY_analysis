@@ -1,3 +1,0 @@
-samples/CR_Summer16v3.TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
-samples/CR_Summer16v3.TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
-samples/CR_Summer16v3.TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root

@@ -1,2 +1,0 @@
-samples/CR_Summer16v3.WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph.root
-samples/CR_Summer16v3.WGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph.root

@@ -28,13 +28,14 @@ class Lostlepton : public NtupleVariables{
   int getBinNoV7(int);
   //  int getBinNoV7_closure(int,TFile);
   int getBinNoV7_v1(int);
-  int getBinNoV6(int);
+  //  int getBinNoV6(int);
+  int getBinNoV6(bool,bool,bool,bool,int);
   int getBinNoV6_EW(bool,bool);
   int getBinNoV6_EW1(bool);
   int getBinNoV6_EWplusSP_SR(bool,bool,bool,int);
   int getBinNoV6_EWplusSP_CR(bool,bool,bool,bool,int);
   int getBinNoV7_le(int);
-  int getBinNoV7_le2(int);
+  int getBinNoV7_le2(bool,bool,bool,bool,int);
   
   double getGendRLepPho();
   bool check_eMatchedtoGamma();
@@ -63,8 +64,8 @@ class Lostlepton : public NtupleVariables{
   vector<double> METLowEdge2={100,200,270,350,450,2000};
 
   vector<double> METLowEdge_v1={100,250,270,350,450,600,750,900,2000};
-  vector<double> METLowEdge_v2={250,300,370,450,600,750,900,2000};
-  vector<double> METLowEdge_v2_1={250,300,370,450,600,750,2000};
+  vector<double> METLowEdge_v2={200,250,300,370,450,600,750,900,2000};
+  vector<double> METLowEdge_v2_1={200,250,300,370,450,600,750,2000};
   vector<double> METLowEdge_v3={300,370,450,600,750,900,2000};
   vector<double> METLowEdge_v3_1={300,370,450,600,750,2000};
 
@@ -94,10 +95,120 @@ class Lostlepton : public NtupleVariables{
   TH1D *h_intLumi;
   TH1D *h_ST;
   TH1D *h_MET;
+  TH1D *h_METPhi;
+  TH1D *h_METvBin;
+  TH1D *h_METvBin2;
   TH1D *h_BTags;
-  TH1D *h_BestPhotonPt;
   TH1D *h_nJets;
+  TH1D *h_BestPhotonPt;
+  TH1D *h_BestPhotonPhi;
+  TH1D *h_BestPhotonEta;
+  TH1D *h_minDr_bestphoEle;
+  TH1D *h_minDr_bestphoJets;
+  TH1D *h_ElectronPt;
+  TH1D *h_ElectronPhi;
+  TH1D *h_ElectronEta;
+  TH1D *h_JetPt;
+  TH1D *h_JetPhi;
+  TH1D *h_JetEta;
+  TH1D *h_mTPhoMET;
+  TH1D *h_dPhi_METjet1;
+  TH1D *h_dPhi_METjet2;
+  TH1D *h_dPhi_METjet3;
+  TH1D *h_dPhi_METjet4;
+  TH1D *h_dPhi_phojet1;
+  TH1D *h_dPhi_phojet2;
+  TH1D *h_dPhi_phojet3;
+  TH1D *h_dPhi_phojet4;
+  TH1D *h_dPhi_phoMET;
+  TH1D *h_leadElectronPt;
+  TH1D *h_leadElectronPhi;
+  TH1D *h_leadElectronEta;
+  TH2D *h2_leadElectronEta_Phi;
+  TH1D *h_leadJetPt;
+  TH1D *h_leadJetPhi;
+  TH1D *h_leadJetEta;
+  TH2D *h2_leadJetEta_Phi;
+  TH2D *h2_leadJetEta_Pt;
+  TH2D *h2_JetEta_Pt;
+  TH2D *h2_BestPhoEta_Pt;
+  TH2D *h2_JetEta_Phi;
+  TH2D *h2_ElectronEta_Phi;
+  TH1D *h_dPhi_METlep;
+  TH1D *h_dPhi_METlep1;
+  TH2D *h2_BestPhotonPt_jetmatchphoratio;
+  TH2D *h2_BestPhotonPt_jetphoratio;
+  TH1D *h_minDr_Elejet1;
+  TH1D *h_minDr_Elejet2;
+  TH1D *h_minDr_Elejet3;
+  TH1D *h_minDr_Elejet4;
+  TH1D *h_minDr_EleJets;
+  TH2D *h2_dPhivseta_jet1;
+  TH2D *h2_dPhivseta_jet2;
+  TH2D *h2_dPhivseta_jet3;
+  TH2D *h2_dPhivseta_jet4;
+  TH2D *h2_Phivseta_jet1;
+  TH2D *h2_Phivseta_jet2;
+  TH2D *h2_Phivseta_jet3;
+  TH2D *h2_Phivseta_jet4;
 
+  TH1D *h_ST_elec0;
+  TH1D *h_MET_elec0;
+  TH1D *h_METvBin2_elec0;
+  TH1D *h_BTags_elec0;
+  TH1D *h_nJets_elec0;
+  TH1D *h_BestPhotonPt_elec0;
+  TH1D *h_BestPhotonPhi_elec0;
+  TH1D *h_BestPhotonEta_elec0;
+  TH1D *h_minDr_bestphoEle_elec0;
+  TH1D *h_minDr_bestphoJets_elec0;
+  TH1D *h_ElectronPt_elec0;
+  TH1D *h_ElectronPhi_elec0;
+  TH1D *h_ElectronEta_elec0;
+  TH1D *h_JetPt_elec0;
+  TH1D *h_JetPhi_elec0;
+  TH1D *h_JetEta_elec0;
+  TH1D *h_mTPhoMET_elec0;
+  TH1D *h_dPhi_METjet1_elec0;
+  TH1D *h_dPhi_METjet2_elec0;
+  TH1D *h_dPhi_phojet1_elec0;
+  TH1D *h_dPhi_phojet2_elec0;
+  TH1D *h_dPhi_phoMET_elec0;
+  TH2D *h2_leadElectronEta_Phi_elec0;
+  TH1D *h_leadJetPt_elec0;
+  TH1D *h_leadJetPhi_elec0;
+  TH1D *h_leadJetEta_elec0;
+  TH2D *h2_leadJetEta_Phi_elec0;
+
+  TH1D *h_ST_elec1_closure;
+  TH1D *h_MET_elec1_closure;
+  TH1D *h_METvBin2_elec1_closure;
+  TH1D *h_BTags_elec1_closure;
+  TH1D *h_nJets_elec1_closure;
+  TH1D *h_BestPhotonPt_elec1_closure;
+  TH1D *h_BestPhotonPhi_elec1_closure;
+  TH1D *h_BestPhotonEta_elec1_closure;
+  TH1D *h_minDr_bestphoEle_elec1_closure;
+  TH1D *h_minDr_bestphoJets_elec1_closure;
+  TH1D *h_ElectronPt_elec1_closure;
+  TH1D *h_ElectronPhi_elec1_closure;
+  TH1D *h_ElectronEta_elec1_closure;
+  TH1D *h_JetPt_elec1_closure;
+  TH1D *h_JetPhi_elec1_closure;
+  TH1D *h_JetEta_elec1_closure;
+  TH1D *h_mTPhoMET_elec1_closure;
+  TH1D *h_dPhi_METjet1_elec1_closure;
+  TH1D *h_dPhi_METjet2_elec1_closure;
+  TH1D *h_dPhi_phojet1_elec1_closure;
+  TH1D *h_dPhi_phojet2_elec1_closure;
+  TH1D *h_dPhi_phoMET_elec1_closure;
+  TH2D *h2_leadElectronEta_Phi_elec1_closure;
+  TH1D *h_leadJetPt_elec1_closure;
+  TH1D *h_leadJetPhi_elec1_closure;
+  TH1D *h_leadJetEta_elec1_closure;
+  TH2D *h2_leadJetEta_Phi_elec1_closure;
+  
+  
   TH1D *h_intLumi_EW;
   TH1D *h_ST_EW;
   TH1D *h_MET_EW;
@@ -166,8 +277,6 @@ class Lostlepton : public NtupleVariables{
   TH2D *h2_PtPhotonvsMET;
   TH2D *h2_GenPhotonvsGenMET;
   TH2D *h2_GenWvsnjet;
-  TH1D *h_mTPhoMET;
-  TH1D *h_METvBin;
   TH1D *h_METvBin_EW;
   TH1D *h_METvBin_EW_htag;
   TH1D *h_METvBin_SP;
@@ -183,7 +292,6 @@ class Lostlepton : public NtupleVariables{
   TH1D *h_METvBin_nocut;
   TH1D *h_METvBin1;
   TH1D *h_METvBin_nocut1;
-  TH1D *h_METvBin2;
   TH1D *h_METvBin_nocut2;
   TH1D *h_MET_nj1;
   TH1D *h_METvBin_nj1;
@@ -293,11 +401,11 @@ class Lostlepton : public NtupleVariables{
   /* TH2D *h2_STvsHT; */
 
   /* TH1D *h_dPhi_METBestPhoton; */
-  TH1D *h_dPhi_METjet1;
-  TH1D *h_dPhi_METjet2;
-  TH1D *h_dPhi_phojet1;
-  TH1D *h_dPhi_phojet2;
-  TH1D *h_dPhi_phoMET;
+  // TH1D *h_dPhi_METjet1;
+  // TH1D *h_dPhi_METjet2;
+  // TH1D *h_dPhi_phojet1;
+  // TH1D *h_dPhi_phojet2;
+  // TH1D *h_dPhi_phoMET;
 
   //for numerator
   TH1D *h_nEvts_num;
@@ -365,8 +473,6 @@ class Lostlepton : public NtupleVariables{
   TH1D *h_mindr_gentau_jet;
   TH1D *h_mindr_gentau_mu;
   TH1D *h_mindr_gentau_ele;
-  TH1D *h_minDr_bestphoEle;
-  TH1D *h_minDr_bestphoJets;
   TH1D *h_minDr_bestphoEle_EW;
   TH1D *h_minDr_bestphoJets_EW;
   TH1D *h_minDr_bestphoEle_SP;
@@ -436,6 +542,7 @@ class Lostlepton : public NtupleVariables{
   TH1D *h_SBins_v7_CD_SP_elec0_iso;
   TH1D *h_SBins_v7_CD_SP_elec0;
   TH1D *h_SBins_v7_CD_SP_elec1;
+  TH1D *h_SBins_v7_CD_SP_elec1_closure;
 
   TFile *oFile;
   
@@ -461,10 +568,119 @@ void Lostlepton::BookHistogram(const char *outFileName) {
   h_intLumi=new TH1D("intLumi","integrated luminosity in /fb",10000,25,200); 
   h_ST=new TH1D("ST","ST",400,0,4000);
   h_MET=new TH1D("MET","MET",200,0,2000);
+  h_METPhi=new TH1D("METPhi","MET Phi",400,-5,5);
   h_BTags=new TH1D("nBTags","no. of B tags",10,0,10);
-  h_BestPhotonPt=new TH1D("BestPhotonPt","Pt of the Best Photon",150,0,1500);
+  //  h_BestPhotonPt=new TH1D("BestPhotonPt","Pt of the Best Photon",300,0,1500);
   h_nJets=new TH1D("nJets","nJets",25,0,25);
+  h_minDr_bestphoEle=new TH1D("h_minDr_bestphoEle","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
+  h_minDr_bestphoJets=new TH1D("h_minDr_bestphoJets","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
+  h_dPhi_phoMET=new TH1D("dPhi_phoMET","dphi between photon and MET",40,0,4);
+  h_BestPhotonPt=new TH1D("BestPhotonPt","Pt of the Best Photon",300,0,1500);
+  h_BestPhotonEta=new TH1D("BestPhotonEta","Eta of the Best Photon",400,-5,5);
+  h_BestPhotonPhi=new TH1D("BestPhotonPhi","Phi of the Best Photon",400,-5,5);
+  h_ElectronPt=new TH1D("ElectronPt","Pt of the Electrons",300,0,1500);
+  h_ElectronEta=new TH1D("ElectronEta","Eta of the Electrons",400,-5,5);
+  h_ElectronPhi=new TH1D("ElectronPhi","Phi of the Electrons",400,-5,5);
+  h_JetPt=new TH1D("JetPt","Pt of the Jets",300,0,1500);
+  h_JetEta=new TH1D("JetEta","Eta of the Jets",400,-5,5);
+  h_JetPhi=new TH1D("JetPhi","Phi of the Jets",400,-5,5);
+  h_leadElectronPt=new TH1D("leadElectronPt","Leading Electron Pt ",300,0,1500);
+  h_leadElectronPhi=new TH1D("leadElectronPhi","Leading Electron Phi ",400,-5,5);
+  h_leadElectronEta=new TH1D("leadElectronEta","Leading Electron Eta ",400,-5,5);
+  h2_leadElectronEta_Phi=new TH2D("leadElectronEta_Phi","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_leadJetPt=new TH1D("leadJetPt","Leading Jet Pt ",300,0,1500);
+  h_leadJetPhi=new TH1D("leadJetPhi","Leading Jet Phi ",400,-5,5);
+  h_leadJetEta=new TH1D("leadJetEta","Leading Jet Eta ",400,-5,5);
+  h2_leadJetEta_Phi=new TH2D("leadJetEta_Phi","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h2_leadJetEta_Pt=new TH2D("leadJetEta_Pt","Leading Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Pt=new TH2D("JetEta_Pt","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_BestPhoEta_Pt=new TH2D("BestPhoEta_Pt","Best Photon Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi=new TH2D("JetEta_Phi","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h2_ElectronEta_Phi=new TH2D("ElectronEta_Phi","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_dPhi_METlep=new TH1D("dPhi_METlep","dphi between MET Vec and Muon",40,0,4);
+  h_dPhi_METlep1=new TH1D("dPhi_METlep1","dphi between leading MET Vec and Muon",40,0,4);
+  h2_BestPhotonPt_jetmatchphoratio=new TH2D("BestPhotonPt_jetmatchphoratio","Best Photon Pt (x axis) vs jet(match to photon) Pt/Photon Pt (yaxis)",300,0,1500,1000,0,5);
+  h2_BestPhotonPt_jetphoratio=new TH2D("BestPhotonPt_jetphoratio","Best Photon Pt (x axis) vs jet Pt/Photon Pt (yaxis)",300,0,1500,1000,0,5);
+  h_minDr_Elejet1=new TH1D("h_minDr_Elejet1","dr b/w Reco lepton and Reco first leading jet ",500,0,5);
+  h_minDr_Elejet2=new TH1D("h_minDr_Elejet2","dr b/w Reco lepton and Reco Second leading jet ",500,0,5);
+  h_minDr_Elejet3=new TH1D("h_minDr_Elejet3","dr b/w Reco lepton and Reco third leading jet ",500,0,5);
+  h_minDr_Elejet4=new TH1D("h_minDr_Elejet4","dr b/w Reco lepton and Reco fourth leading jet ",500,0,5);
+  h_minDr_EleJets=new TH1D("h_minDr_EleJets","Mindr b/w Reco lepton and Reco hadronic jets",500,0,5);
+  h2_dPhivseta_jet1=new TH2D("h2_dPhivseta_jet1","dPhi b/w MET and 1st Jet (x axis) vs Eta (y axis)",200,-5,5,200,-5,5);
+  h2_dPhivseta_jet2=new TH2D("h2_dPhivseta_jet2","dPhi b/w MET and 2nd Jet (x axis) vs Eta (y axis)",200,-5,5,200,-5,5);
+  h2_dPhivseta_jet3=new TH2D("h2_dPhivseta_jet3","dPhi b/w MET and 3rd Jet (x axis) vs Eta (y axis)",200,-5,5,200,-5,5);
+  h2_dPhivseta_jet4=new TH2D("h2_dPhivseta_jet4","dPhi b/w MET and 4th Jet (x axis) vs Eta (y axis)",200,-5,5,200,-5,5);
+  h2_Phivseta_jet1=new TH2D("h2_Phivseta_jet1","1st Jet Phi (x axis) vs Eta (y axis)",200,-5,5,200,-5,5);
+  h2_Phivseta_jet2=new TH2D("h2_Phivseta_jet2","2nd Jet Phi (x axis) vs Eta (y axis)",200,-5,5,200,-5,5);
+  h2_Phivseta_jet3=new TH2D("h2_Phivseta_jet3","3rd Jet Phi (x axis) vs Eta (y axis)",200,-5,5,200,-5,5);
+  h2_Phivseta_jet4=new TH2D("h2_Phivseta_jet4","4th Jet Phi (x axis) vs Eta (y axis)",200,-5,5,200,-5,5);
+  h_dPhi_METjet1=new TH1D("dPhi_METjet1","dphi between MET Vec and Jet1",40,0,4);
+  h_dPhi_METjet2=new TH1D("dPhi_METjet2","dphi between MET Vec and Jet2",40,0,4);
+  h_dPhi_METjet3=new TH1D("dPhi_METjet3","dphi between MET Vec and Jet3",40,0,4);
+  h_dPhi_METjet4=new TH1D("dPhi_METjet4","dphi between MET Vec and Jet4",40,0,4);
+  h_dPhi_phojet1=new TH1D("dPhi_phojet1","dphi between photon and Jet1",40,0,4);
+  h_dPhi_phojet2=new TH1D("dPhi_phojet2","dphi between photon and Jet2",40,0,4);
+  h_dPhi_phojet3=new TH1D("dPhi_phojet3","dphi between photon and Jet3",40,0,4);
+  h_dPhi_phojet4=new TH1D("dPhi_phojet4","dphi between photon and Jet4",40,0,4);
 
+
+  h_ST_elec0=new TH1D("ST_elec0","ST",400,0,4000);
+  h_MET_elec0=new TH1D("MET_elec0","MET",200,0,2000);
+  h_BTags_elec0=new TH1D("nBTags_elec0","no. of B tags",10,0,10);
+  h_nJets_elec0=new TH1D("nJets_elec0","nJets",25,0,25);
+  h_METvBin2_elec0=new TH1D("METvBin2_elec0","MET in variable bins",METLowEdge_v2.size()-1,&(METLowEdge_v2[0]));
+  h_minDr_bestphoEle_elec0=new TH1D("h_minDr_bestphoEle_elec0","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
+  h_minDr_bestphoJets_elec0=new TH1D("h_minDr_bestphoJets_elec0","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
+  h_dPhi_METjet1_elec0=new TH1D("dPhi_METjet1_elec0","dphi between MET Vec and Jet1",40,0,4);
+  h_dPhi_METjet2_elec0=new TH1D("dPhi_METjet2_elec0","dphi between MET Vec and Jet2",40,0,4);
+  h_dPhi_phojet1_elec0=new TH1D("dPhi_phojet1_elec0","dphi between photon and Jet1",40,0,4);
+  h_dPhi_phojet2_elec0=new TH1D("dPhi_phojet2_elec0","dphi between photon and Jet2",40,0,4);
+  h_dPhi_phoMET_elec0=new TH1D("dPhi_phoMET_elec0","dphi between photon and MET",40,0,4);
+  h_mTPhoMET_elec0=new TH1D("mTPhoMET_elec0","mT b/w bestPhoton and MET",200,0,2000);
+  h_BestPhotonPt_elec0=new TH1D("BestPhotonPt_elec0","Pt of the Best Photon",300,0,1500);
+  h_BestPhotonEta_elec0=new TH1D("BestPhotonEta_elec0","Eta of the Best Photon",400,-5,5);
+  h_BestPhotonPhi_elec0=new TH1D("BestPhotonPhi_elec0","Phi of the Best Photon",400,-5,5);
+  h_ElectronPt_elec0=new TH1D("ElectronPt_elec0","Pt of the Electrons",300,0,1500);
+  h_ElectronEta_elec0=new TH1D("ElectronEta_elec0","Eta of the Electrons",400,-5,5);
+  h_ElectronPhi_elec0=new TH1D("ElectronPhi_elec0","Phi of the Electrons",400,-5,5);
+  h_JetPt_elec0=new TH1D("JetPt_elec0","Pt of the Jets",300,0,1500);
+  h_JetEta_elec0=new TH1D("JetEta_elec0","Eta of the Jets",400,-5,5);
+  h_JetPhi_elec0=new TH1D("JetPhi_elec0","Phi of the Jets",400,-5,5);
+  h2_leadElectronEta_Phi_elec0=new TH2D("leadElectronEta_Phi_elec0","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_leadJetPt_elec0=new TH1D("leadJetPt_elec0","Leading Jet Pt ",300,0,1500);
+  h_leadJetPhi_elec0=new TH1D("leadJetPhi_elec0","Leading Jet Phi ",400,-5,5);
+  h_leadJetEta_elec0=new TH1D("leadJetEta_elec0","Leading Jet Eta ",400,-5,5);
+  h2_leadJetEta_Phi_elec0=new TH2D("leadJetEta_Phi_elec0","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+    
+  h_ST_elec1_closure=new TH1D("ST_elec1_closure","ST",400,0,4000);
+  h_MET_elec1_closure=new TH1D("MET_elec1_closure","MET",200,0,2000);
+  h_BTags_elec1_closure=new TH1D("nBTags_elec1_closure","no. of B tags",10,0,10);
+  h_nJets_elec1_closure=new TH1D("nJets_elec1_closure","nJets",25,0,25);
+  h_METvBin2_elec1_closure=new TH1D("METvBin2_elec1_closure","MET in variable bins",METLowEdge_v2.size()-1,&(METLowEdge_v2[0]));
+  h_minDr_bestphoEle_elec1_closure=new TH1D("h_minDr_bestphoEle_elec1_closure","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
+  h_minDr_bestphoJets_elec1_closure=new TH1D("h_minDr_bestphoJets_elec1_closure","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
+  h_dPhi_METjet1_elec1_closure=new TH1D("dPhi_METjet1_elec1_closure","dphi between MET Vec and Jet1",40,0,4);
+  h_dPhi_METjet2_elec1_closure=new TH1D("dPhi_METjet2_elec1_closure","dphi between MET Vec and Jet2",40,0,4);
+  h_dPhi_phojet1_elec1_closure=new TH1D("dPhi_phojet1_elec1_closure","dphi between photon and Jet1",40,0,4);
+  h_dPhi_phojet2_elec1_closure=new TH1D("dPhi_phojet2_elec1_closure","dphi between photon and Jet2",40,0,4);
+  h_dPhi_phoMET_elec1_closure=new TH1D("dPhi_phoMET_elec1_closure","dphi between photon and MET",40,0,4);
+  h_mTPhoMET_elec1_closure=new TH1D("mTPhoMET_elec1_closure","mT b/w bestPhoton and MET",200,0,2000);
+  h_BestPhotonPt_elec1_closure=new TH1D("BestPhotonPt_elec1_closure","Pt of the Best Photon",300,0,1500);
+  h_BestPhotonEta_elec1_closure=new TH1D("BestPhotonEta_elec1_closure","Eta of the Best Photon",400,-5,5);
+  h_BestPhotonPhi_elec1_closure=new TH1D("BestPhotonPhi_elec1_closure","Phi of the Best Photon",400,-5,5);
+  h_ElectronPt_elec1_closure=new TH1D("ElectronPt_elec1_closure","Pt of the Electrons",300,0,1500);
+  h_ElectronEta_elec1_closure=new TH1D("ElectronEta_elec1_closure","Eta of the Electrons",400,-5,5);
+  h_ElectronPhi_elec1_closure=new TH1D("ElectronPhi_elec1_closure","Phi of the Electrons",400,-5,5);
+  h_JetPt_elec1_closure=new TH1D("JetPt_elec1_closure","Pt of the Jets",300,0,1500);
+  h_JetEta_elec1_closure=new TH1D("JetEta_elec1_closure","Eta of the Jets",400,-5,5);
+  h_JetPhi_elec1_closure=new TH1D("JetPhi_elec1_closure","Phi of the Jets",400,-5,5);
+  h2_leadElectronEta_Phi_elec1_closure=new TH2D("leadElectronEta_Phi_elec1_closure","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_leadJetPt_elec1_closure=new TH1D("leadJetPt_elec1_closure","Leading Jet Pt ",300,0,1500);
+  h_leadJetPhi_elec1_closure=new TH1D("leadJetPhi_elec1_closure","Leading Jet Phi ",400,-5,5);
+  h_leadJetEta_elec1_closure=new TH1D("leadJetEta_elec1_closure","Leading Jet Eta ",400,-5,5);
+  h2_leadJetEta_Phi_elec1_closure=new TH2D("leadJetEta_Phi_elec1_closure","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  
+  
   h_intLumi_EW=new TH1D("intLumi_EW","2016 integrated luminosity in /fb",2500,25,50); 
   h_ST_EW=new TH1D("ST_EW","ST 2016",400,0,4000);
   h_MET_EW=new TH1D("MET_EW","MET 2016",200,0,2000);
@@ -600,11 +816,6 @@ void Lostlepton::BookHistogram(const char *outFileName) {
   h2_GenWvsnjet=new TH2D("GenWvsnjet","Gen W Pt vs njets",150,0,1500,20,0,20);
   h_mTPhoMET=new TH1D("mTPhoMET","mT b/w bestPhoton and MET",200,0,2000);
 
-  h_dPhi_METjet1=new TH1D("dPhi_METjet1","dphi between MET Vec and Jet1",40,0,4);
-  h_dPhi_METjet2=new TH1D("dPhi_METjet2","dphi between MET Vec and Jet2",40,0,4);
-  h_dPhi_phojet1=new TH1D("dPhi_phojet1","dphi between photon and Jet1",40,0,4);
-  h_dPhi_phojet2=new TH1D("dPhi_phojet2","dphi between photon and Jet2",40,0,4);
-  h_dPhi_phoMET=new TH1D("dPhi_phoMET","dphi between photon and MET",40,0,4);
   h_dR_jetandW=new TH1D("dR_jetandW","dR between jet and W (for events only have 1 had jet)",200,0,5);
   h_dR_jet1andW=new TH1D("dR_jet1andW","dR between jet1 and W (for events only have 2 had jet)",200,0,5);
   h_dR_jet2andW=new TH1D("dR_jet2andW","dR between jet2 and W (for events only have 2 had jet)",200,0,5);
@@ -629,8 +840,6 @@ void Lostlepton::BookHistogram(const char *outFileName) {
   h_minDr_bestphoJets_SP=new TH1D("h_minDr_bestphoJets_SP","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
   h_minDr_bestphoEle_EW=new TH1D("h_minDr_bestphoEle_EW","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
   h_minDr_bestphoJets_EW=new TH1D("h_minDr_bestphoJets_EW","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
-  h_minDr_bestphoEle=new TH1D("h_minDr_bestphoEle","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
-  h_minDr_bestphoJets=new TH1D("h_minDr_bestphoJets","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
 
 
   // for numerator
@@ -774,7 +983,7 @@ void Lostlepton::BookHistogram(const char *outFileName) {
 
   h_SBins_v6_CD_EW = new TH1D("AllSBins_v6_CD_EW","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
   h_SBins_v6_CD_EW_htag = new TH1D("AllSBins_v6_CD_EW_htag","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
-  h_SBins_v6_CD_SP = new TH1D("AllSBins_v6_CD_SP","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5 );
+  h_SBins_v6_CD_SP = new TH1D("AllSBins_v6_CD_SP","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
 
   h_SBins_v7_CD = new TH1D("AllSBins_v7_CD","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
   h_SBins_v7_CD_EW = new TH1D("AllSBins_v7_CD_EW","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
@@ -810,19 +1019,20 @@ void Lostlepton::BookHistogram(const char *outFileName) {
   h_SBins_v6_CD_EW_50bin_elec1_closure = new TH1D("AllSBins_v6_CD_EW_50bin_elec1_closure","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
   h_SBins_v6_CD_EW_50bin_elec1 = new TH1D("AllSBins_v6_CD_EW_50bin_elec1","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
 
-  h_SBins_v7_CD_SP_elec0_acc = new TH1D("AllSBins_v7_CD_SP_elec0_acc","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
-  h_SBins_v7_CD_SP_elec0_id = new TH1D("AllSBins_v7_CD_SP_elec0_id","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
-  h_SBins_v7_CD_SP_elec0_iso = new TH1D("AllSBins_v7_CD_SP_elec0_iso","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
-  h_SBins_v7_CD_SP_elec0 = new TH1D("AllSBins_v7_CD_SP_elec0","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
-  h_SBins_v7_CD_SP_elec1 = new TH1D("AllSBins_v7_CD_SP_elec1","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
+  h_SBins_v7_CD_SP_elec0_acc = new TH1D("AllSBins_v7_CD_SP_elec0_acc","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
+  h_SBins_v7_CD_SP_elec0_id = new TH1D("AllSBins_v7_CD_SP_elec0_id","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
+  h_SBins_v7_CD_SP_elec0_iso = new TH1D("AllSBins_v7_CD_SP_elec0_iso","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
+  h_SBins_v7_CD_SP_elec0 = new TH1D("AllSBins_v7_CD_SP_elec0","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
+  h_SBins_v7_CD_SP_elec1 = new TH1D("AllSBins_v7_CD_SP_elec1","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
+  h_SBins_v7_CD_SP_elec1_closure = new TH1D("AllSBins_v7_CD_SP_elec1_closure","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
 
   
-  h_SBins_v6_CD_SP_elec0_acc = new TH1D("AllSBins_v6_CD_SP_elec0_acc","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
-  h_SBins_v6_CD_SP_elec0_id = new TH1D("AllSBins_v6_CD_SP_elec0_id","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
-  h_SBins_v6_CD_SP_elec0_iso = new TH1D("AllSBins_v6_CD_SP_elec0_iso","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
-  h_SBins_v6_CD_SP_elec0 = new TH1D("AllSBins_v6_CD_SP_elec0","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
-  h_SBins_v6_CD_SP_elec1 = new TH1D("AllSBins_v6_CD_SP_elec1","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
-  h_SBins_v6_CD_SP_elec1_closure = new TH1D("AllSBins_v6_CD_SP_elec1_closure","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
+  h_SBins_v6_CD_SP_elec0_acc = new TH1D("AllSBins_v6_CD_SP_elec0_acc","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
+  h_SBins_v6_CD_SP_elec0_id = new TH1D("AllSBins_v6_CD_SP_elec0_id","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
+  h_SBins_v6_CD_SP_elec0_iso = new TH1D("AllSBins_v6_CD_SP_elec0_iso","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
+  h_SBins_v6_CD_SP_elec0 = new TH1D("AllSBins_v6_CD_SP_elec0","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
+  h_SBins_v6_CD_SP_elec1 = new TH1D("AllSBins_v6_CD_SP_elec1","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
+  h_SBins_v6_CD_SP_elec1_closure = new TH1D("AllSBins_v6_CD_SP_elec1_closure","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
 
   
   //---------------Search Bins ----------------------------

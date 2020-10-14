@@ -1,0 +1,2 @@
+/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WGJets_MonoPhoton_PtG-130_TuneCUETP8M1_13TeV-madgraph.root
+/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WGJets_MonoPhoton_PtG-40to130_TuneCUETP8M1_13TeV-madgraph.root
