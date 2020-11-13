@@ -1,67 +1,178 @@
+#include<iostream>
+#include<iomanip>
+#include"TH1.h"
+#include"TROOT.h"
+#include"TH2.h"
+#include"TFile.h"
+#include"TDirectory.h"
+#include"TTree.h"
+#include"TBrowser.h"
+#include"TF1.h"
+#include<string>
+#include<vector>
+#include"TGraphErrors.h"
+#include"TGraph.h"
+#include"TLegend.h"
+#include"TLatex.h"
+#include"TCanvas.h"
+#include"THStack.h"
+#include"TStyle.h"
+
 //vector<int> col={kGray,kTeal+9,kRed,kCyan-1,kBlack};
 vector<int> col={kGray,kTeal+9,kOrange,kCyan-1,kBlack};
 
 void decorate(TH1D*,int,const char*);
-void plotdatavsMC()
+void plotdatavsMC(TString varName, TString year, TString ntuple)
 {
   TFile *f1, *f2,*f3;
   TFile *f_0,*f_1,*f_2,*f_3;
 
-  f2 = new TFile("rootoutput/newselec_LM_v3/Run2_METdata_CR.root");
-  f1 = new TFile("rootoutput/newselec_LM_v3/TTWGJ_CR.root");
+  TLatex textOnTop,intLumiE;
 
-  /* f1 = new TFile("rootoutput/tmp/TTWGJ_CR.root"); */
-  /* f2 = new TFile("rootoutput/tmp/Run2_METdata_CR.root"); */
+  TLegend *legend1 = new TLegend(0.1,0.82,0.4,0.9);
+  legend1->SetHeader(year,"C");                               // option "C" allows to center the header                                        
+  legend1->SetTextSize(0.08);
+  TString lep="LL";
+  bool ExpvsPred,DatavsMC;
+  ExpvsPred=false,DatavsMC=true;
+  TString path;
+  //  ExpvsPred=true,DatavsMC=false;
+  //  TString path="rootoutput/newselec_LE_noISRjet_noprefire/";
+  //  TString path="rootoutput/newselec_LE_noISRjet/";
+  //TString path="rootoutput/newselec_LE_noISRjet_noHEM/";
+  //   TString path="rootoutput/newselec_LM_noISRjet_v2/";
+  //  TString path="rootoutput/newselec_LM_noISRjet_noprefire/";
+  //  TString path="rootoutput/tmp/";
+  //  TString path="rootoutput/newselec_LE_noISRjet_METfilters_nogenpromptpho_forWGandTTG/";
+  //  TString path="rootoutput/newselec_LE_noISRjet_METfilters_nogenpromptpho_forWGandTTG_phoetaminus_1to0.5/";
+  //  TString path="rootoutput/newselec_LE_noISRjet_METfilters_nogenpromptpho_forWGandTTG_phoetacut/";
+  //  TString path="./";
+  //  TString path="rootoutput/newselec_LM_noISRjet_noprefire_METfilters_v2/";
+  //  TString path="rootoutput/newselec_LL_noISRjet_METfilters_nogenpromptpho_forWGandTTG_EW/";
+  //   TString path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID/";
+  if(ntuple=="v18")
+    {
+      //   path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
+      path="./";
+    }
+  else
+    {
+      //          path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID/TF_v3_usingfullRun2/";
+       path="./tmp/";
+    }
+  
+      //TString path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID/TF_v3/";
+   //   TString path="rootoutput/newselec_LM_noISRjet_METfilters_nogenpromptpho_forWGandTTG_muonphi0to1/";
+  //  TString path="rootoutput/newselec_LM_noISRjet_METfilters_nogenpromptpho_forWGandTTG_muonphicut/";
+  //  TString path="rootoutput/newselec_LEplusLM_noISRjet/";
+  //  TString path = "rootoutput/newselec_LE_noISRjet_noHEM_noprefire/";
+  TString filename;
 
-  /* f1 = new TFile("rootoutput/newselec_LM_v3/TTWGJ_CR.root"); */
-  /* f2 = new TFile("rootoutput/newselec_LM_v3/RunMETdata_CR.root"); */
+  if(ntuple=="v18"){  
+    if(year=="full_Run2"){
+      filename=path+"Run2_METdata_CR_v18.root";
+      f2 = new TFile(filename);
+      filename=path+"TTWGJ_CR_v18.root";
+      f1 = new TFile(filename);
+      filename=path+"TTGJets_CR_v18.root";
+      f_0 = new TFile(filename);
+      filename=path+"TTJets_CR_v18.root";
+      f_1 = new TFile(filename);
+      filename=path+"WJets_CR_v18.root";
+      f_2 = new TFile(filename);
+      filename=path+"WGJets_CR_v18.root";
+      f_3 = new TFile(filename);
+    }
+    
+    else
+      {
+	filename=path+"Run"+year+"_METdata_CR_v18.root";
+	f2 = new TFile(filename);
+	filename=path+"TTWGJ_"+year+"_CR_v18.root";
+	f1 = new TFile(filename);
+	filename=path+"TTGJets_"+year+"_CR_v18.root";
+	f_0 = new TFile(filename);
+	filename=path+"TTJets_"+year+"_CR_v18.root";
+	f_1 = new TFile(filename);
+	filename=path+"WJets_"+year+"_CR_v18.root";
+	f_2 = new TFile(filename);
+	filename=path+"WGJets_"+year+"_CR_v18.root";
+	f_3 = new TFile(filename);
+      }
+  }
 
-  f_0 = new TFile("./rootoutput/newselec_LM_v3/TTGJets_CR.root");
-  f_1 = new TFile("./rootoutput/newselec_LM_v3/TTJets_CR.root");
-  f_2 = new TFile("./rootoutput/newselec_LM_v3/WJets_CR.root");
-  f_3 = new TFile("./rootoutput/newselec_LM_v3/WGJets_CR.root");                                                                        
+  else{  
+    if(year=="full_Run2"){
+      filename=path+"Run2_METdata_CR.root";
+      f2 = new TFile(filename);
+      filename=path+"TTWGJ_CR.root";
+      f1 = new TFile(filename);
+      filename=path+"TTGJets_CR.root";
+      f_0 = new TFile(filename);
+      filename=path+"TTJets_CR.root";
+      f_1 = new TFile(filename);
+      filename=path+"WJets_CR.root";
+      f_2 = new TFile(filename);
+      filename=path+"WGJets_CR.root";
+      f_3 = new TFile(filename);
+    }
+    
+    else
+      {
+	filename=path+"Run"+year+"_METdata_CR.root";
+	f2 = new TFile(filename);
+	filename=path+"TTWGJ_"+year+"_CR.root";
+	f1 = new TFile(filename);
+	filename=path+"TTGJets_"+year+"_CR.root";
+	f_0 = new TFile(filename);
+	filename=path+"TTJets_"+year+"_CR.root";
+	f_1 = new TFile(filename);
+	filename=path+"WJets_"+year+"_CR.root";
+	f_2 = new TFile(filename);
+	filename=path+"WGJets_"+year+"_CR.root";
+	f_3 = new TFile(filename);
+      }
+  }
 
+  
+  TString pdf= path+"PDF/datavsMC/"+varName+"_"+year+"_datavsMC.pdf";
+  TString png= path+"PDF/datavsMC/"+varName+"_"+year+"_datavsMC.png";
+
+  
+  TCanvas *c1 ;
   
   double xmin,xmax,bin,xmin_,xmax_,ymax2_;
   double ymin=0.5 , ymax=1.5, ymin_=0.0001 , ymax_=1000;
 
   TH1D *cr,*sr,*tf,*pred_sr, *h_0,*h_1,*h_2,*h_3;
-  THStack *hs_var=new THStack("var_Stack","MET Stacked");
+  THStack *hs_var=new THStack("var_Stack",varName);
 
-  // string varName="AllSBins_v6_CD";
-  // TString varName="AllSBins_v6_CD_EW_50bin_elec1";
-  //  TString varName="MET";
-  //TString varName="MET_EW";
-  //  TString varName="MET_SP";
-  //  TString varName="METvBin2";
-  //  TString varName="METvBin_EW_v2";
-  //TString varName="METvBin_SP_v2";
-  //  TString varName="BestPhotonPt";
-  //TString varName="nJets";
-  TString varName="nJets_EW";
-  //TString varName="nJets_SP";
-  // TString varName="ST";
-  //  TString varName="ST_EW";
-  //  TString varName="ST_SP";
-  //  TString varName="nBTags";
-  //  TString varName="nBTags_EW";
-  //TString varName="nBTags_SP";
-  bool ExpvsPred,DatavsMC;
-  ExpvsPred=false,DatavsMC=true;
-  //  ExpvsPred=true,DatavsMC=false;
+
   
   double nbin,bin0, bin1,yset_;
   TH1D *total;
   int rebin=1;
+  TLegend *legend2;
+  TString varName1=varName;
+  if(varName=="AllSBins_v6_CD_elec1"){
+      c1= new TCanvas("stackhist","stackhist",1000,1000);
 
-  if(varName=="AllSBins_v6_CD"){
     //cr          = (TH1D*)f1->Get("AllSBins_v6_CD_elec1");
-    sr          = (TH1D*)f1->Get("AllSBins_v6_CD_elec0");
-    pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_elec1_closure");
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    legend2=new TLegend(0.1,0.67,0.4,0.9);
+    legend2->SetNColumns(2);
+    bin=51.5;
     xmin_=1,xmax_=8,xmin=1,xmax = 9,bin=8;
-   ymin=0.5 , ymax=1.5, ymin_=0.01 , ymax_=1000;
+   ymin=0.5 , ymax=1.5, ymin_=0.1 , ymax_=1000;
+
   }  
  else if(varName=="AllSBins_v6_CD_EW_50bin_elec1"){
+  c1= new TCanvas("stackhist","stackhist",1000,1000);
     cr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
     if(DatavsMC)
       {
@@ -77,14 +188,44 @@ void plotdatavsMC()
 	sr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec0");
 	pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1_closure");
       }
+    legend2=new TLegend(0.1,0.78,0.4,0.9);
+    legend2->SetNColumns(2);
     bin=51.5;
     xmin=-1,xmax = 50,xmin_=0,xmax_=51;
-    ymin=0 , ymax=2, ymin_=0.1 , ymax_=100000,ymax2_=1000, yset_=200;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=100000,ymax2_=1000, yset_=200;
 
     
  }
- else if(varName=="BestPhotonPt" || varName=="MET" || varName=="ST" || varName=="MET_EW" || varName=="MET_SP" || varName=="ST_SP" || varName=="ST_EW")
+ else if( varName=="ST" || varName=="ST_SP" || varName=="ST_EW")
     {
+      c1= new TCanvas("stackhist","stackhist",700,600);
+
+      cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    xmin_=0,xmax_=2000,xmin=0,xmax=2000;
+    rebin=5;
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    }
+
+ else if(varName=="BestPhotonPt" ||varName=="BestPhotonPt_vBin" ||varName=="MET" || varName=="MET_EW" || varName=="MET_SP")
+   {
+       c1= new TCanvas("stackhist","stackhist",700,600);
+
     cr          = (TH1D*)f1->Get(varName);
     sr          = (TH1D*)f1->Get(varName);
     pred_sr     = (TH1D*)f2->Get(varName);
@@ -92,20 +233,124 @@ void plotdatavsMC()
     h_1=(TH1D*)f_1->FindObjectAny(varName);
     h_2=(TH1D*)f_2->FindObjectAny(varName);
     h_3=(TH1D*)f_3->FindObjectAny(varName);
-    xmin_=250,xmax_=2000,xmin=250,xmax=2000;
-    rebin=10;
+    xmin_=0,xmax_=1200,xmin=0,xmax=1200;
+    h_0->SetLabelSize(1000);
+    h_1->SetLabelSize(1000);
+    h_2->SetLabelSize(1000);
+    h_3->SetLabelSize(1000);
+    if(varName=="BestPhotonPt")    rebin=10;
+    else if (varName=="BestPhotonPt_vBin") rebin=1;
+    else rebin=5;
     h_0->Rebin(rebin);
     h_1->Rebin(rebin);
     h_2->Rebin(rebin);
     h_3->Rebin(rebin);
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
-    ymin=0 , ymax=2.0, ymin_=0.01 , ymax_=1000000;
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=10000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+   }
+ else if(varName == "ElectronPt" || varName == "leadElectronPt"){
+   if(lep=="LE")
+     varName1="Electron Pt (GeV)";
+   else if(lep=="LM")
+     varName1="Muon Pt (GeV)";
+   else
+     varName1="Lepton Pt (GeV)";
+  c1= new TCanvas("stackhist","stackhist",700,600);
+   
+   cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    xmin_=0,xmax_=600,xmin=0,xmax=600;
+    rebin=5;
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
     }
+
+ else if(varName == "JetPt" || varName == "leadJetPt" || varName == "hadAk8jetPt")
+   {
+     if(varName == "hadAk8jetPt") varName1="p_{T}^{leading Ak8jet}";
+    else varName1="Jet Pt (GeV)";
+  c1= new TCanvas("stackhist","stackhist",700,600);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    xmin_=0,xmax_=1600,xmin=0,xmax=1600;
+    if(varName == "hadAk8jetPt")
+      rebin=50;
+    else
+      rebin=10;
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    pred_sr->GetXaxis()->SetTitle(varName);
+    }
+  
+
+  
+   else if(varName == "hadAk8Mass")
+   {
+     varName1="M_{leading Ak8jet} (GeV)";
+  c1= new TCanvas("stackhist","stackhist",700,600);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    xmin_=0,xmax_=300,xmin=0,xmax=300;
+
+    rebin=25;
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    pred_sr->GetXaxis()->SetTitle(varName);
+    }
+
  else if(varName=="METvBin2" || varName =="METvBin_EW_v2" || varName =="METvBin_SP_v2")
     {
+  c1= new TCanvas("stackhist","stackhist",700,600);
+
+      varName1="MET (GeV)";
+     
     cr          = (TH1D*)f1->Get(varName);
     sr          = (TH1D*)f1->Get(varName);
     pred_sr     = (TH1D*)f2->Get(varName);
@@ -121,12 +366,68 @@ void plotdatavsMC()
     h_3->Rebin(rebin);
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
-    ymin=0 , ymax=2.0, ymin_=0.0001 , ymax_=10000;
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    }
+ else if(varName == "ElectronEta" || varName == "JetEta" || varName == "BestPhotonEta" || varName == "leadElectronEta" || varName == "leadJetEta")
+    {
+  c1= new TCanvas("stackhist","stackhist",700,600);
+      varName1="Eta";
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    rebin=8;
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    xmin_=-4,xmax_=4,xmin=-4,xmax=4;
+    //   rebin=20;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=100000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    }
+ else if( varName == "ElectronPhi" || varName == "JetPhi" || varName == "BestPhotonPhi"|| varName == "leadElectronPhi" || varName == "leadJetPhi" || varName == "METPhi")
+    {
+  c1= new TCanvas("stackhist","stackhist",700,600);
+      varName1="Phi";
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    rebin=8;
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    xmin_=-4,xmax_=4,xmin=-4,xmax=4;
+    //   rebin=20;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=100000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
     }
  else if(varName=="nJets" || varName=="nJets_EW" ||varName=="nJets_SP")
     {
+  c1= new TCanvas("stackhist","stackhist",700,600);
+     
     cr          = (TH1D*)f1->Get(varName);
     sr          = (TH1D*)f1->Get(varName);
     pred_sr     = (TH1D*)f2->Get(varName);
@@ -139,10 +440,11 @@ void plotdatavsMC()
     h_1->Rebin(rebin);
     h_2->Rebin(rebin);
     h_3->Rebin(rebin);
-
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
     xmin_=2,xmax_=11,xmin=2,xmax=11;
     rebin=1;
-    ymin=0 , ymax=2.0, ymin_=0.01 , ymax_=100000;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=100000;
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
@@ -150,6 +452,7 @@ void plotdatavsMC()
     }
  else if(varName=="nBTags" || varName=="nBTags_EW" || varName=="nBTags_SP"  )
     {
+  c1= new TCanvas("stackhist","stackhist",700,600);
     cr          = (TH1D*)f1->Get(varName);
     sr          = (TH1D*)f1->Get(varName);
     pred_sr     = (TH1D*)f2->Get(varName);
@@ -162,20 +465,71 @@ void plotdatavsMC()
     h_1->Rebin(rebin);
     h_2->Rebin(rebin);
     h_3->Rebin(rebin);
-
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
     xmin_=0,xmax_=8,xmin=0,xmax=8;
     rebin=1;
-    ymin=0 , ymax=2.0, ymin_=0.01 , ymax_=100000;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=100000;
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
     }
+ else if(varName=="h_minDr_bestphoEle" || varName == "h_minDr_bestphoJets" || varName=="h_minDr_bestphoEle_EW" || varName == "h_minDr_bestphoJets_EW" ||varName=="h_minDr_bestphoEle_SP" || varName == "h_minDr_bestphoJets_SP" || varName=="h_minDr_Elejet1" || varName=="h_minDr_Elejet2" || varName=="h_minDr_EleJets" || varName=="h_minDr_Elejet3" || varName=="h_minDr_Elejet4")
+    {
+  c1= new TCanvas("stackhist","stackhist",700,600);
+      cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    rebin=20;
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    xmin_=0,xmax_=5,xmin=0,xmax=5;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    }
+ else if(varName=="dPhi_METjet1" || varName=="dPhi_METjet2" || varName=="dPhi_METjet3" || varName=="dPhi_METjet4" || varName=="dPhi_METlep" || varName=="dPhi_METlep1" || varName=="dPhi_phojet1" || varName=="dPhi_phojet2" || varName=="dPhi_phojet3" || varName=="dPhi_phojet4")
+   {
+  c1= new TCanvas("stackhist","stackhist",700,600);
+      cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName);
+    pred_sr     = (TH1D*)f2->Get(varName);
+    h_0=(TH1D*)f_0->FindObjectAny(varName);
+    h_1=(TH1D*)f_1->FindObjectAny(varName);
+    h_2=(TH1D*)f_2->FindObjectAny(varName);
+    h_3=(TH1D*)f_3->FindObjectAny(varName);
+    rebin=2;
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
+    legend2=new TLegend(0.6,0.75,0.9,0.85);
+    legend2->SetNColumns(2);
+    xmin_=0,xmax_=4,xmin=0,xmax=4;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+     
+   }
+
   /* for(int i=xmin_;i<=xmax_;i++) */
-  /*   { cout<<cr->GetBinContent(i)<<endl;} */
-  /* cout<<"The cr error in bin"<<endl; */
+  /*   { cout<<sr->GetBinContent(i)<<endl;} */
+  /* cout<<"The sr error in bin"<<endl; */
   /* for(int i=xmin_;i<=xmax_;i++) */
-  /*   { cout<<cr->GetBinError(i)<<endl;} */
+  /*   { cout<<sr->GetBinError(i)<<endl;} */
   /* cout<<"==============="<<endl; */
 
   /* for(int i=0;i<=53;i++) */
@@ -192,15 +546,15 @@ void plotdatavsMC()
 
   pad1->cd();
   pad1->SetLogy();
+
   pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
-  pred_sr->SetLabelSize(0.01);
-  sr->SetLabelSize(0.01);
+  pred_sr->GetYaxis()->SetLabelSize(10);
   sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
   pred_sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
   pred_sr->SetMarkerStyle(20);
   pred_sr->SetMarkerSize(0.7);
-  pred_sr->SetMarkerColor(kRed);
-  pred_sr->SetLineColor(kRed);
+  pred_sr->SetMarkerColor(kBlack);
+  pred_sr->SetLineColor(kBlack);
   sr->SetMarkerStyle(20);
   sr->SetMarkerSize(0.7);
   sr->SetMarkerColor(kBlue);
@@ -222,41 +576,59 @@ void plotdatavsMC()
   hs_var->Add(h_2);
   hs_var->Add(h_3);
   hs_var->Draw("hist");
+  hs_var->GetYaxis()->SetLabelSize(0.06);
+  hs_var->SetTitle(0);
+
+  pad1->cd();
   hs_var->SetMinimum(ymin_);
   hs_var->SetMaximum(ymax_);
   hs_var->GetXaxis()->SetRangeUser(xmin,xmax);
-  sr->Draw("e1 same");
   pred_sr->Draw("e1 same");
-  TLegend *legend = new TLegend(0.4,0.76,0.9,0.9);
+ 
+  pad1->cd();
+  
+  textOnTop.SetTextSize(0.05);
+  intLumiE.SetTextSize(0.05);
+  //  if(isPaper) textOnTop.DrawLatexNDC(0.12,0.91,"CMS #it{#bf{Simulation Supplementary}}");
+  textOnTop.DrawLatexNDC(0.12,0.91,"CMS #it{#bf{Preliminary}}");
+  if(year=="2016")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{35.9 fb^{-1} (13 TeV)}");
+  if(year=="2017")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{41.5 fb^{-1} (13 TeV)}");
+  if(year=="2018")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{59.6 fb^{-1} (13 TeV)}");
+  if(year=="full_Run2")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{137 fb^{-1} (13 TeV)}");
+  
+  TLegend *legend = new TLegend(0.47,0.85,0.9,0.9);
   legend->SetNColumns(1);
   legend->SetBorderSize(1);
-  TLegend *legend2=new TLegend(0.5,0.58,0.9,0.7);
-  legend2->SetNColumns(2);
-
 
   if(DatavsMC)
     {
-      legend->AddEntry(pred_sr,"Data : Lost Lepton (CR region)","lp");
-      legend->AddEntry(sr,"MC : Lost Lepton (CR region)","lp");
+          legend->AddEntry(pred_sr,"Data : Lost Lepton (CR region)","lp");
+      //     legend->AddEntry(sr,"MC : Lost Lepton (CR region)","lp");
       legend2->AddEntry(h_0,"t #bar{t} + #gamma","f");
       legend2->AddEntry(h_1,"t #bar{t}","f");
       legend2->AddEntry(h_2,"W(l#nu) + jets","f");
       legend2->AddEntry(h_3,"W(l#nu) + #gamma","f");
+
     }
 
   if(ExpvsPred)
     {
-      legend->AddEntry(sr,"Exp : (0e + photon )","lp");
-      legend->AddEntry(pred_sr,"Pred : TF x (1e + photon)","lp");
-      /* legend->AddEntry(sr,"Exp : (0mu,had tau + photon )","lp"); */
-      /* legend->AddEntry(pred_sr,"Pred : TF x (1mu + photon)","lp"); */
+      /* legend->AddEntry(sr,"Exp : (0e + photon )","lp"); */
+      /* legend->AddEntry(pred_sr,"Pred : TF x (1e + photon)","lp"); */
+      legend->AddEntry(sr,"Exp : (0mu,had tau + photon )","lp");
+      legend->AddEntry(pred_sr,"Pred : TF x (1mu + photon)","lp");
     }
-  legend->SetTextSize(0.04);
-  legend2->SetTextSize(0.035);
+  legend->SetTextSize(0.045);
+  //  legend2->SetTextSize(0.035);
+  legend2->SetTextSize(0.05);
 
   legend->Draw();
  legend2->Draw();
-
+ // legend1->Draw();
   
   if(varName=="AllSBins_v6_CD_EW_50bin_elec1"  ){
     TLine *line1V6=new TLine( 6.5,ymin_,  6.5,ymax2_);
@@ -359,12 +731,13 @@ void plotdatavsMC()
   pad2->SetBottomMargin(0.3);
   pad2->cd();
   pad2->SetGrid(1);
+  h3->GetYaxis()->SetNdivisions(5);
+  h3->GetYaxis()->SetRangeUser(0,2.5);
+  h3->GetYaxis()->SetTitleOffset(0.18);
+  h3->GetYaxis()->SetTitleSize(0.19);
+  h3->GetYaxis()->SetLabelSize(0.15);
 
-  h3->GetYaxis()->SetRangeUser(0.5,1.5);
-  /* h3->GetXaxis()->SetRangeUser(xmin,xmax); */
-  /* h4->GetXaxis()->SetRangeUser(xmin,xmax); */
-
-  h3->SetLineColor(kGreen);
+  h3->SetLineColor(kBlack);
   h3->SetMinimum(ymin);  // Define Y ..                                                                                                       
   h3->SetMaximum(ymax); // .. range                                                                                                           
   h3->Sumw2();
@@ -372,19 +745,21 @@ void plotdatavsMC()
   h3->Divide(h4);
   h3->SetMarkerStyle(20);
   h3->SetMarkerSize(0.6);
+  //  h3->SetLabelSize(0.2);
+
   // gStyle->SetOptStat(0);                                                                                                                   
   h3->Draw("ep");       // Draw the ratio plot                                                                                                
 
   h3->SetTitle(0);
+  h3->GetXaxis()->SetTitleOffset(1.06);
+  h3->GetXaxis()->SetTitleSize(0.14);
+  h3->GetXaxis()->SetTitle(varName1);
 
-  h3->GetXaxis()->SetTitle(0);
-  h3->GetXaxis()->SetLabelSize(0.20);
+  //  h3->GetXaxis()->SetTitle(0);
+  h3->GetXaxis()->SetLabelSize(0.2);
 
   if(ExpvsPred) h3->GetYaxis()->SetTitle("Exp/Pred");
   if(DatavsMC) h3->GetYaxis()->SetTitle("Data/MC");
-  h3->GetYaxis()->SetTitleOffset(0.18);
-  h3->GetYaxis()->SetTitleSize(0.13);
-  h3->GetYaxis()->SetLabelSize(0.09);
   
   TLine *line= new TLine(xmin_,1.0,xmax_,1.0);
   
@@ -393,7 +768,7 @@ void plotdatavsMC()
   line->Draw();
 
   
-  if(varName=="AllSBins_v6_CD_EW_50bin"  ){
+  if(varName=="AllSBins_v6_CD_EW_50bin_elec1"  ){
     TLine *line1V6=new TLine( 6.5,ymin,  6.5,ymax);
     TLine *line2V6=new TLine(12.5,ymin, 12.5,ymax);
     TLine *line3V6=new TLine(18.5,ymin, 18.5,ymax);
@@ -425,6 +800,9 @@ void plotdatavsMC()
     line4V7->Draw();      line5V7->Draw(); line6V7->Draw();
     line7V7->Draw(); line8V7->Draw();
   }
+  c1->SaveAs(pdf);
+  c1->SaveAs(png);
+
 }
 
 void decorate(TH1D* hist,int i,const char* fname){
@@ -433,8 +811,9 @@ void decorate(TH1D* hist,int i,const char* fname){
   hist->SetLineColor(kBlack);
   hist->SetLineWidth(1);
   hist->SetTitle(0);
-  hist->GetXaxis()->SetLabelSize(.06);
-  hist->GetYaxis()->SetLabelSize(.06);
+  /* hist->GetXaxis()->SetLabelSize(.06); */
+  /* hist->GetYaxis()->SetLabelSize(.10); */
   hist->GetXaxis()->SetTitleSize(0.06);
   gStyle->SetOptStat(0);
+
 }
