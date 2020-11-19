@@ -349,18 +349,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
    
     //=========================================================================//
 
-    //photon pt cut
-    //  if(bestPhoton.Pt()>100)
-    //   {
-    // 	h_selectBaselineYields_->Fill("Good #gamma with Pt > 100",wt);
-
-    //   }
-    // else continue;
-
-    
-    // //veto Muon
-
-    
+    // //veto Muon    
     if (NMuons > 0) continue;
     else
       h_selectBaselineYields_->Fill("veto Muon",wt);                                                                           
@@ -372,8 +361,8 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 
     if(isoMuonTracks ==0 && isoPionTracks==0)
       {
-	int a;
-	h_selectBaselineYields_->Fill("Iso track",wt);
+    	int a;
+    	h_selectBaselineYields_->Fill("Iso track",wt);
       }
     else continue;                                   
     
@@ -394,27 +383,35 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
    double mt_ele=0,mt_pho=0,mt_ele1=0;
 	
    TLorentzVector v_lep1,v_lep2;
+   // for(int i=0 ; i<Electrons->size() ; i++)
+   //   {
+   //     if(NElectrons==1 && (*Electrons_passIso)[i]==1)
+   // 	 {
+   // 	   nlep++;
+   // 	   e_index=i;
+   // 	   v_lep1=(*Electrons)[i];
+   // 	 }
+   //   }
+   // if(nlep==1 && v_lep1.Pt()>100)
+   //   {
+   //     hasEle=1;
+   //     lep++;	    
+   //   }
+
    for(int i=0 ; i<Electrons->size() ; i++)
      {
-       if(NElectrons==1 && (*Electrons_passIso)[i]==1)
+       //       if(NElectrons==1 && (*Electrons_passIso)[i]==1)
+       if(Electrons->size()==1)
 	 {
-	   {
-	     nlep++;
-	     e_index=i;
-	     v_lep1=(*Electrons)[i];
-	   }
+	   nlep++;
+	   e_index=i;
+	   v_lep1=(*Electrons)[i];
 	 }
      }
-   if(nlep==1)  
+   if(nlep==1 && v_lep1.Pt()>100)
      {
-       mt_ele=sqrt(2*v_lep1.Pt()*MET*(1-cos(DeltaPhi(METPhi,v_lep1.Phi()))));
-       if(mt_ele>100 ) continue;
-       elec_reco++;	    
-       if(v_lep1.Pt()>100)
-	 {
-	   hasEle=1;
-	   lep++;	    
-	 }
+       hasEle=1;
+       lep++;	    
      }
      
    bool bestEMObjIsEle=0;
@@ -427,6 +424,14 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
        // else if(hasEle==0 &&  hasPho==0) nele_pho_0++;
        continue;
      }
+
+   if(bestEMObjIsEle)  
+     {
+       mt_ele=sqrt(2*v_lep1.Pt()*MET*(1-cos(DeltaPhi(METPhi,v_lep1.Phi()))));
+       if(mt_ele>100 ) continue;
+       elec_reco++;	    
+     }
+
    bool fakePhoton=false;
 
    int nGenEle1=0;
@@ -523,6 +528,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
     
     
     if( minDR<0.3 ) photonMatchingJetIndx=minDRindx;
+
     //now hadJets contains all jets except the one matched to emObject. check whether there is energy near emObj or not. If yes then add it as a jet.
     if( photonMatchingJetIndx>=0 ){
       if( ((*Jets)[photonMatchingJetIndx].Pt()) > 1.1*(bestEMObj.Pt()) ){
@@ -592,7 +598,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
     // h_selectBaselineYields_->Fill("MET>250 & photon pt>100 selec",wt);
     bool process= false;
     //    if(!bestPhoHasPxlSeed && bestPhoton.Pt()>=100 && ST>300 && nHadJets>=2 && MET > 200 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3 && NMuons==0 &&((isoMuonTracks==0)&&(isoPionTracks==0)))
-    if(ST>300 && nHadJets>=2 && MET > 300 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3 && NMuons==0 &&((isoMuonTracks==0)&&(isoPionTracks==0)))
+    if(ST>300 && nHadJets>=2 && MET > 200 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3)// && NMuons==0 &&((isoMuonTracks==0)&&(isoPionTracks==0)))
       process =true;
     else continue;
 
@@ -782,11 +788,11 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
   cout<<"Events Survived after genphomatch : "<<genphomatch_after<<endl;
   //  cout<<"Events having NElectrons=1 : "<<ele<<endl;
   //  cout<<"Events passing reco electron pass id : "<<lep2<<endl;                                                                                                                                                  
-  cout<<"Events passing mt cut : "<<elec_reco<<endl;
   cout<<"Events passing reco electron pass id & iso : "<<lep<<endl;
 
   cout<<"pass realphoton --> "<<pass_realphoton<<endl;
   cout<<"fail realphoton --> "<<fail_realphoton<<endl;
+  cout<<"CR Events passing mt cut : "<<elec_reco<<endl;
   
   cout<<"Events Survived after PreSelection : "<<evtSurvived_preselec<<endl;
 
