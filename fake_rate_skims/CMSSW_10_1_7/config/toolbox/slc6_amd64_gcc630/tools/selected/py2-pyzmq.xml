@@ -1,3 +1,0 @@
-<tool name="py2-pyzmq" version="17.0.0-omkpbe">
-  <use name="py2-pippkgs"/>
-</tool>

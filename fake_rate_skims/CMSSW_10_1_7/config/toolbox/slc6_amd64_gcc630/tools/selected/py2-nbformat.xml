@@ -1,3 +1,0 @@
-<tool name="py2-nbformat" version="4.4.0-omkpbe">
-  <use name="py2-pippkgs"/>
-</tool>

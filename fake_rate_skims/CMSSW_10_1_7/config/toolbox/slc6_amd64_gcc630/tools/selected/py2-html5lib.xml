@@ -1,3 +1,0 @@
-<tool name="py2-html5lib" version="1.0.1-omkpbe">
-  <use name="py2-pippkgs"/>
-</tool>

@@ -1,3 +1,0 @@
-<tool name="py2-tqdm" version="4.19.6-omkpbe">
-  <use name="py2-pippkgs"/>
-</tool>

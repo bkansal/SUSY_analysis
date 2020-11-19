@@ -1,3 +1,0 @@
-<tool name="py2-scipy" version="1.0.0-omkpbe">
-  <use name="py2-pippkgs_depscipy"/>
-</tool>

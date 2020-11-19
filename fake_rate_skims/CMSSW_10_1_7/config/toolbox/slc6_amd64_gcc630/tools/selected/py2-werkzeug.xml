@@ -1,3 +1,0 @@
-<tool name="py2-werkzeug" version="0.14.1-omkpbe">
-  <use name="py2-pippkgs"/>
-</tool>

@@ -1,3 +1,0 @@
-<tool name="py2-pytest" version="3.4.1-omkpbe">
-  <use name="py2-pippkgs"/>
-</tool>

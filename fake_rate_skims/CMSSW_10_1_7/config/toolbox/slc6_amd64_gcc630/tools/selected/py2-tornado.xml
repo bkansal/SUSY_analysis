@@ -1,3 +1,0 @@
-<tool name="py2-tornado" version="5.0b1-omkpbe">
-  <use name="py2-pippkgs"/>
-</tool>

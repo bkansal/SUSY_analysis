@@ -1,3 +1,0 @@
-<tool name="py2-numba" version="0.37.0-omkpbe">
-  <use name="py2-pippkgs_depscipy"/>
-</tool>

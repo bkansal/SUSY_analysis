@@ -1,3 +1,0 @@
-<tool name="py2-hep_ml" version="0.5.0-omkpbe">
-  <use name="py2-pippkgs_depscipy"/>
-</tool>
