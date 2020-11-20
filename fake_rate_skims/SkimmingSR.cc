@@ -51,7 +51,7 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
   cout<<"Key words for if dataset is special: TTJets_DiLept, TTJets_SingleLeptFromT, V12"<<endl;
   Long64_t nSurvived = 0,phopt_rej=0,MET_rej=0,nocut=0;
   double wt = 1.0;
-  int lep=0,nele=0,npho=0;
+  int lep=0,nele=0,npho=0,npho_px=0,remain=0;
   // for (Long64_t jentry=0; jentry<10000;jentry++) {
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
 
@@ -91,17 +91,22 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
       }
     else continue;
 
-
+    lep++;
     //about photons
-    int hasEle=0, hasPho=0;
+    int hasEle=0, hasPho=0, hasPho_px=0;
     TLorentzVector bestPhoton=getBestPhoton();
     bool bestPhoHasPxlSeed=true;
     bool eMatchedG=check_eMatchedtoGamma(bestPhoton);
     if(bestPhotonIndxAmongPhotons>=0){
       if((*Photons_hasPixelSeed)[bestPhotonIndxAmongPhotons]<0.001) bestPhoHasPxlSeed=false;
-      if(!eMatchedG && !bestPhoHasPxlSeed && bestPhoton.Pt()>100) hasPho=1;
+      //     if(!eMatchedG && !bestPhoHasPxlSeed && bestPhoton.Pt()>100) hasPho=1;
+      if(!bestPhoHasPxlSeed && bestPhoton.Pt()>100) {hasPho=1;hasPho_px=0; }//npho++;}
+      else if(bestPhoHasPxlSeed) {hasPho_px=1;hasPho=0;}// npho_px++;}
       else
-    	hasPho=0;
+	{
+	  hasPho_px=0;
+	  hasPho=0;
+	}
     }
 
     //about Electrons
@@ -118,53 +123,115 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
 		v_lep1=(*Electrons)[i];
 	      }
 	  }
-      }
-    if(nlep==1 && v_lep1.Pt()>100)
-      {
-	hasEle=1;
-	lep++;
-      }
 
-    bool bestEMObjIsEle=0;
+	if(nlep>1) cout<<jentry<<endl;      
+	if(nlep==1 && v_lep1.Pt()>100)
+	  {
+	    hasEle=1;
+	    //	    nele++;
+	  }
+      }
+    bool bestEMObjIsEle=false, bestEMObjIsEle_px=false;
     TLorentzVector bestEMObj;
-    if (hasEle==1 && hasPho==0) {bestEMObjIsEle=true;  bestEMObj = (*Electrons)[e_index]; nele++;}
-    else if(hasEle==0 &&  hasPho==1) {bestEMObjIsEle=false; bestEMObj = bestPhoton; npho++;}
+
+    if(hasPho_px==1){bestEMObjIsEle=true; bestEMObjIsEle_px=true; bestEMObj = bestPhoton; npho_px++;}
+    if (hasEle==1 && hasPho==0) {bestEMObjIsEle=true;  bestEMObjIsEle_px=false; bestEMObj = (*Electrons)[e_index]; nele++;}
+    else if(hasEle==0 &&  hasPho==1) {bestEMObjIsEle=false;  bestEMObjIsEle_px=false;bestEMObj = bestPhoton; npho++;}
     else
-      continue;
-   
+      {
+	remain++;
+	continue;
+      }
 
 
-    if( MET > 100 )        h_selectBaselineYields_->Fill("MET > 100",wt);
+    if( MET > 200 )        h_selectBaselineYields_->Fill("MET > 200",wt);
     else 
       {
-	MET_rej++;
 	continue;
       }    //---------------------------------------------------------------------------------
-    int minDRindx=-100,phoMatchingJetIndx=-100,nHadJets=0;
-    double minDR=99999,ST=0;
-    vector<TLorentzVector> hadJets;
+	MET_rej++;
 
-    for(int i=0;i<Jets->size();i++){
-      if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
-	double dR=bestEMObj.DeltaR((*Jets)[i]);
-	if(dR<minDR){minDR=dR;minDRindx=i;}
+	int minDRindx=-100,phoMatchingJetIndx=-100,nHadJets=0,nHadJets_ele=0,nHadJets_px=0;
+    double minDR=99999,ST=0,ST_ele=0,ST_px=0;
+    vector<TLorentzVector> hadJets, hadJets_ele, hadJets_px;
+
+    if(!bestEMObjIsEle_px && !bestEMObjIsEle)
+      {
+	for(int i=0;i<Jets->size();i++){
+	  if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
+	    double dR=bestEMObj.DeltaR((*Jets)[i]);
+	    if(dR<minDR){minDR=dR;minDRindx=i;}
+	  }
+	}    
+	for(int i=0;i<Jets->size();i++){
+	  if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
+	    if( !(minDR < 0.3 && i==minDRindx) )
+	      hadJets.push_back((*Jets)[i]);
+	  }
+	}
+
+
+	if( minDR<0.3 ) phoMatchingJetIndx=minDRindx;
+	for(int i=0;i<hadJets.size();i++){
+	  if( (abs(hadJets[i].Eta()) < 2.4) ){ST=ST+(hadJets[i].Pt());}
+	  if( (abs(hadJets[i].Eta()) < 2.4) ){nHadJets++;}
+	}
+	if( minDR<0.3 )  ST=ST+bestEMObj.Pt();
       }
-    }
-    
-    for(int i=0;i<Jets->size();i++){
-      if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
-	if( !(minDR < 0.3 && i==minDRindx) )
-	  hadJets.push_back((*Jets)[i]);
+
+      else if(!bestEMObjIsEle_px && bestEMObjIsEle)
+      {
+	for(int i=0;i<Jets->size();i++){
+	  if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
+	    double dR=bestEMObj.DeltaR((*Jets)[i]);
+	    if(dR<minDR){minDR=dR;minDRindx=i;}
+	  }
+	}    
+	for(int i=0;i<Jets->size();i++){
+	  if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
+	    if( !(minDR < 0.3 && i==minDRindx) )
+	      hadJets_ele.push_back((*Jets)[i]);
+	  }
+	}
+
+
+	if( minDR<0.3 ) phoMatchingJetIndx=minDRindx;
+	for(int i=0;i<hadJets_ele.size();i++){
+	  if( (abs(hadJets_ele[i].Eta()) < 2.4) ){ST_ele=ST_ele+(hadJets_ele[i].Pt());}
+	  if( (abs(hadJets_ele[i].Eta()) < 2.4) ){nHadJets_ele++;}
+	}
+	if( minDR<0.3 )  ST_ele=ST_ele+bestEMObj.Pt();
       }
-    }
-    if( minDR<0.3 ) phoMatchingJetIndx=minDRindx;
-    for(int i=0;i<hadJets.size();i++){
-      if( (abs(hadJets[i].Eta()) < 2.4) ){ST=ST+(hadJets[i].Pt());}
-      if( (abs(hadJets[i].Eta()) < 2.4) ){nHadJets++;}
-    }
-    if( minDR<0.3 ) ST=ST+bestEMObj.Pt();//add the pt of photon if and only if there is a matching jet.
+
+    else if(bestEMObjIsEle_px && bestEMObjIsEle)
+      {
+	for(int i=0;i<Jets->size();i++){
+	  if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
+	    double dR=bestEMObj.DeltaR((*Jets)[i]);
+	    if(dR<minDR){minDR=dR;minDRindx=i;}
+	  }
+	}    
+	for(int i=0;i<Jets->size();i++){
+	  if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
+	    if( !(minDR < 0.3 && i==minDRindx) )
+	      hadJets_px.push_back((*Jets)[i]);
+	  }
+	}
+
+
+	if( minDR<0.3 ) phoMatchingJetIndx=minDRindx;
+	for(int i=0;i<hadJets_px.size();i++){
+	  if( (abs(hadJets_px[i].Eta()) < 2.4) ){ST_px=ST_px+(hadJets_px[i].Pt());}
+	  if( (abs(hadJets_px[i].Eta()) < 2.4) ){nHadJets_px++;}
+	}
+
+	if( minDR<0.3 )  ST_px=ST_px+bestEMObj.Pt();
+      }
+
     //-----------------------------------------------------------------------
-    if( (nHadJets >= 2) )  h_selectBaselineYields_->Fill("nJets >=2",wt);
+    if( nHadJets >= 2 ||  nHadJets_ele >= 2 || nHadJets_px >= 2)  h_selectBaselineYields_->Fill("nJets >=2",wt);
+    else continue;
+    if(ST>300 || ST_ele > 300 || ST_px>300)  h_selectBaselineYields_->Fill("ST >300",wt);
     else continue;
 
     //end of select skimming parameters
@@ -173,11 +240,17 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
  
   } // loop over entries
   //  newtree->AutoSave();
-  cout<<"No. of entries survived: "<<nSurvived<<endl;
-  cout<<"No. of events rejected by Photon Pt > 100 : "<<phopt_rej<<endl;
-  cout<<"No. of events rejected by MET > 100 : "<<MET_rej<<endl;
+  // cout<<"No. of events rejected by Photon Pt > 100 : "<<phopt_rej<<endl;
+  // cout<<"No. of events rejected by MET > 100 : "<<MET_rej<<endl;
+
+  cout<<"No. of events passed by Muon veto and iso muon and pion track veto : "<<lep<<endl;
   cout<<"EM object is photon : "<<npho<<endl;
+  cout<<"EM object is electron only with pixel seed veto : "<<npho_px<<endl;
   cout<<"EM object is electron : "<<nele<<endl;
+  cout<<"Remaining EM object : "<<remain<<endl;
+  cout<<"No. of events passed by MET > 100 : "<<MET_rej<<endl;
+  cout<<"No. of entries survived: "<<nSurvived<<endl;
+  cout<<"========================================"<<endl;
   cout<<"Cross-section : "<<CrossSection<<endl;
   cout<<"Weight ib pb-1 : "<<Weight<<endl;
 }
