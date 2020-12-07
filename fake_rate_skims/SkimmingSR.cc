@@ -51,7 +51,7 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
   cout<<"Key words for if dataset is special: TTJets_DiLept, TTJets_SingleLeptFromT, V12"<<endl;
   Long64_t nSurvived = 0,phopt_rej=0,MET_rej=0,nocut=0;
   double wt = 1.0;
-  int lep=0,nele=0,npho=0,npho_px=0,remain=0;
+  int lep=0,nele=0,npho=0,npho_px=0,nele_px=0,remain=0;
   // for (Long64_t jentry=0; jentry<10000;jentry++) {
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
 
@@ -92,6 +92,17 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
     else continue;
 
     lep++;
+
+
+
+    if( MET > 200 )        h_selectBaselineYields_->Fill("MET > 200",wt);
+    else 
+      {
+	continue;
+      }    //---------------------------------------------------------------------------------
+    MET_rej++;
+	
+
     //about photons
     int hasEle=0, hasPho=0, hasPho_px=0;
     TLorentzVector bestPhoton=getBestPhoton();
@@ -131,30 +142,25 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
 	    //	    nele++;
 	  }
       }
-    bool bestEMObjIsEle=false, bestEMObjIsEle_px=false;
+
+
+    bool bestEMObjIsEle=false, bestEMObjIsEle_px=false,bestEMobj=false;
     TLorentzVector bestEMObj;
 
-    if(hasPho_px==1){bestEMObjIsEle=true; bestEMObjIsEle_px=true; bestEMObj = bestPhoton; npho_px++;}
-    if (hasEle==1 && hasPho==0) {bestEMObjIsEle=true;  bestEMObjIsEle_px=false; bestEMObj = (*Electrons)[e_index]; nele++;}
-    else if(hasEle==0 &&  hasPho==1) {bestEMObjIsEle=false;  bestEMObjIsEle_px=false;bestEMObj = bestPhoton; npho++;}
-    else
-      {
-	remain++;
-	continue;
+
+    if(hasPho_px==1)
+      {bestEMObjIsEle=true; bestEMObjIsEle_px=true; bestEMObj = bestPhoton; npho_px++; bestEMobj=true;
       }
-
-
-    if( MET > 200 )        h_selectBaselineYields_->Fill("MET > 200",wt);
-    else 
-      {
-	continue;
-      }    //---------------------------------------------------------------------------------
-	MET_rej++;
+    if (hasEle==1 && hasPho==0) {bestEMObjIsEle=true; bestEMObjIsEle_px=false;bestEMObj = (*Electrons)[e_index]; nele++;bestEMobj=true;}
+    if(hasEle==0 &&  hasPho==1) {bestEMObjIsEle=false;  bestEMObjIsEle_px=false;bestEMObj = bestPhoton; npho++;bestEMobj=true;}
+    if ((hasEle==1 && hasPho==0)|| hasPho_px==1) {nele_px++;bestEMobj=true;}
+    if(bestEMobj==false) {remain++; continue;}
 
 	int minDRindx=-100,phoMatchingJetIndx=-100,nHadJets=0,nHadJets_ele=0,nHadJets_px=0;
     double minDR=99999,ST=0,ST_ele=0,ST_px=0;
     vector<TLorentzVector> hadJets, hadJets_ele, hadJets_px;
 
+    //ST and hadJet calculation for photon as a EM object
     if(!bestEMObjIsEle_px && !bestEMObjIsEle)
       {
 	for(int i=0;i<Jets->size();i++){
@@ -178,8 +184,9 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
 	}
 	if( minDR<0.3 )  ST=ST+bestEMObj.Pt();
       }
-
-      else if(!bestEMObjIsEle_px && bestEMObjIsEle)
+   
+    //ST and hadJet calculation for electron as a EM object
+    else if(!bestEMObjIsEle_px && bestEMObjIsEle)
       {
 	for(int i=0;i<Jets->size();i++){
 	  if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
@@ -203,6 +210,7 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
 	if( minDR<0.3 )  ST_ele=ST_ele+bestEMObj.Pt();
       }
 
+    //ST and hadJet calculation for photon with pixel seed as a EM object
     else if(bestEMObjIsEle_px && bestEMObjIsEle)
       {
 	for(int i=0;i<Jets->size();i++){
@@ -244,11 +252,12 @@ void SkimmingSR::EventLoop(const char *data,const char *inputFileList) {
   // cout<<"No. of events rejected by MET > 100 : "<<MET_rej<<endl;
 
   cout<<"No. of events passed by Muon veto and iso muon and pion track veto : "<<lep<<endl;
+  cout<<"No. of events passed by MET > 200 : "<<MET_rej<<endl;
   cout<<"EM object is photon : "<<npho<<endl;
-  cout<<"EM object is electron only with pixel seed veto : "<<npho_px<<endl;
+  cout<<"EM object is photon with pixel seed veto : "<<npho_px<<endl;
   cout<<"EM object is electron : "<<nele<<endl;
+  cout<<"EM object is electron or photon with pixel seed veto : "<<nele_px<<endl;
   cout<<"Remaining EM object : "<<remain<<endl;
-  cout<<"No. of events passed by MET > 100 : "<<MET_rej<<endl;
   cout<<"No. of entries survived: "<<nSurvived<<endl;
   cout<<"========================================"<<endl;
   cout<<"Cross-section : "<<CrossSection<<endl;
