@@ -7,6 +7,7 @@
 #include "NtupleVariables.h"
 #include "TH1F.h"
 #include "TH2.h"
+#include "TH3.h"
 #include <TProfile.h>
 #include "TFile.h"
 #include "TLorentzVector.h"
@@ -24,12 +25,13 @@ class Fakerate : public NtupleVariables{
   void     EventLoop(const char *,const char *);
   void     BookHistogram(const char *);
   TLorentzVector getBestPhoton();
+  TLorentzVector getPhoton_withoutfullID();
   int getBinNoV4(int);
-  int getBinNoV7(TLorentzVector, double);
+  int getBinNoV7(TLorentzVector, double, double);
   //  int getBinNoV7_closure(int,TFile);
   int getBinNoV7_v1(int);
   //  int getBinNoV6(int);
-  int getBinNoV6(bool,bool,bool,bool,int);
+  int getBinNoV6(TLorentzVector, int);
   int getBinNoV6_EW(bool,bool);
   int getBinNoV6_EW1(bool);
   int getBinNoV6_EWplusSP_SR(bool,bool,bool,int);
@@ -45,6 +47,7 @@ class Fakerate : public NtupleVariables{
   
   //Variables defined
   int bestPhotonIndxAmongPhotons=-100;
+  int eIndxAmongPhotons=-100;
   float HT_PtCut=30;
   float MHT_PtCut=30;//keep MHT_PtCut <= HT_PtCut and <= Njets_PtCut
   float Njets_PtCut=30;
@@ -67,8 +70,8 @@ class Fakerate : public NtupleVariables{
   vector<double> METLowEdge_v1={100,250,270,350,450,600,750,900,2000};
   vector<double> METLowEdge_v2={200,250,300,370,450,600,750,900,2000};
   vector<double> METLowEdge_v2_1={200,250,300,370,450,600,750,2000};
-  vector<double> METLowEdge_v3={300,370,450,600,750,900,2000};
-  vector<double> METLowEdge_v3_1={300,370,450,600,750,2000};
+  vector<double> METLowEdge_v3={200,300,370,450,600,750,900};
+  vector<double> METLowEdge_v3_1={200,300,370,450,600,750};
 
   /* vector<double> METLowEdge1={200,270,350,450,750,2000}; */
   /* vector<double> METLowEdge2={200,270,350,450,2000}; */
@@ -88,10 +91,30 @@ class Fakerate : public NtupleVariables{
   vector<double> PhoLowEdge1={0,100,120,140,160,180,200,220,250,280,320,380,450,550,650,750,800,1000,1200};
   vector<double> PhoLowEdge2={0,100,120,140,160,180,200,220,250,280,320,380,450,550,650,750,800,900,1000,1100,1200};
 
-  vector<double> BestPhotonPtBinLowEdge={0,100,120,140,160,180,200,230,260,300,380,500,600};
+  vector<double> QMultLowedge={0,2,4,7,100};//Qmultibin
+  //  vector<double> QMultLowedge={0,2,4,8,10,100};//Qmultibin1 v1
+  // vector<double> QMultLowedge={0,2,4,6,8,10,14,100};//Qmultibin2 
+  vector<double> QMultLowedge_v2={0,2,4,6,8,10,100};//Qmultibin2 v1
+  //vector<double> QMultLowedge={0,2,4,7,10,50};////Qmultibin2 
+  //  vector<double> QMultLowedge={0,2,5,7,10,15,20,100};
+  //  vector<double>  nJetsLowedge={2,4,7,10,20};
+  vector<double>  nJetsLowedgev1={2,5,20};
+  vector<double>  nJetsLowedge={2,5,20};
+  vector<double>  nbtagsLowedge={0,1,10};
+  vector<double>  EMEtaLowedge={-3.5,-1.5,-1,-0.5,0,0.5,1,1.5,3.5};
+
+  //  vector<double> BestPhotonPtBinLowEdge={100,120,140,160,180,200,230,260,300,380,500,600,1000};
+  vector<double> BestPhotonPtBinLowEdge={100,120,140,160,180,200,220,240,260,300,400,600,1000};
+  //  vector<double> ptlow2={100,120,140,160,180,200,230,260,300,380,450,600};//phoptbin1
+  //  vector<double> ptlow2={100,120,140,160,180,200,230,260,300,380,450,600};//phoptbin1
+  vector<double> ptlow2={100,120,140,160,200,240,300,450,600};//phoptbin2 v1
+  vector<double> ptlow2_v2={300,330,380,450,600,2000};//phoptbin2 v2
+  // vector<double> ptlow2={100,120,140,160,180,200,220,240,260,280,300};//phoptbin3 v1
+  // vector<double> ptlow2_v2={300,340,380,420,480,600,2000};//phoptbin3 v2
+  double QMultLow[6]={0,2,4,7,100};
   vector<TLorentzVector> allBestPhotons;
   //histograms
-
+  TH1D *h_nvtx;
   TH1D *h_nEvts;
   TH1I *h_RunNum;
   TH1D *h_intLumi;
@@ -103,9 +126,10 @@ class Fakerate : public NtupleVariables{
   TH1D *h_MET;
   TH1D *h_METPhi;
   TH1D *h_METvBin;
-  TH1D *h_METvBin2;
+  TH1D *h_METvBin2;  
   TH1D *h_BTags;
   TH1D *h_nJets;
+  TH1D *h_nremJets;
   TH1D *h_BestPhotonPt;
   TH1D *h_BestPhotonPt_vBin;
   TH1D *h_BestPhotonPt_0b;
@@ -114,14 +138,45 @@ class Fakerate : public NtupleVariables{
   TH1D *h_BestPhotonPt_ge1b_vBin;
   TH1D *h_BestPhotonPhi;
   TH1D *h_BestPhotonEta;
+  TH2D *h2_BestPhotonEta_Qmulti;
+  TH2D *h2_BestPhotonEta_nJets;
+  TH2D *h2_BestPhotonEta_MET;
   TH1D *h_minDr_bestphoEle;
   TH1D *h_minDr_bestphoJets;
+  TH1D *h_minDr_bestphoremEle;
+  TH1D *h_minDr_bestphoremJets;
+  TH1D *h_NEMobj;
   TH1D *h_ElectronPt;
   TH1D *h_ElectronPhi;
   TH1D *h_ElectronEta;
   TH1D *h_JetPt;
   TH1D *h_JetPhi;
   TH1D *h_JetEta;
+  TH2D *h2_JetEta_Pt;
+  TH2D *h2_JetEta_Phi;
+  TH1D *h_JetPt1;
+  TH1D *h_JetPhi1;
+  TH1D *h_JetEta1;
+  TH2D *h2_JetEta_Pt1;
+  TH2D *h2_JetEta_Phi1;
+  TH1D *h_JetPt2;
+  TH1D *h_JetPhi2;
+  TH1D *h_JetEta2;
+  TH2D *h2_JetEta_Pt2;
+  TH2D *h2_JetEta_Phi2;
+  TH1D *h_JetPt3;
+  TH1D *h_JetPhi3;
+  TH1D *h_JetEta3;
+  TH2D *h2_JetEta_Pt3;
+  TH2D *h2_JetEta_Phi3;
+  TH1D *h_JetPt4;
+  TH1D *h_JetPhi4;
+  TH1D *h_JetEta4;
+  TH2D *h2_JetEta_Pt4;
+  TH2D *h2_JetEta_Phi4;
+  TH1D *h_remJetPt;
+  TH1D *h_remJetPhi;
+  TH1D *h_remJetEta;
   TH1D *h_mTPhoMET;
   TH1D *h_dPhi_METjet1;
   TH1D *h_dPhi_METjet2;
@@ -132,18 +187,33 @@ class Fakerate : public NtupleVariables{
   TH1D *h_dPhi_phojet3;
   TH1D *h_dPhi_phojet4;
   TH1D *h_dPhi_phoMET;
+  TH1D *h_dPhi_MET_CaloMET;
+  TH1D *h_MET_CaloMET;
+  TH2D *h2_HT5HT_dPhiMETj1;
+  TH2D *h2_HT5HT_dPhiMETj2;
+  TH2D *h2_HT5HT_dPhiMETj3;
+  TH2D *h2_HT5HT_dPhiMETj4;
+  TH2D *h2_JPt_dPhiMETj1;
+  TH2D *h2_JPt_dPhiMETj2;
+  TH2D *h2_JPt_dPhiMETj3;
+  TH2D *h2_JPt_dPhiMETj4;
+  TH1D *h_HT5HT;
+
   TH1D *h_leadElectronPt;
   TH1D *h_leadElectronPhi;
   TH1D *h_leadElectronEta;
   TH2D *h2_leadElectronEta_Phi;
+  TH2D *h2_leadElectronPt_Eta;
+  TH2D *h2_leadElectronPt_Phi;
   TH1D *h_leadJetPt;
   TH1D *h_leadJetPhi;
   TH1D *h_leadJetEta;
   TH2D *h2_leadJetEta_Phi;
   TH2D *h2_leadJetEta_Pt;
-  TH2D *h2_JetEta_Pt;
+  TH2D *h2_2leadJetEta_Pt;
+  TH2D *h2_3leadJetEta_Pt;
+  TH2D *h2_4leadJetEta_Pt;
   TH2D *h2_BestPhoEta_Pt;
-  TH2D *h2_JetEta_Phi;
   TH2D *h2_ElectronEta_Phi;
   TH1D *h_dPhi_METlep;
   TH1D *h_dPhi_METlep1;
@@ -167,8 +237,27 @@ class Fakerate : public NtupleVariables{
   TH1D *h_hadAk8jetPt;
   TH1D *h_CM_Ele;
   TH1D *h_EMObj_pT;
+  TH2D *h2_PhoPtQMultJet;
+  TH2D *h2_PhoPtQMultJet_v2;
+  TH2D *h2_PhoPtnJets;
+  TH3D *h3_PhoPtnJetsbtags;
+  TH3D *h3_PhoPtnJetsQmult;
+  TH2D *h2_nJetsQMultJet;
+  TH2D *h2_PhoPtQMultJet_v3;
+  TH2D *h2_nJetsMET;
+  TH2D *h2_METQMultJet;
+  TH2D *h2_PhoPtMET;
+  TH1D *h_dR_bandgene;
+  TH1D *h_dR_bandjets;
+  TH1D *h_dR_bandrecoe;
+  TH1D *h_deepcsv;
+  TH1D *h_dR_geneandrecoe;
+  TH2D *h2_QMultlleadJetPt;
+  TH2D *h2_QMultlleadbJet;
+  TH2D *h2_QMultlleadbJet_v2;
 
   
+  TH1D *h_nvtx_elec0;
   TH1D *h_ST_elec0;
   TH1D *h_MET_elec0;
   TH2D *h2_MET_nJets_elec0;
@@ -177,29 +266,72 @@ class Fakerate : public NtupleVariables{
   TH1D *h_METvBin2_elec0;
   TH1D *h_BTags_elec0;
   TH1D *h_nJets_elec0;
+  TH1D *h_nremJets_elec0;
   TH1D *h_BestPhotonPt_elec0;
   TH1D *h_BestPhotonPt_vBin_elec0;
   TH1D *h_BestPhotonPhi_elec0;
   TH1D *h_BestPhotonEta_elec0;
+  TH2D *h2_BestPhotonEta_Qmulti_elec0;
+  TH2D *h2_BestPhotonEta_nJets_elec0;
+  TH2D *h2_BestPhotonEta_MET_elec0;
   TH1D *h_BestPhotonPt_0b_elec0;
   TH1D *h_BestPhotonPt_ge1b_elec0;
   TH1D *h_BestPhotonPt_0b_vBin_elec0;
   TH1D *h_BestPhotonPt_ge1b_vBin_elec0;
   TH1D *h_minDr_bestphoEle_elec0;
   TH1D *h_minDr_bestphoJets_elec0;
+  TH1D *h_minDr_bestphoremEle_elec0;
+  TH1D *h_minDr_bestphoremJets_elec0;
+  TH1D *h_NEMobj_elec0;
   TH1D *h_ElectronPt_elec0;
   TH1D *h_ElectronPhi_elec0;
   TH1D *h_ElectronEta_elec0;
   TH1D *h_JetPt_elec0;
   TH1D *h_JetPhi_elec0;
   TH1D *h_JetEta_elec0;
+  TH1D *h_JetPt1_elec0;
+  TH1D *h_JetPhi1_elec0;
+  TH1D *h_JetEta1_elec0;
+  TH2D *h2_JetEta_Pt1_elec0;
+  TH2D *h2_JetEta_Phi1_elec0;
+  TH1D *h_JetPt2_elec0;
+  TH1D *h_JetPhi2_elec0;
+  TH1D *h_JetEta2_elec0;
+  TH2D *h2_JetEta_Pt2_elec0;
+  TH2D *h2_JetEta_Phi2_elec0;
+  TH1D *h_JetPt3_elec0;
+  TH1D *h_JetPhi3_elec0;
+  TH1D *h_JetEta3_elec0;
+  TH2D *h2_JetEta_Pt3_elec0;
+  TH2D *h2_JetEta_Phi3_elec0;
+  TH1D *h_JetPt4_elec0;
+  TH1D *h_JetPhi4_elec0;
+  TH1D *h_JetEta4_elec0;
+  TH2D *h2_JetEta_Pt4_elec0;
+  TH2D *h2_JetEta_Phi4_elec0;
+
+  TH1D *h_remJetPt_elec0;
+  TH1D *h_remJetPhi_elec0;
+  TH1D *h_remJetEta_elec0;
   TH1D *h_mTPhoMET_elec0;
+  //####
   TH1D *h_dPhi_METjet1_elec0;
   TH1D *h_dPhi_METjet2_elec0;
+  TH1D *h_dPhi_METjet3_elec0;
+  TH1D *h_dPhi_METjet4_elec0;
+  TH1D *h_dPhi_MET_CaloMET_elec0;
+  TH1D *h_MET_CaloMET_elec0;
+  TH1D *h_HT5HT_elec0;
+  // TH1D *h_dPhi_METjet1_elec0;
+  // TH1D *h_dPhi_METjet2_elec0;
   TH1D *h_dPhi_phojet1_elec0;
   TH1D *h_dPhi_phojet2_elec0;
   TH1D *h_dPhi_phoMET_elec0;
   TH2D *h2_leadElectronEta_Phi_elec0;
+  TH2D *h2_leadElectronPt_Eta_elec0;
+  TH2D *h2_leadElectronPt_Phi_elec0;
+  TH2D *h2_BestPhotonPt_jetmatchphoratio_elec0;
+  TH2D *h2_BestPhotonPt_jetphoratio_elec0;
   TH1D *h_leadJetPt_elec0;
   TH1D *h_leadJetPhi_elec0;
   TH1D *h_leadJetEta_elec0;
@@ -208,11 +340,24 @@ class Fakerate : public NtupleVariables{
   TH2D *h2_njetnbjet_phopt_elec0;
   TH1D *h_hadAk8jetPt_elec0;
   TH1D *h_hadAk8Mass_elec0;
-  TH1D *h_CM_Pho;
+   TH1D *h_CM_Pho;
   TH1D *h_EMObj_pT_elec0;
-
+ TH2D *h2_PhoPtQMultJet_elec0;
+ TH2D *h2_PhoPtQMultJet_v2_elec0;
+  TH2D *h2_PhoPtQMultJet_v3_elec0;
+  TH2D *h2_nJetsMET_elec0;
+  TH2D *h2_METQMultJet_elec0;
+  TH2D *h2_PhoPtMET_elec0;
+  TH2D *h2_PhoPtnJets_elec0;
+  TH3D *h3_PhoPtnJetsbtags_elec0;
+  TH3D *h3_PhoPtnJetsQmult_elec0;
+  TH2D *h2_nJetsQMultJet_elec0;
+  TH2D *h2_QMultlleadJetPt_elec0;
+  TH2D *h2_QMultlleadbJet_elec0;
+  TH2D *h2_QMultlleadbJet_v2_elec0;
 
   
+  TH1D *h_nvtx_elec1_closure;
   TH1D *h_hadAk8Mass_elec1_closure;
   TH1D *h_ST_elec1_closure;
   TH1D *h_MET_elec1_closure;
@@ -222,10 +367,14 @@ class Fakerate : public NtupleVariables{
   TH1D *h_METvBin2_elec1_closure;
   TH1D *h_BTags_elec1_closure;
   TH1D *h_nJets_elec1_closure;
+  TH1D *h_nremJets_elec1_closure;
   TH1D *h_BestPhotonPt_elec1_closure;
   TH1D *h_BestPhotonPt_vBin_elec1_closure;
   TH1D *h_BestPhotonPhi_elec1_closure;
   TH1D *h_BestPhotonEta_elec1_closure;
+  TH2D *h2_BestPhotonEta_Qmulti_elec1_closure;
+  TH2D *h2_BestPhotonEta_nJets_elec1_closure;
+  TH2D *h2_BestPhotonEta_MET_elec1_closure;
   TH1D *h_BestPhotonPt_0b_elec1_closure;
   TH1D *h_BestPhotonPt_ge1b_elec1_closure;
   TH1D *h_BestPhotonPt_0b_vBin_elec1_closure;
@@ -234,19 +383,48 @@ class Fakerate : public NtupleVariables{
   // TH1D *h_BestPhotonPt_elec1_closure_ge1b_vBin;
   TH1D *h_minDr_bestphoEle_elec1_closure;
   TH1D *h_minDr_bestphoJets_elec1_closure;
+  TH1D *h_minDr_bestphoremEle_elec1_closure;
+  TH1D *h_minDr_bestphoremJets_elec1_closure;
+  TH1D *h_NEMobj_elec1_closure;
   TH1D *h_ElectronPt_elec1_closure;
   TH1D *h_ElectronPhi_elec1_closure;
   TH1D *h_ElectronEta_elec1_closure;
   TH1D *h_JetPt_elec1_closure;
   TH1D *h_JetPhi_elec1_closure;
   TH1D *h_JetEta_elec1_closure;
+  TH1D *h_JetPt1_elec1_closure;
+  TH1D *h_JetPhi1_elec1_closure;
+  TH1D *h_JetEta1_elec1_closure;
+  TH2D *h2_JetEta_Pt1_elec1_closure;
+  TH2D *h2_JetEta_Phi1_elec1_closure;
+  TH1D *h_JetPt2_elec1_closure;
+  TH1D *h_JetPhi2_elec1_closure;
+  TH1D *h_JetEta2_elec1_closure;
+  TH2D *h2_JetEta_Pt2_elec1_closure;
+  TH2D *h2_JetEta_Phi2_elec1_closure;
+  TH1D *h_JetPt3_elec1_closure;
+  TH1D *h_JetPhi3_elec1_closure;
+  TH1D *h_JetEta3_elec1_closure;
+  TH2D *h2_JetEta_Pt3_elec1_closure;
+  TH2D *h2_JetEta_Phi3_elec1_closure;
+  TH1D *h_JetPt4_elec1_closure;
+  TH1D *h_JetPhi4_elec1_closure;
+  TH1D *h_JetEta4_elec1_closure;
+  TH2D *h2_JetEta_Pt4_elec1_closure;
+  TH2D *h2_JetEta_Phi4_elec1_closure; 
+  TH1D *h_remJetPt_elec1_closure;
+  TH1D *h_remJetPhi_elec1_closure;
+  TH1D *h_remJetEta_elec1_closure;
   TH1D *h_mTPhoMET_elec1_closure;
   TH1D *h_dPhi_METjet1_elec1_closure;
   TH1D *h_dPhi_METjet2_elec1_closure;
   TH1D *h_dPhi_phojet1_elec1_closure;
   TH1D *h_dPhi_phojet2_elec1_closure;
   TH1D *h_dPhi_phoMET_elec1_closure;
+  TH2D *h2_BestPhotonPt_jetmatchphoratio_elec1_closure;
+  TH2D *h2_BestPhotonPt_jetphoratio_elec1_closure;
   TH2D *h2_leadElectronEta_Phi_elec1_closure;
+  TH2D *h2_leadElectronPt_Eta_elec1_closure;
   TH1D *h_leadJetPt_elec1_closure;
   TH1D *h_leadJetPhi_elec1_closure;
   TH1D *h_leadJetEta_elec1_closure;
@@ -254,6 +432,18 @@ class Fakerate : public NtupleVariables{
   TH2D *h2_njetnbjet_phopt_vBin_elec1_closure;
   TH2D *h2_njetnbjet_phopt_elec1_closure; 
   TH1D *h_hadAk8jetPt_elec1_closure;
+  TH1D *h_CM_elec1_closure;
+  TH1D *h_EMObj_pT_elec1_closure;
+  TH2D *h2_PhoPtQMultJet_elec1_closure;
+  TH2D *h2_PhoPtQMultJet_v2_elec1_closure;
+  TH2D *h2_PhoPtQMultJet_v3_elec1_closure;
+  TH2D *h2_nJetsMET_elec1_closure;
+  TH2D *h2_METQMultJet_elec1_closure;
+  TH2D *h2_PhoPtMET_elec1_closure;
+  TH2D *h2_PhoPtnJets_elec1_closure;
+  TH3D *h3_PhoPtnJetsbtags_elec1_closure;
+  TH3D *h3_PhoPtnJetsQmult_elec1_closure;
+  TH2D *h2_nJetsQMultJet_elec1_closure;
   
 
   
@@ -617,9 +807,11 @@ void Fakerate::BookHistogram(const char *outFileName) {
   TH1::SetDefaultSumw2(1);
   h_selectBaselineYields_ = new TH1F("cutflows","cutflows",12,-0.5,12.5);
   h_selectBaselineYields_2 = new TH1F("cutflows2","cutflows2",12,-0.5,12.5);
-  h_nEvts=new TH1D("nEvents","no. of events in this tree",4,0,4);
-  h_RunNum=new TH1I("runs","Run nos.",300000,0,300000);
 
+
+  h_nvtx=new TH1D("nvtx","no. of vertices",100,0,100);
+    h_nEvts=new TH1D("nEvents","no. of events in this tree",4,0,4);
+  h_RunNum=new TH1I("runs","Run nos.",300000,0,300000);
   h_intLumi=new TH1D("intLumi","integrated luminosity in /fb",10000,25,200); 
   h_ST=new TH1D("ST","ST",400,0,4000);
   h_MET=new TH1D("MET","MET",200,0,2000);
@@ -631,9 +823,18 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h_BTags=new TH1D("nBTags","no. of B tags",10,0,10);
   //  h_BestPhotonPt=new TH1D("BestPhotonPt","Pt of the Best Photon",300,0,1500);
   h_nJets=new TH1D("nJets","nJets",25,0,25);
+  h_nremJets=new TH1D("nremJets","nJets",25,0,25);
+  h_dR_bandgene=new TH1D("h_dR_bandgene","MinDr b/w gen b and gen e",500,0,5);
+  h_deepcsv=new TH1D("h_deepcsv","Deep CSV",500,0,5);
+  h_dR_bandjets=new TH1D("h_dR_bandjets","MinDr b/w gen b and jets",500,0,5);
+  h_dR_bandrecoe=new TH1D("h_dR_bandrecoe","MinDr b/w gen b and Reco EMobject",500,0,5);
+  h_dR_geneandrecoe=new TH1D("h_dR_geneandrecoe","Dr b/w gen e and Reco EMobject",500,0,5);
   h_minDr_bestphoEle=new TH1D("h_minDr_bestphoEle","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
   h_minDr_bestphoJets=new TH1D("h_minDr_bestphoJets","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
+  h_minDr_bestphoremEle=new TH1D("h_minDr_bestphoremEle","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
+  h_minDr_bestphoremJets=new TH1D("h_minDr_bestphoremJets","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
   h_dPhi_phoMET=new TH1D("dPhi_phoMET","dphi between photon and MET",80,-4,4);
+
   h_BestPhotonPt=new TH1D("BestPhotonPt","Pt of the Best Photon",300,0,1500);
   h_BestPhotonPt_vBin=new TH1D("BestPhotonPt_vBin","Photon pt in variable bins",PhoLowEdge.size()-1,&(PhoLowEdge[0]));
   h_BestPhotonPt_0b=new TH1D("BestPhotonPt_0b","Pt of the Best Photon for bTag=0",300,0,1500);
@@ -642,24 +843,58 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h_BestPhotonPt_ge1b_vBin=new TH1D("BestPhotonPt_ge1b_vBin","Pt of the Best Photon for bTag > 0",PhoLowEdge.size()-1,&(PhoLowEdge[0]));
   h_BestPhotonEta=new TH1D("BestPhotonEta","Eta of the Best Photon",400,-5,5);
   h_BestPhotonPhi=new TH1D("BestPhotonPhi","Phi of the Best Photon",400,-5,5);
+  h2_BestPhotonEta_Qmulti=new TH2D("BestPhotonEta_Qmulti","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h2_BestPhotonEta_nJets=new TH2D("BestPhotonEta_nJets","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]),25,0,25);
+  h2_BestPhotonEta_MET=new TH2D("BestPhotonEta_MET","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]\
+),200,0,2000);
+  h_NEMobj=new TH1D("NEMobj","No. of the Electrons",10,0,10);
   h_ElectronPt=new TH1D("ElectronPt","Pt of the Electrons",300,0,1500);
   h_ElectronEta=new TH1D("ElectronEta","Eta of the Electrons",400,-5,5);
   h_ElectronPhi=new TH1D("ElectronPhi","Phi of the Electrons",400,-5,5);
   h_JetPt=new TH1D("JetPt","Pt of the Jets",300,0,1500);
   h_JetEta=new TH1D("JetEta","Eta of the Jets",400,-5,5);
   h_JetPhi=new TH1D("JetPhi","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt=new TH2D("JetEta_Pt","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi=new TH2D("JetEta_Phi","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt1=new TH1D("JetPt1","Pt of the Jets",300,0,1500);
+  h_JetEta1=new TH1D("JetEta1","Eta of the Jets",400,-5,5);
+  h_JetPhi1=new TH1D("JetPhi1","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt1=new TH2D("JetEta_Pt1","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi1=new TH2D("JetEta_Phi1","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt2=new TH1D("JetPt2","Pt of the Jets",300,0,1500);
+  h_JetEta2=new TH1D("JetEta2","Eta of the Jets",400,-5,5);
+  h_JetPhi2=new TH1D("JetPhi2","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt2=new TH2D("JetEta_Pt2","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi2=new TH2D("JetEta_Phi2","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt3=new TH1D("JetPt3","Pt of the Jets",300,0,1500);
+  h_JetEta3=new TH1D("JetEta3","Eta of the Jets",400,-5,5);
+  h_JetPhi3=new TH1D("JetPhi3","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt3=new TH2D("JetEta_Pt3","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi3=new TH2D("JetEta_Phi3","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt4=new TH1D("JetPt4","Pt of the Jets",300,0,1500);
+  h_JetEta4=new TH1D("JetEta4","Eta of the Jets",400,-5,5);
+  h_JetPhi4=new TH1D("JetPhi4","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt4=new TH2D("JetEta_Pt4","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi4=new TH2D("JetEta_Phi4","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_remJetPt=new TH1D("remJetPt","Pt of the remJets",300,0,1500);
+  h_remJetEta=new TH1D("remJetEta","Eta of the remJets",400,-5,5);
+  h_remJetPhi=new TH1D("remJetPhi","Phi of the remJets",400,-5,5);
   h_leadElectronPt=new TH1D("leadElectronPt","Leading Electron Pt ",300,0,1500);
   h_leadElectronPhi=new TH1D("leadElectronPhi","Leading Electron Phi ",400,-5,5);
   h_leadElectronEta=new TH1D("leadElectronEta","Leading Electron Eta ",400,-5,5);
   h2_leadElectronEta_Phi=new TH2D("leadElectronEta_Phi","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  //  h2_leadElectronPt_Eta=new TH2D("leadElectronPt_Eta","Leading Electron Pt (x axis) vs Eta (yaxis)",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),EMEtaLowedge.size()-1,&(EMEtaLowedge[0]));
+  h2_leadElectronPt_Eta=new TH2D("leadElectronPt_Eta","Leading Electron Pt (x axis) vs Eta (yaxis)",300,0,1500,200,-5,5);
+  h2_leadElectronPt_Phi=new TH2D("leadElectronPt_Phi","Leading Electron Pt (x axis) vs Phi (yaxis)",300,0,1500,200,-5,5);
   h_leadJetPt=new TH1D("leadJetPt","Leading Jet Pt ",300,0,1500);
   h_leadJetPhi=new TH1D("leadJetPhi","Leading Jet Phi ",400,-5,5);
   h_leadJetEta=new TH1D("leadJetEta","Leading Jet Eta ",400,-5,5);
   h2_leadJetEta_Phi=new TH2D("leadJetEta_Phi","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
   h2_leadJetEta_Pt=new TH2D("leadJetEta_Pt","Leading Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
-  h2_JetEta_Pt=new TH2D("JetEta_Pt","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_2leadJetEta_Pt=new TH2D("2leadJetEta_Pt","2nd Leading Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_3leadJetEta_Pt=new TH2D("3leadJetEta_Pt","3rd Leading Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_4leadJetEta_Pt=new TH2D("4leadJetEta_Pt","3rd Leading Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
   h2_BestPhoEta_Pt=new TH2D("BestPhoEta_Pt","Best Photon Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
-  h2_JetEta_Phi=new TH2D("JetEta_Phi","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
   h2_ElectronEta_Phi=new TH2D("ElectronEta_Phi","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
   h_dPhi_METlep=new TH1D("dPhi_METlep","dphi between MET Vec and Muon",40,0,4);
   h_dPhi_METlep1=new TH1D("dPhi_METlep1","dphi between leading MET Vec and Muon",40,0,4);
@@ -686,24 +921,67 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h_dPhi_phojet2=new TH1D("dPhi_phojet2","dphi between photon and Jet2",80,-4,4);
   h_dPhi_phojet3=new TH1D("dPhi_phojet3","dphi between photon and Jet3",80,-4,4);
   h_dPhi_phojet4=new TH1D("dPhi_phojet4","dphi between photon and Jet4",80,-4,4);
+  h_MET_CaloMET=new TH1D("MET_CaloMET","MET/Calo MET ",500,0,10);
+  h_dPhi_MET_CaloMET=new TH1D("dPhi_MET_CaloMET","dPhi(MET,Calo MET) ",80,-4,4);
+
+  h2_HT5HT_dPhiMETj1=new TH2D("HT5HT_dPhiMETj1","HT5/HT vs dPhi(MET, J1)",200,0,4,100,0,3);
+  h2_HT5HT_dPhiMETj2=new TH2D("HT5HT_dPhiMETj2","HT5/HT vs dPhi(MET, J2)",200,0,4,100,0,3);
+  h2_HT5HT_dPhiMETj3=new TH2D("HT5HT_dPhiMETj3","HT5/HT vs dPhi(MET, J3)",200,0,4,100,0,3);
+  h2_HT5HT_dPhiMETj4=new TH2D("HT5HT_dPhiMETj4","HT5/HT vs dPhi(MET, J4)",200,0,4,100,0,3);
+  h2_JPt_dPhiMETj1=new TH2D("JPt_dPhiMETj1","1st lead Jet Pt vs dPhi(MET, J1)",200,0,4,300,0,1500);
+  h2_JPt_dPhiMETj2=new TH2D("JPt_dPhiMETj2","2nd lead Jet Pt vs dPhi(MET, J2)",200,0,4,300,0,1500);
+  h2_JPt_dPhiMETj3=new TH2D("JPt_dPhiMETj3","3rd lead Jet Pt vs dPhi(MET, J3)",200,0,4,300,0,1500);
+  h2_JPt_dPhiMETj4=new TH2D("JPt_dPhiMETj4","4th lead Jet Pt vs dPhi(MET, J4)",200,0,4,300,0,1500);
+  h_HT5HT=new TH1D("HT5HT"," HT5/HT ",100,0,3);
   h2_njetnbjet_phopt_vBin=new TH2D("njetnbjet_phopt_vBin","NJet x NbTag (x axis) wrt #gamma pT (yaxis)",10,1,11,PhoLowEdge.size()-1,&(PhoLowEdge[0]));
   h2_njetnbjet_phopt=new TH2D("njetnbjet_phopt","NJet x NbTag (x axis) wrt #gamma pT (yaxis)",10,1,11,300,0,1500);
   h_hadAk8jetPt=new TH1D("hadAk8jetPt","Soft dropped Pt of AK8 Jet",2000,0,1000);
   h_CM_Ele=new TH1D("Qmulti","charged multiplicity in jet matching Ele",50,0,50);
   h_EMObj_pT=new TH1D("EMObj_Pt","Pt of the EM object",300,0,1500);
+   h2_PhoPtQMultJet=new TH2D("PhoPtQMultJet","x: Photon Pt vs charged multiplicity in the matching jet",ptlow2.size()-1,&(ptlow2[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+   h2_PhoPtMET=new TH2D("PhoPtMET","x: Photon Pt vs MET",300,0,1500,200,0,2000);
+   h2_nJetsMET=new TH2D("nJetsMET","x: nJets vs MET",25,0,25,200,0,2000);
+   h2_METQMultJet=new TH2D("METQMultJet","x: MET vs charged multiplicity in the matching jet",200,0,2000,50,0,50);
+  h2_PhoPtQMultJet_v3=new TH2D("PhoPtQMultJet_v3","x: Photon Pt vs charged multiplicity in the matching jet",300,0,1500,50,0,50);
+   // h2_PhoPtQMultJet=new TH2D("PhoPtQMultJet","x: Photon Pt vs charged multiplicity in the matching jet",300,0,1500,25,0,25);
+  h2_PhoPtQMultJet_v2=new TH2D("PhoPtQMultJet_v2","x: Photon Pt vs charged multiplicity in the matching jet",ptlow2_v2.size()-1,&(ptlow2_v2[0]),QMultLowedge_v2.size()-1,&(QMultLowedge_v2[0]));
+  //  h2_PhoPtnJets=new TH2D("PhoPtnJets","x: Photon Pt vs no. of jets",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]));
+  h2_PhoPtnJets=new TH2D("PhoPtnJets","x: Photon Pt vs njets",300,0,1500,25,0,25);
+  h3_PhoPtnJetsbtags=new TH3D("PhoPtnJetsbtags","x: Photon Pt vs no. of jets",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),nbtagsLowedge.size()-1,&(nbtagsLowedge[0]));
+  // h3_PhoPtnJetsQmult=new TH3D("PhoPtnJetsQMult","x: Photon Pt vs no. of jets vs Qmult",ptlow2.size()-1,&(ptlow2[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h3_PhoPtnJetsQmult=new TH3D("PhoPtnJetsQMult","x: Photon Pt vs no. of jets vs Qmult",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  //  h2_PhoPtQMultJet=new TH2D("PhoPtQMultJet","x: Photon Pt vs charged multiplicity in the matching jet",12,ptLow2,sizeof(QMultLow)/sizeof(double)-1,QMultLow);
+  //  h2_nJetsQMultJet=new TH2D("nJetsQMultJet","x: Photon Pt vs charged multiplicity in the matching jet",25,0,25,QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h2_nJetsQMultJet=new TH2D("nJetsQMultJet","x: Photon Pt vs charged multiplicity in the matching jet",25,0,25,50,0,50);
+  h2_QMultlleadJetPt=new TH2D("QMultlleadJetPt","x: Lead Jet Pt vs y: Qmultiplicity in lead jet",300,0,1500,50,0,50);
+  h2_QMultlleadbJet=new TH2D("QMultlleadbJet","x: Qmultiplicity in jet matched to e & y: Deep CSV for jet matched to e",50,0,50,300,0,3);
+  h2_QMultlleadbJet_v2=new TH2D("QMultlleadbJet_v2","x: Qmultiplicity in jet matched to EMobject as e & y: dR(b tag,EM object as e)",300,0,1500,300,-3,3);
 
+  
+  h_nvtx_elec0=new TH1D("nvtx_elec0","no. of vertices",100,0,100);
   h_ST_elec0=new TH1D("ST_elec0","ST",400,0,4000);
   h_MET_elec0=new TH1D("MET_elec0","MET",200,0,2000);
   h2_MET_nJets_elec0=new TH2D("MET_nJets_elec0","MET (Y axis) wrt nJets (X axis)",25,0,25,200,0,2000);
   h2_METvBin2_nJets_elec0=new TH2D("METvBin2_nJets_elec0","MET (Y axis) wrt nJets (X axis)",25,0,25,METLowEdge_v2.size()-1,&(METLowEdge_v2[0]));
   h2_nbjets_nJets_elec0=new TH2D("nbjets_nJets_elec0","nbjets (Y axis) wrt nJets (X axis)",25,0,25,10,0,10);
   h_BTags_elec0=new TH1D("nBTags_elec0","no. of B tags",10,0,10);
-  h_nJets_elec0=new TH1D("nJets_elec0","nJets",25,0,25);
+   h_nJets_elec0=new TH1D("nJets_elec0","nJets",25,0,25);
+   h_nremJets_elec0=new TH1D("nremJets_elec0","nJets",25,0,25);
   h_METvBin2_elec0=new TH1D("METvBin2_elec0","MET in variable bins",METLowEdge_v2.size()-1,&(METLowEdge_v2[0]));
   h_minDr_bestphoEle_elec0=new TH1D("h_minDr_bestphoEle_elec0","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
   h_minDr_bestphoJets_elec0=new TH1D("h_minDr_bestphoJets_elec0","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
+  h_minDr_bestphoremEle_elec0=new TH1D("h_minDr_bestphoremEle_elec0","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
+  h_minDr_bestphoremJets_elec0=new TH1D("h_minDr_bestphoremJets_elec0","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
+  // h_dPhi_METjet1_elec0=new TH1D("dPhi_METjet1_elec0","dphi between MET Vec and Jet1",80,-4,4);
+  // h_dPhi_METjet2_elec0=new TH1D("dPhi_METjet2_elec0","dphi between MET Vec and Jet2",80,-4,4);
   h_dPhi_METjet1_elec0=new TH1D("dPhi_METjet1_elec0","dphi between MET Vec and Jet1",80,-4,4);
   h_dPhi_METjet2_elec0=new TH1D("dPhi_METjet2_elec0","dphi between MET Vec and Jet2",80,-4,4);
+  h_dPhi_METjet3_elec0=new TH1D("dPhi_METjet3_elec0","dphi between MET Vec and Jet3",80,-4,4);
+  h_dPhi_METjet4_elec0=new TH1D("dPhi_METjet4_elec0","dphi between MET Vec and Jet4",80,-4,4);
+  h_MET_CaloMET_elec0=new TH1D("MET_CaloMET_elec0","MET/Calo MET ",500,0,10);
+  h_dPhi_MET_CaloMET_elec0=new TH1D("dPhi_MET_CaloMET_elec0","dPhi(MET,Calo MET) ",80,-4,4);
+  h_HT5HT_elec0=new TH1D("HT5HT_elec0"," HT5/HT ",100,0,3);
+
   h_dPhi_phojet1_elec0=new TH1D("dPhi_phojet1_elec0","dphi between photon and Jet1",80,-4,4);
   h_dPhi_phojet2_elec0=new TH1D("dPhi_phojet2_elec0","dphi between photon and Jet2",80,-4,4);
   h_dPhi_phoMET_elec0=new TH1D("dPhi_phoMET_elec0","dphi between photon and MET",80,-4,4);
@@ -716,13 +994,43 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h_BestPhotonPt_elec0=new TH1D("BestPhotonPt_elec0","Pt of the Best Photon",300,0,1500);
   h_BestPhotonEta_elec0=new TH1D("BestPhotonEta_elec0","Eta of the Best Photon",400,-5,5);
   h_BestPhotonPhi_elec0=new TH1D("BestPhotonPhi_elec0","Phi of the Best Photon",400,-5,5);
+  h2_BestPhotonEta_Qmulti_elec0=new TH2D("BestPhotonEta_Qmulti_elec0","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h2_BestPhotonEta_nJets_elec0=new TH2D("BestPhotonEta_nJets_elec0","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]),25,0,25);
+  h2_BestPhotonEta_MET_elec0=new TH2D("BestPhotonEta_MET_elec0","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]),200,0,2000);
+  h_NEMobj_elec0=new TH1D("NEMobj_elec0","No. of the Photons",10,0,10);
   h_ElectronPt_elec0=new TH1D("ElectronPt_elec0","Pt of the Electrons",300,0,1500);
   h_ElectronEta_elec0=new TH1D("ElectronEta_elec0","Eta of the Electrons",400,-5,5);
   h_ElectronPhi_elec0=new TH1D("ElectronPhi_elec0","Phi of the Electrons",400,-5,5);
   h_JetPt_elec0=new TH1D("JetPt_elec0","Pt of the Jets",300,0,1500);
   h_JetEta_elec0=new TH1D("JetEta_elec0","Eta of the Jets",400,-5,5);
   h_JetPhi_elec0=new TH1D("JetPhi_elec0","Phi of the Jets",400,-5,5);
+  h_JetPt1_elec0=new TH1D("JetPt1_elec0","Pt of the Jets",300,0,1500);
+  h_JetEta1_elec0=new TH1D("JetEta1_elec0","Eta of the Jets",400,-5,5);
+  h_JetPhi1_elec0=new TH1D("JetPhi1_elec0","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt1_elec0=new TH2D("JetEta_Pt1_elec0","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi1_elec0=new TH2D("JetEta_Phi1_elec0","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt2_elec0=new TH1D("JetPt2_elec0","Pt of the Jets",300,0,1500);
+  h_JetEta2_elec0=new TH1D("JetEta2_elec0","Eta of the Jets",400,-5,5);
+  h_JetPhi2_elec0=new TH1D("JetPhi2_elec0","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt2_elec0=new TH2D("JetEta_Pt2_elec0","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi2_elec0=new TH2D("JetEta_Phi2_elec0","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt3_elec0=new TH1D("JetPt3_elec0","Pt of the Jets",300,0,1500);
+  h_JetEta3_elec0=new TH1D("JetEta3_elec0","Eta of the Jets",400,-5,5);
+  h_JetPhi3_elec0=new TH1D("JetPhi3_elec0","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt3_elec0=new TH2D("JetEta_Pt3_elec0","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi3_elec0=new TH2D("JetEta_Phi3_elec0","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt4_elec0=new TH1D("JetPt4_elec0","Pt of the Jets",300,0,1500);
+  h_JetEta4_elec0=new TH1D("JetEta4_elec0","Eta of the Jets",400,-5,5);
+  h_JetPhi4_elec0=new TH1D("JetPhi4_elec0","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt4_elec0=new TH2D("JetEta_Pt4_elec0","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi4_elec0=new TH2D("JetEta_Phi4_elec0","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_remJetPt_elec0=new TH1D("remJetPt_elec0","Pt of the remJets",300,0,1500);
+  h_remJetEta_elec0=new TH1D("remJetEta_elec0","Eta of the remJets",400,-5,5);
+  h_remJetPhi_elec0=new TH1D("remJetPhi_elec0","Phi of the remJets",400,-5,5);
   h2_leadElectronEta_Phi_elec0=new TH2D("leadElectronEta_Phi_elec0","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h2_leadElectronPt_Eta_elec0=new TH2D("leadElectronPt_Eta_elec0","Leading Electron Pt (x axis) vs Eta (yaxis)",300,0,1500,200,-5,5);
+  h2_leadElectronPt_Phi_elec0=new TH2D("leadElectronPt_Phi_elec0","Leading Electron Pt (x axis) vs Phi (yaxis)",300,0,1500,200,-5,5);
+  // h2_leadElectronPt_Eta_elec0=new TH2D("leadElectronPt_Eta_elec0","Leading Electron Pt (x axis) vs Eta (yaxis)",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),EMEtaLowedge.size()-1,&(EMEtaLowedge[0]));				 
   h_leadJetPt_elec0=new TH1D("leadJetPt_elec0","Leading Jet Pt ",300,0,1500);
   h_leadJetPhi_elec0=new TH1D("leadJetPhi_elec0","Leading Jet Phi ",400,-5,5);
   h_leadJetEta_elec0=new TH1D("leadJetEta_elec0","Leading Jet Eta ",400,-5,5);
@@ -733,8 +1041,29 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h_hadAk8Mass_elec0=new TH1D("hadAk8Mass_elec0","Soft dropped mass of AK8 Jet",1000,0,300);
     h_CM_Pho=new TH1D("Qmulti_elec0","charged multiplicity in jet matching Pho",50,0,50);
   h_EMObj_pT_elec0=new TH1D("EMObj_Pt_elec0","Pt of the EM object",300,0,1500);
+  h2_PhoPtQMultJet_elec0=new TH2D("PhoPtQMultJet_elec0","x: Photon Pt vs charged multiplicity in the matching jet",ptlow2.size()-1,&(ptlow2[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+ //  h2_PhoPtQMultJet_elec0=new TH2D("PhoPtQMultJet_elec0","x: Photon Pt vs charged multiplicity in the matching jet",300,0,1500,25,0,25);
+  // h2_PhoPtQMultJet_v2_elec0=new TH2D("PhoPtQMultJet_v2_elec0","x: Photon Pt vs charged multiplicity in the matching jet",300,0,1500,50,0,50);
+  //  h2_PhoPtnJets_elec0=new TH2D("PhoPtnJets_elec0","x: Photon Pt vs no. of jets",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]));
+  h2_PhoPtnJets_elec0=new TH2D("PhoPtnJets_elec0","x: Photon Pt vs njets",300,0,1500,25,0,25);
+  h3_PhoPtnJetsbtags_elec0=new TH3D("PhoPtnJetsbtags_elec0","x: Photon Pt vs no. of jets",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),nbtagsLowedge.size()-1,&(nbtagsLowedge[0]));
+  h2_PhoPtQMultJet_v2_elec0=new TH2D("PhoPtQMultJet_v2_elec0","x: Photon Pt vs charged multiplicity in the matching jet",ptlow2_v2.size()-1,&(ptlow2_v2[0]),QMultLowedge_v2.size()-1,&(QMultLowedge_v2[0]));
+  //  h3_PhoPtnJetsQmult_elec0=new TH3D("PhoPtnJetsQMult_elec0","x: Photon Pt vs no. of jets vs Qmult",ptlow2.size()-1,&(ptlow2[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h2_PhoPtMET_elec0=new TH2D("PhoPtMET_elec0","x: Photon Pt vs MET",300,0,1500,200,0,2000);
+   h2_nJetsMET_elec0=new TH2D("nJetsMET_elec0","x: nJets vs MET",25,0,25,200,0,2000);
+   h2_METQMultJet_elec0=new TH2D("METQMultJet_elec0","x: MET vs charged multiplicity in the matching jet",200,0,2000,50,0,50);
+  h2_PhoPtQMultJet_v3_elec0=new TH2D("PhoPtQMultJet_v3_elec0","x: Photon Pt vs charged multiplicity in the matching jet",300,0,1500,50,0,50);
+  h3_PhoPtnJetsQmult_elec0=new TH3D("PhoPtnJetsQMult_elec0","x: Photon Pt vs no. of jets vs Qmult",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h2_nJetsQMultJet_elec0=new TH2D("nJetsQMultJet_elec0","x: Photon Pt vs charged multiplicity in the matching jet",25,0,25,50,0,50);
+  h2_QMultlleadJetPt_elec0=new TH2D("QMultlleadJetPt_elec0","x: Lead Jet Pt vs y: Qmultiplicity in lead jet",300,0,1500,50,0,50);
+  h2_QMultlleadbJet_elec0=new TH2D("QMultlleadbJet_elec0","x: Qmultiplicity in jet matched to e & y: Deep CSV for jet matched to e",50,0,50,300,0,3);
+  h2_QMultlleadbJet_v2_elec0=new TH2D("QMultlleadbJet_v2_elec0","x: Qmultiplicity in jet matched to EMobject as e & y: dR(b tag,EM object as e)",50,0,50,150,0,3);
+  h2_BestPhotonPt_jetmatchphoratio_elec0=new TH2D("BestPhotonPt_jetmatchphoratio_elec0","Best Photon Pt (x axis) vs jet(match to photon) Pt/Photon Pt (yaxis)",300,0,1500,1000,0,5);
+  h2_BestPhotonPt_jetphoratio_elec0=new TH2D("BestPhotonPt_jetphoratio_elec0","Best Photon Pt (x axis) vs jet Pt/Photon Pt (yaxis)",300,0,1500,1000,0,5);
 
-    
+
+  
+  h_nvtx_elec1_closure=new TH1D("nvtx_elec1_closure","no. of vertices",100,0,100);
   h_ST_elec1_closure=new TH1D("ST_elec1_closure","ST",400,0,4000);
   h_MET_elec1_closure=new TH1D("MET_elec1_closure","MET",200,0,2000);
   h2_MET_nJets_elec1_closure=new TH2D("MET_nJets_elec1_closure","MET (Y axis) wrt nJets (X axis)",25,0,25,200,0,2000);
@@ -742,7 +1071,10 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h2_nbjets_nJets_elec1_closure=new TH2D("nbjets_nJets_elec1_closure","nbjets (Y axis) wrt nJets (X axis)",25,0,25,10,0,10);
   h_BTags_elec1_closure=new TH1D("nBTags_elec1_closure","no. of B tags",10,0,10);
   h_nJets_elec1_closure=new TH1D("nJets_elec1_closure","nJets",25,0,25);
+  h_nremJets_elec1_closure=new TH1D("nremJets_elec1_closure","nJets",25,0,25);
   h_METvBin2_elec1_closure=new TH1D("METvBin2_elec1_closure","MET in variable bins",METLowEdge_v2.size()-1,&(METLowEdge_v2[0]));
+  h_minDr_bestphoremEle_elec1_closure=new TH1D("h_minDr_bestphoremEle_elec1_closure","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
+  h_minDr_bestphoremJets_elec1_closure=new TH1D("h_minDr_bestphoremJets_elec1_closure","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
   h_minDr_bestphoEle_elec1_closure=new TH1D("h_minDr_bestphoEle_elec1_closure","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
   h_minDr_bestphoJets_elec1_closure=new TH1D("h_minDr_bestphoJets_elec1_closure","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
   h_dPhi_METjet1_elec1_closure=new TH1D("dPhi_METjet1_elec1_closure","dphi between MET Vec and Jet1",80,-4,4);
@@ -759,13 +1091,42 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h_BestPhotonPt_elec1_closure=new TH1D("BestPhotonPt_elec1_closure","Pt of the Best Photon",300,0,1500);
   h_BestPhotonEta_elec1_closure=new TH1D("BestPhotonEta_elec1_closure","Eta of the Best Photon",400,-5,5);
   h_BestPhotonPhi_elec1_closure=new TH1D("BestPhotonPhi_elec1_closure","Phi of the Best Photon",400,-5,5);
+  h2_BestPhotonEta_Qmulti_elec1_closure=new TH2D("BestPhotonEta_Qmulti_elec1_closure","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h2_BestPhotonEta_nJets_elec1_closure=new TH2D("BestPhotonEta_nJets_elec1_closure","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]),25,0,25);
+  h2_BestPhotonEta_MET_elec1_closure=new TH2D("BestPhotonEta_MET_elec1_closure","x: Electron Eta vs charged multiplicity in the matching jet",EMEtaLowedge.size()-1,&(EMEtaLowedge[0]),200,0,2000);
+  h_NEMobj_elec1_closure=new TH1D("NEMobj_elec1_closure","No. of the Pred. Photons",10,0,10);
   h_ElectronPt_elec1_closure=new TH1D("ElectronPt_elec1_closure","Pt of the Electrons",300,0,1500);
   h_ElectronEta_elec1_closure=new TH1D("ElectronEta_elec1_closure","Eta of the Electrons",400,-5,5);
   h_ElectronPhi_elec1_closure=new TH1D("ElectronPhi_elec1_closure","Phi of the Electrons",400,-5,5);
   h_JetPt_elec1_closure=new TH1D("JetPt_elec1_closure","Pt of the Jets",300,0,1500);
   h_JetEta_elec1_closure=new TH1D("JetEta_elec1_closure","Eta of the Jets",400,-5,5);
   h_JetPhi_elec1_closure=new TH1D("JetPhi_elec1_closure","Phi of the Jets",400,-5,5);
+  h_JetPt1_elec1_closure=new TH1D("JetPt1_elec1_closure","Pt of the Jets",300,0,1500);
+  h_JetEta1_elec1_closure=new TH1D("JetEta1_elec1_closure","Eta of the Jets",400,-5,5);
+  h_JetPhi1_elec1_closure=new TH1D("JetPhi1_elec1_closure","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt1_elec1_closure=new TH2D("JetEta_Pt1_elec1_closure","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi1_elec1_closure=new TH2D("JetEta_Phi1_elec1_closure","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt2_elec1_closure=new TH1D("JetPt2_elec1_closure","Pt of the Jets",300,0,1500);
+  h_JetEta2_elec1_closure=new TH1D("JetEta2_elec1_closure","Eta of the Jets",400,-5,5);
+  h_JetPhi2_elec1_closure=new TH1D("JetPhi2_elec1_closure","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt2_elec1_closure=new TH2D("JetEta_Pt2_elec1_closure","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi2_elec1_closure=new TH2D("JetEta_Phi2_elec1_closure","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt3_elec1_closure=new TH1D("JetPt3_elec1_closure","Pt of the Jets",300,0,1500);
+  h_JetEta3_elec1_closure=new TH1D("JetEta3_elec1_closure","Eta of the Jets",400,-5,5);
+  h_JetPhi3_elec1_closure=new TH1D("JetPhi3_elec1_closure","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt3_elec1_closure=new TH2D("JetEta_Pt3_elec1_closure","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi3_elec1_closure=new TH2D("JetEta_Phi3_elec1_closure","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h_JetPt4_elec1_closure=new TH1D("JetPt4_elec1_closure","Pt of the Jets",300,0,1500);
+  h_JetEta4_elec1_closure=new TH1D("JetEta4_elec1_closure","Eta of the Jets",400,-5,5);
+  h_JetPhi4_elec1_closure=new TH1D("JetPhi4_elec1_closure","Phi of the Jets",400,-5,5);
+  h2_JetEta_Pt4_elec1_closure=new TH2D("JetEta_Pt4_elec1_closure","Jet Eta (x axis) vs Pt (yaxis)",200,-5,5,300,0,1500);
+  h2_JetEta_Phi4_elec1_closure=new TH2D("JetEta_Phi4_elec1_closure","Leading Jet Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+   h_remJetPt_elec1_closure=new TH1D("remJetPt_elec1_closure","Pt of the remJets",300,0,1500);
+  h_remJetEta_elec1_closure=new TH1D("remJetEta_elec1_closure","Eta of the remJets",400,-5,5);
+  h_remJetPhi_elec1_closure=new TH1D("remJetPhi_elec1_closure","Phi of the remJets",400,-5,5);
   h2_leadElectronEta_Phi_elec1_closure=new TH2D("leadElectronEta_Phi_elec1_closure","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
+  h2_leadElectronPt_Eta_elec1_closure=new TH2D("leadElectronPt_Eta_elec1_closure","Leading Electron Pt (x axis) vs Eta (yaxis)",300,0,1500,200,-5,5);
+  //  h2_leadElectronPt_Eta_elec1_closure=new TH2D("leadElectronPt_Eta_elec1_closure","Leading Electron Pt (x axis) vs Eta (yaxis)",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),EMEtaLowedge.size()-1,&(EMEtaLowedge[0]));
   h_leadJetPt_elec1_closure=new TH1D("leadJetPt_elec1_closure","Leading Jet Pt ",300,0,1500);
   h_leadJetPhi_elec1_closure=new TH1D("leadJetPhi_elec1_closure","Leading Jet Phi ",400,-5,5);
   h_leadJetEta_elec1_closure=new TH1D("leadJetEta_elec1_closure","Leading Jet Eta ",400,-5,5);
@@ -774,6 +1135,22 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h2_njetnbjet_phopt_elec1_closure=new TH2D("njetnbjet_phopt_elec1_closure","NJet x NbTag (x axis) wrt #gamma pT (yaxis)",10,1,11,300,0,1500);
   h_hadAk8jetPt_elec1_closure=new TH1D("hadAk8jetPt_elec1_closure","Soft dropped Pt of AK8 Jet",2000,0,1000);
   h_hadAk8Mass_elec1_closure=new TH1D("hadAk8Mass_elec1_closure","Soft dropped mass of AK8 Jet",1000,0,300);
+  h_CM_elec1_closure=new TH1D("Qmulti_elec1_closure","charged multiplicity in jet matching Pho",50,0,50);
+  h_EMObj_pT_elec1_closure=new TH1D("EMObj_Pt_elec1_closure","Pt of the EM object",300,0,1500);
+  h2_PhoPtQMultJet_elec1_closure=new TH2D("PhoPtQMultJet_elec1_closure","x: Photon Pt vs charged multiplicity in the matching jet",ptlow2.size()-1,&(ptlow2[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h2_PhoPtQMultJet_v2_elec1_closure=new TH2D("PhoPtQMultJet_v2_elec1_closure","x: Photon Pt vs charged multiplicity in the matching jet",ptlow2_v2.size()-1,&(ptlow2_v2[0]),QMultLowedge_v2.size()-1,&(QMultLowedge_v2[0]));
+  h2_PhoPtMET_elec1_closure=new TH2D("PhoPtMET_elec1_closure","x: Photon Pt vs MET",300,0,1500,200,0,2000);
+   h2_nJetsMET_elec1_closure=new TH2D("nJetsMET_elec1_closure","x: nJets vs MET",25,0,25,200,0,2000);
+   h2_METQMultJet_elec1_closure=new TH2D("METQMultJet_elec1_closure","x: MET vs charged multiplicity in the matching jet",200,0,2000,50,0,50);
+  h2_PhoPtQMultJet_v3_elec1_closure=new TH2D("PhoPtQMultJet_v3_elec1_closure","x: Photon Pt vs charged multiplicity in the matching jet",300,0,1500,50,0,50);
+  //  h2_PhoPtnJets_elec1_closure=new TH2D("PhoPtnJets_elec1_closure","x: Photon Pt vs no. of jets",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]));
+  h2_PhoPtnJets_elec1_closure=new TH2D("PhoPtnJets_elec1_closure","x: Photon Pt vs njets",300,0,1500,25,0,25);
+  h3_PhoPtnJetsbtags_elec1_closure=new TH3D("PhoPtnJetsbtags_elec1_closure","x: Photon Pt vs no. of jets",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),nbtagsLowedge.size()-1,&(nbtagsLowedge[0]));
+  h2_nJetsQMultJet_elec1_closure=new TH2D("nJetsQMultJet_elec1_closure","x: Photon Pt vs charged multiplicity in the matching jet",25,0,25,50,0,50);
+  h3_PhoPtnJetsQmult_elec1_closure=new TH3D("PhoPtnJetsQMult_elec1_closure","x: Photon Pt vs no. of jets vs Qmult",BestPhotonPtBinLowEdge.size()-1,&(BestPhotonPtBinLowEdge[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  //  h3_PhoPtnJetsQmult_elec1_closure=new TH3D("PhoPtnJetsQMult_elec1_closure","x: Photon Pt vs no. of jets vs Qmult",ptlow2.size()-1,&(ptlow2[0]),nJetsLowedgev1.size()-1,&(nJetsLowedgev1[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
+  h2_BestPhotonPt_jetmatchphoratio_elec1_closure=new TH2D("BestPhotonPt_jetmatchphoratio_elec1_closure","Best Photon Pt (x axis) vs jet(match to photon) Pt/Photon Pt (yaxis)",300,0,1500,1000,0,5);
+  h2_BestPhotonPt_jetphoratio_elec1_closure=new TH2D("BestPhotonPt_jetphoratio_elec1_closure","Best Photon Pt (x axis) vs jet Pt/Photon Pt (yaxis)",300,0,1500,1000,0,5);
 
   h_intLumi_EW=new TH1D("intLumi_EW","2016 integrated luminosity in /fb",2500,25,50); 
   h_ST_EW=new TH1D("ST_EW","ST 2016",400,0,4000);
@@ -1073,13 +1450,15 @@ void Fakerate::BookHistogram(const char *outFileName) {
 
   h_SBins_v6_CD = new TH1D("AllSBins_v6_CD","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",36,0.5,36.5);
  h_SBins_v6_CD_EW_43bin = new TH1D("AllSBins_v6_CD_EW_43bin","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] [(WTag : [65,105]),(HTag : [105,140])]",43,0.5,43.5);
- h_SBins_v6_CD_EW_50bin = new TH1D("AllSBins_v6_CD_EW_50bin","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
+ h_SBins_v6_CD_EW_50bin = new TH1D("AllSBins_v6_CD_EW_50bin","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0,51);
+ // h_SBins_v6_CD_EW_50bin = new TH1D("AllSBins_v6_CD_EW_50bin","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
  h_SBins_v6_CD_EW_14bin = new TH1D("AllSBins_v6_CD_EW_14bin","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] [(WTag : [65,105]),(HTag : [105,140])]",14,0.5,14.5);
  h_SBins_v6_CD_EW_7bin = new TH1D("AllSBins_v6_CD_EW_7bin","search bins v6:[(WTag : [65,105])]",7,0.5,7.5);
  h_SBins_v6_CD_EW_7bin_noSB = new TH1D("AllSBins_v6_CD_EW_7bin_noSB","search bins v6:[(WTag : [65,105])]",7,0.5,7.5);
 
   h_SBins_v6_CD_EW = new TH1D("AllSBins_v6_CD_EW","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
   h_SBins_v6_CD_EW_htag = new TH1D("AllSBins_v6_CD_EW_htag","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
+
   h_SBins_v6_CD_SP = new TH1D("AllSBins_v6_CD_SP","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
 
   h_SBins_v7_CD = new TH1D("AllSBins_v7_CD","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
@@ -1112,9 +1491,12 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h_SBins_v6_CD_elec0 = new TH1D("AllSBins_v6_CD_elec0","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",48,1,49);
   h_SBins_v6_CD_elec1 = new TH1D("AllSBins_v6_CD_elec1","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",48,1,49);
   h_SBins_v6_CD_elec1_closure = new TH1D("AllSBins_v6_CD_elec1_closure","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",48,1,49);
-  h_SBins_v6_CD_EW_50bin_elec0 = new TH1D("AllSBins_v6_CD_EW_50bin_elec0","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
-  h_SBins_v6_CD_EW_50bin_elec1_closure = new TH1D("AllSBins_v6_CD_EW_50bin_elec1_closure","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
-  h_SBins_v6_CD_EW_50bin_elec1 = new TH1D("AllSBins_v6_CD_EW_50bin_elec1","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
+  h_SBins_v6_CD_EW_50bin_elec0 = new TH1D("AllSBins_v6_CD_EW_50bin_elec0","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",52,0,52);
+  h_SBins_v6_CD_EW_50bin_elec1_closure = new TH1D("AllSBins_v6_CD_EW_50bin_elec1_closure","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",52,0,52);
+   h_SBins_v6_CD_EW_50bin_elec1 = new TH1D("AllSBins_v6_CD_EW_50bin_elec1","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",52,0,52);
+  //  h_SBins_v6_CD_EW_50bin_elec0 = new TH1D("AllSBins_v6_CD_EW_50bin_elec0","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
+  // h_SBins_v6_CD_EW_50bin_elec1_closure = new TH1D("AllSBins_v6_CD_EW_50bin_elec1_closure","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
+  // h_SBins_v6_CD_EW_50bin_elec1 = new TH1D("AllSBins_v6_CD_EW_50bin_elec1","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
 
   h_SBins_v7_CD_SP_elec0_acc = new TH1D("AllSBins_v7_CD_SP_elec0_acc","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
   h_SBins_v7_CD_SP_elec0_id = new TH1D("AllSBins_v7_CD_SP_elec0_id","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
@@ -1132,9 +1514,9 @@ void Fakerate::BookHistogram(const char *outFileName) {
   h_SBins_v6_CD_SP_elec0_acc = new TH1D("AllSBins_v6_CD_SP_elec0_acc","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
   h_SBins_v6_CD_SP_elec0_id = new TH1D("AllSBins_v6_CD_SP_elec0_id","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
   h_SBins_v6_CD_SP_elec0_iso = new TH1D("AllSBins_v6_CD_SP_elec0_iso","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
-  h_SBins_v6_CD_SP_elec0 = new TH1D("AllSBins_v6_CD_SP_elec0","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
-  h_SBins_v6_CD_SP_elec1 = new TH1D("AllSBins_v6_CD_SP_elec1","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
-  h_SBins_v6_CD_SP_elec1_closure = new TH1D("AllSBins_v6_CD_SP_elec1_closure","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
+  h_SBins_v6_CD_SP_elec0 = new TH1D("AllSBins_v6_CD_SP_elec0","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",48,1,49 );
+  h_SBins_v6_CD_SP_elec1 = new TH1D("AllSBins_v6_CD_SP_elec1","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",48,1,49 );
+  h_SBins_v6_CD_SP_elec1_closure = new TH1D("AllSBins_v6_CD_SP_elec1_closure","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",48,1,49 );
 
   
   //---------------Search Bins ----------------------------

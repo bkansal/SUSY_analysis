@@ -1,1 +1,1 @@
-../lostlepton/samples/CR_Summer16v3.TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_v18.root
+samples/CR_Summer16v3.TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_v18.root

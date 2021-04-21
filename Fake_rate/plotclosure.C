@@ -23,35 +23,48 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   TString path;
   if(ntuples=="v18")
     {
-      //      path="rootoutput/newselec_LE_noISRjet_METfilters_nogenpromptpho_forWGandTTG_EW_hadjetID_v18/TF_v3_usingfullRun2/";
-      //      path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
-      //      path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/WGJets_TF/";
- // path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
-      //        path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/";
-	//       path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/TTGJets_TF/";
-      //         path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/";
-            path="./";
+      //             path="./rootout/fake_rate_v1/FR_v1/";
+      //             path="./rootout/fake_rate_v1/FR_v1/FR/";
+      //             path="./rootout/fake_rate_v1/FR_v1/FR_foryearwise/";
+      //path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v2/FR_for2016_wopx/";
+      //   path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v2/FR_for2016_pxonly/";
+      //      path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v2/FR_for2016_px_mindr_lpt3_jetsandemobject/";
+      //path="./";
+      //      path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v5/FR_using_PhoPtnJetsQmulti_dr_b_e_cut/";
+      //      path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v6/FR_using_PhoPtQmulti_csv_cut_Qmultibin1_phoptbin2/";
+      //      path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v6/FR_using_PhoPtQmulti_csv_cut_EMObjeta_qmulti//";
+      //      path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v6/FR_using_PhoPtQmulti_csv_cut_nb_nj_cut/";
+      //        path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v6/FR_using_PhoPtQmulti_csv_cut/";
+      //	path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v6/FR_using_PhoPtQmulti_csv_cut_usingtrg_reject_notmatchede_HEM_HTHT5_METCaloMET_pucenter/";
+      path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v7/FR_using_PhoPtQmulti_csv_cut_EMObjeta_qmulti_METCaloMET_tmp/";
+
     }
   else
     {
       //path="rootoutput/newselec_LE_noISRjet_METfilters_nogenpromptpho_forWGandTTG_EW_hadjetID_v18/TF_v3_usingfullRun2/";
       //      path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
       //      path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID/TF_v3_usingfullRun2/";
-      path="./";
+      //      path="./";
+      path="/Users/bkansal/work/MET_Analysis/Analysis/fakerate/rootout/fake_rate_v4/FR_using_PhoPtQmulti_nopix/";
       //path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID/TF_v3_usingfullRun2/";
       
     }
   TLatex textOnTop,intLumiE;
   
-  TString filename;
-  //  TString a="WGJets";
-  TString a="TTWGJ";
+  TString filename,filename1;
+  //  TString a="Jets";
+   TString a="TTWGJ";
   if(ntuples=="v18")
     {
       if(year == "full_Run2")
 	filename  = path+a+"_CR_v18.root";
-      else 
-	filename= path+a+"_"+year+"_CR_v18.root";
+      else
+	{
+	/* filename= path+"Run2017BtoE_METdata_CR_v18.root"; */
+	/* filename1= path+"Run2017F_METdata_CR_v18.root"; */
+	  filename= path+a+"_"+year+"_CR_v18.root";
+	  filename1= path+a+"_"+year+"_CR_v18.root";
+	}
     }
   else
     {
@@ -76,9 +89,10 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   /* 	filename= path+"TTWGJ_"+year+"_CR.root"; */
   /*   } */
   f1 = new TFile(filename);
+  f2 = new TFile(filename1);
   
   double xmin,xmax,bin,xmin_,xmax_;
-  double ymin=0.5 , ymax=1.5, ymin_=0.0001 , ymax_=1000;
+  double ymin=0.5 , ymax=1.5, ymin_=0.0001 , ymax_=1000000;
 
   TH1D *cr,*sr,*tf,*pred_sr;
  
@@ -98,16 +112,16 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     }
   else if(SRvsCR)
     {
-      png = path+"/PDF/TF/"+varName+"_"+year+".pdf";
-      pdf= path+"/PDF/TF/"+varName+"_"+year+".png";
+      png = path+"/PDF/FR/"+varName+"_"+year+".pdf";
+      pdf= path+"/PDF/FR/"+varName+"_"+year+".png";
     }
-  //  TCanvas *c1 = new TCanvas("stackhist","stackhist",600,500);
-  TCanvas *c1;
+  TCanvas *c1 = new TCanvas("stackhist","stackhist",500,600);
+  //  TCanvas *c1;
   TString varName1,varName2;
   if(ExpvsPred)  varName2=varName+"_elec1_closure";
   else if(SRvsCR) varName2=varName;
   varName1=varName+"_elec0";
-
+  //  varName1=varName;
 
   double nbin,bin0, bin1,yset_;
   TH1D *total;
@@ -118,7 +132,7 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     if(SRvsCR)       pred_sr          = (TH1D*)f1->Get("AllSBins_v6_CD_SP_elec1");
     sr          = (TH1D*)f1->Get("AllSBins_v6_CD_SP_elec0");
     xmin=-100000,xmax = 100000,xmin_=0,xmax_=37;
-    ymin=0 , ymax=1.99, ymin_=0.0001 , ymax_=1000;
+    ymin=0 , ymax=1.99, ymin_=0.0001 , ymax_=100000;
   }
   else if(varName=="AllSBins_v7_CD_SP"){
     gStyle->SetOptStat(0);
@@ -151,7 +165,7 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     if(ExpvsPred) pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_elec1_closure");
     if(SRvsCR) pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_elec1");
     xmin_=0,xmax_=44,xmin=0,xmax = 44,bin=45;
-   ymin=0 , ymax=1.99, ymin_=0.01 , ymax_=1000;
+   ymin=0 , ymax=1.99, ymin_=0.01 , ymax_=100000;
   }  
  else if(varName=="AllSBins_v6_CD_EW_50bin"){
    gStyle->SetOptStat(0);
@@ -162,10 +176,10 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     if(SRvsCR)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
     pred_sr->GetYaxis()->SetTitle("Bin no.");
      
-    bin=51.5;
+    bin=52;
     //    xmin=-100000,xmax = 100000,xmin_=0,xmax_=50;
-    xmin=-1,xmax = 50,xmin_=-1,xmax_=50;
-    ymin=0 , ymax=1.99, ymin_=0.005 , ymax_=100000, yset_=200;
+    xmin=1,xmax = 52,xmin_=1,xmax_=52;
+    ymin=0 , ymax=1.99, ymin_=0.005 , ymax_=100000, yset_=10;
     title="closure test using optimized search bins";
   pred_sr->SetTitle(0);
   }
@@ -204,19 +218,21 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   pred_sr->SetTitle(title);
 
     }
- else if(varName=="BestPhotonPt" || varName=="ElectronPt" || varName=="JetPt" || varName=="leadJetPt" || varName=="hadAk8jetPt")
+ else if(varName=="BestPhotonPt" || varName=="ElectronPt" || varName=="remJetPt" || varName=="JetPt" || varName=="leadJetPt" || varName=="hadAk8jetPt" || varName=="EMObj_Pt")
     {
     c1 = new TCanvas("stackhist","stackhist",600,500);
     cr          = (TH1D*)f1->Get(varName);
     sr          = (TH1D*)f1->Get(varName1);
     pred_sr     = (TH1D*)f1->Get(varName2);
-    xmin_=0,xmax_=2000,xmin=0,xmax=2000;
+    if(varName=="EMObj_Pt") xmin_=0,xmax_=1000,xmin=0,xmax=1000;
+    else     xmin_=0,xmax_=2000,xmin=0,xmax=2000;
     if(varName=="hadAk8jetPt") rebin=100;
     if(varName=="BestPhotonPt") rebin=10;
     else rebin=10;
+
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
-    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=10000;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000000;
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
     title="closure test using "+ varName +" variable";
@@ -275,24 +291,24 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
       }
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
-    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=10000;
+    ymin=0 , ymax=1.99, ymin_=0.002 , ymax_=1000000;
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
     title="closure test using "+ varName +" variable";
   pred_sr->SetTitle(title);
 
     }
- else if(varName=="BestPhotonPhi"||varName=="BestPhotonEta"||varName=="JetEta" || varName == "JetPhi" || varName=="leadJetPhi" || varName == "leadJetEta")
+ else if(varName=="BestPhotonPhi"||varName=="BestPhotonEta" || varName=="remJetEta" || varName=="remJetPhi" ||varName=="JetEta" || varName == "JetPhi" || varName=="leadJetPhi" || varName == "leadJetEta")
     {
     c1 = new TCanvas("stackhist","stackhist",600,500);
     cr          = (TH1D*)f1->Get(varName);
-    sr          = (TH1D*)f1->Get(varName1);
+    sr          = (TH1D*)f2->Get(varName1);
     pred_sr     = (TH1D*)f1->Get(varName2);
-    xmin_=-5,xmax_=5,xmin=-5,xmax=5;
+    xmin_=-3.5,xmax_=3.5,xmin=-3.5,xmax=3.5;
     rebin=10;
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
-    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=10000;
+    ymin=0 , ymax=1.99, ymin_=0.02 , ymax_=100000;
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
     title="closure test using "+ varName +" variable";
@@ -301,6 +317,7 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     }
  else if(varName=="METvBin2" || varName =="METvBin_EW_v2" || varName =="METvBin_SP_v2")
     {
+      
     c1 = new TCanvas("stackhist","stackhist",600,500);
     cr          = (TH1D*)f1->Get(varName);
     sr          = (TH1D*)f1->Get(varName1);
@@ -314,15 +331,18 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
   pred_sr->SetTitle(title);
     }
- else if(varName=="nJets" || varName=="nJets_EW" ||varName=="nJets_SP")
+ else if(varName=="nJets" || varName=="nvtx" || varName=="nJets_EW" ||varName=="nJets_SP"||varName=="Qmulti")
     {
-    c1 = new TCanvas("stackhist","stackhist",600,500);
+      c1 = new TCanvas("stackhist","stackhist",900,1200);
     cr          = (TH1D*)f1->Get(varName);
     sr          = (TH1D*)f1->Get(varName1);
     pred_sr     = (TH1D*)f1->Get(varName2);
-    xmin_=2,xmax_=11,xmin=2,xmax=11;
     rebin=1;
-    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=100000;
+    if(varName=="Qmulti")    rebin=2,xmin_=0,xmax_=30,xmin=0,xmax=30;
+    if(varName=="nJets")    rebin=1,xmin_=0,xmax_=20,xmin=0,xmax=20;
+    if(varName=="nvtx")    rebin=2,xmin_=0,xmax_=100,xmin=0,xmax=100;
+      xmin_=2,xmax_=16,xmin=2,xmax=16;
+    ymin=0 , ymax=1.99, ymin_=0.002 , ymax_=50000;
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
@@ -337,14 +357,14 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     pred_sr     = (TH1D*)f1->Get(varName2);
     xmin_=0,xmax_=8,xmin=0,xmax=8;
     rebin=1;
-    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=100000;
+    ymin=0 , ymax=1.99, ymin_=0.05 , ymax_=1000000;
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
    pred_sr->SetTitle(title);
    }
- else if(varName=="h_minDr_bestphoEle" || varName == "h_minDr_bestphoJets" || varName=="h_minDr_bestphoEle_EW" || varName == "h_minDr_bestphoJets_EW" ||varName=="h_minDr_bestphoEle_SP" || varName == "h_minDr_bestphoJets_SP" || varName=="dPhi_phojet1"||varName=="dPhi_METjet1")
+ else if(varName=="h_minDr_bestphoEle" || varName == "h_minDr_bestphoJets" || varName=="h_minDr_bestphoremEle" || varName == "h_minDr_bestphoremJets" || varName=="h_minDr_bestphoEle_EW" || varName == "h_minDr_bestphoJets_EW" ||varName=="h_minDr_bestphoEle_SP" || varName == "h_minDr_bestphoJets_SP" || varName=="dPhi_phojet1"||varName=="dPhi_METjet1"||varName=="dPhi_phoMET")
     {
     c1 = new TCanvas("stackhist","stackhist",600,500);
     cr          = (TH1D*)f1->Get(varName);
@@ -352,60 +372,98 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     pred_sr     = (TH1D*)f1->Get(varName2);
     // rebin=20;
     //    xmin_=0,xmax_=5,xmin=0,xmax=5;
-    rebin=20;
-    xmin_=-5,xmax_=5,xmin=-5,xmax=5;
-    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=1000;
+    if(varName == "h_minDr_bestphoJets" || varName=="h_minDr_bestphoEle")
+      {
+	rebin=6;
+	xmin_=0,xmax_=5,xmin=0,xmax=5;
+	ymin=0 , ymax=0.01, ymin_=0.2 , ymax_=500000;
+      }
+    else if(varName == "h_minDr_bestphoremJets" || varName=="h_minDr_bestphoremEle")
+      {
+	rebin=4;
+	xmin_=0,xmax_=5,xmin=0,xmax=5;
+	ymin=0 , ymax=0.01, ymin_=0.2 , ymax_=5000;
+      }
+    
+    else if(varName=="dPhi_phoMET")
+      {
+	rebin=1;
+	xmin_=0,xmax_=4,xmin=0,xmax=4;
+	ymin=0 , ymax=1.99, ymin_=0.002 , ymax_=10000000;
+      }
+    /* else */
+    /*   { */
+    /* 	rebin=20; */
+    /* 	xmin_=-5,xmax_=5,xmin=-5,xmax=5; */
+    /* 	ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=1000; */
+    /*   } */
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    /* pred_sr->GetXaxis()->SetRangeUser(xmin,xmax); */
+    /* sr->GetXaxis()->SetRangeUser(xmin,xmax); */
     pred_sr->SetTitle(title);
     }
 
   
-  for(int i=xmin_;i<=10;i++)
-    { cout<<pred_sr->GetBinContent(i)<<endl;}
- cout<<"The sr content"<<endl;
-  for(int i=xmin_;i<=10;i++)
-    { cout<<sr->GetBinContent(i)<<endl;}
-  /* cout<<"==============="<<endl; */
+ /*  for(int i=xmin_;i<=10;i++) */
+ /*    { cout<<pred_sr->GetBinContent(i)<<endl;} */
+ /* cout<<"The sr content"<<endl; */
 
-  /* for(int i=0;i<=53;i++) */
-  /* /\*   { cout<<i<<" , CR : "<<cr->GetBinContent(i)<<" , Pred : SR : "<<pred_sr->GetBinContent(i)<<" ,  SR : "<<sr->GetBinContent(i)<<endl;} */
+ /* for(int i=xmin_;i<=10;i++) */
+ /*    { cout<<sr->GetBinContent(i)<<endl;} */
+ /*  cout<<"==============="<<endl; */
 
-  /* cout<<"==============="<<endl; */
 
   TPad *pad1 = new TPad("pad1","pad1",0,0.325,1,1);
   pad1->SetBottomMargin(0);
   pad1->SetBottomMargin(0.3);
+  //TPad *pad1 = new TPad("pad1","pad1",0,0.9,1,0.1);
+  TPad *pad2 = new TPad("pad1","pad1",0,0.0,1,0.3);
+  pad2->SetTopMargin(0);
+  pad2->SetBottomMargin(0.3);
 
+  
   pad1->Draw();pad1->SetGridx();
 
   pad1->cd();
   pad1->SetLogy();
     pred_sr->SetTitle(0);
 
+  pred_sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
+  sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
   pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
   sr->GetXaxis()->SetRangeUser(xmin,xmax);
   pred_sr->GetYaxis()->SetLabelSize(0.07);
   pred_sr->GetYaxis()->SetTitle("Entries");
   pred_sr->GetYaxis()->SetTitleSize(0.07);
   pred_sr->GetYaxis()->SetTitleOffset(0.72);
-  sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
-  pred_sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
+  ymin_=0.01,ymax_=100000;
   pred_sr->SetMarkerStyle(20);
-  pred_sr->SetMarkerSize(0.7);
+  pred_sr->SetMarkerSize(0.9);
   pred_sr->SetMarkerColor(kRed);
   pred_sr->SetLineColor(kRed);
   sr->SetMarkerStyle(20);
-  sr->SetMarkerSize(0.7);
+  sr->SetMarkerSize(0.9);
   sr->SetMarkerColor(kBlue);
   sr->SetLineColor(kBlue);
 
-  
+  //  (*pred_sr)=1.0*(*pred_sr);
   //  pred_sr->SetLineStyle(kBlue);
-  pred_sr->Draw("hists");
-  sr->Draw("hists sames");
+  pred_sr->Draw();
+  sr->Draw("sames");
+  cout<<" ===== obsereved e event ============\t Pred gamma event SR  ====== "<<endl;//  \t =====  SR : "<<endl;
+  for(int i=2;i<=53;i++)
+    { //cout<<i<<" , CR : "<<cr->GetBinContent(i)<<" , Pred : SR : "<<pred_sr->GetBinContent(i)<<" ,  SR : "<<sr->GetBinContent(i)<<endl;}
+      // cout<<i<<"  \t "<<cr->GetBinContent(i)<<" \t \t \t  "<<pred_sr->GetBinContent(i)<<" +- "<<pred_sr->GetBinError(i)<<endl;}
+      if(cr->GetBinLowEdge(i)==5) cout<<cr->GetBinLowEdge(i)<<"  \t "<<cr->GetBinContent(i)<<" \t \t \t          "<<pred_sr->GetBinContent(i)<<" +- "<<pred_sr->GetBinError(i)<<endl;
+      else
+	cout<<cr->GetBinLowEdge(i)<<"  \t "<<cr->GetBinContent(i)<<" \t \t \t  "<<pred_sr->GetBinContent(i)<<" +- "<<pred_sr->GetBinError(i)<<endl;//"\t \t "<<sr->GetBinContent(i)<<endl;}
+      
+    }
+
+  cout<<"==============="<<endl;
 
    TPaveStats *ptstats = new TPaveStats(0.80602,0.85,0.9,0.9,"brNDC");
    ptstats->SetName("stats");
@@ -449,10 +507,12 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   if(year=="full_Run2")
     intLumiE.DrawLatexNDC(0.7,0.91,"#bf{137 fb^{-1} (13 TeV)}");
   char chi2[1000],chi1[1000];
+
   // sprintf(chi2,"Chi2/NDF = %f",chi_NDF);
   sprintf(chi1,"Chi2/NDF = %f / %d , p = %f",chi,NDF,p);
 
-  TLegend *legend = new TLegend(0.55,0.8,0.9,0.9);
+  //  TLegend *legend = new TLegend(0.55,0.8,0.9,0.9);
+  TLegend *legend = new TLegend(0.45,0.7,0.9,0.9);
   legend->SetNColumns(1);
   legend->SetBorderSize(1);
   TLegend *legend1 = new TLegend(0.1,0.82,0.45,0.9);
@@ -463,7 +523,7 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   cout<<"Chi ===> "<<chi<<endl;
   cout<<"Chi1 ===> "<<chi1<<endl;
   legend1->SetTextSize(0.04);
-  legend->SetTextSize(0.04);
+  legend->SetTextSize(20);
   // legend1->Draw();
   if(ExpvsPred)
     {
@@ -476,14 +536,18 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
 	}
       else if (lep=="LM")
 	{
-	  legend->AddEntry(pred_sr,"Pred : TF  (1 #mu + #gamma )","lp");
-	  legend->AddEntry(sr,"Exp : (0 #mu + #gamma )","lp");
+	  /* legend->AddEntry(pred_sr,"Pred : TF  (1 #mu + #gamma )","lp"); */
+	  /* legend->AddEntry(sr,"Exp : (0 #mu + #gamma )","lp"); */
+	  legend->AddEntry(pred_sr,"Pred : FR x (1 e + 0 #gamma )","lp");
+	  legend->AddEntry(sr,"Exp : (0 e + 1 #gamma )","lp");
 
 	}
       else if(lep=="LL")
 	{
-	  legend->AddEntry(pred_sr,"Pred : TF x (1 l + #gamma )","lp");
-	  legend->AddEntry(sr,"Exp : (0 l + #gamma )","lp");
+	  legend->AddEntry(pred_sr,"Pred : FR x (1 e + 0 #gamma )","lp");
+	  legend->AddEntry(sr,"Exp : (0 e + 1 #gamma )","lp");
+	  /* legend->AddEntry(pred_sr,"Pred : TF x (1 l + #gamma )","lp"); */
+	  /* legend->AddEntry(sr,"Exp : (0 l + #gamma )","lp"); */
 	}
     }
   if(SRvsCR)
@@ -511,46 +575,45 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   /* else(LM){ */
       
   /*   }    */
-  legend->SetTextSize(0.04);
+  legend->SetTextSize(0.06);
   
   if(varName=="AllSBins_v6_CD_EW_50bin"  ){
-    TLine *line1V6=new TLine( 6.5,ymin_,  6.5,ymax_);
-    TLine *line2V6=new TLine(12.5,ymin_, 12.5,ymax_);
-    TLine *line3V6=new TLine(18.5,ymin_, 18.5,ymax_);
-    TLine *line4V6=new TLine(24.5,ymin_, 24.5,ymax_);
-    TLine *line5V6=new TLine(30.5,ymin_, 30.5,ymax_);
-    TLine *line6V6=new TLine(36.5,ymin_, 36.5,ymax_);
-    TLine *line7V6=new TLine(43.5,ymin_, 43.5,ymax_);
+    TLine *line1V6=new TLine( 8,ymin_,  8,ymax_);
+    TLine *line2V6=new TLine(14,ymin_, 14,ymax_);
+    TLine *line3V6=new TLine(20,ymin_, 20,ymax_);
+    TLine *line4V6=new TLine(26,ymin_, 26,ymax_);
+    TLine *line5V6=new TLine(32,ymin_, 32,ymax_);
+    TLine *line6V6=new TLine(38,ymin_, 38,ymax_);
+    TLine *line7V6=new TLine(45,ymin_, 45,ymax_);
     
     pad1->cd(); pad1->SetGridx(0); pad1->SetGridy(0);
 
     line1V6->Draw();      line2V6->Draw();  line3V6->Draw();
     line4V6->Draw();      line5V6->Draw();
     line6V6->Draw();      line7V6->Draw();
-    TArrow *arrow1 = new TArrow( -0.5,yset_, 6.5,yset_,0.01,"<|>");
-
-    TArrow *arrow2 = new TArrow( 6.5,yset_,12.5,yset_,0.01,"<|>");
-    TArrow *arrow3 = new TArrow(12.5,yset_,18.5,yset_,0.01,"<|>");
-    TArrow *arrow4 = new TArrow(18.5,yset_, 24.5,yset_,0.01,"<|>");
-    TArrow *arrow5 = new TArrow(24.5,yset_, 30.5,yset_,0.01,"<|>");
-    TArrow *arrow6 = new TArrow(30.5,yset_, 36.5,yset_,0.01,"<|>");
-    TArrow *arrow7 = new TArrow(36.5,yset_, 43.5,yset_,0.01,"<|>");
-    TArrow *arrow8 = new TArrow(43.5,yset_, 50.5,yset_,0.01,"<|>");
+    TArrow *arrow1 = new TArrow( 1,50*yset_,  8,50*yset_,0.01,"<|>");
+    TArrow *arrow2 = new TArrow( 8,50*yset_, 14,50*yset_,0.01,"<|>");
+    TArrow *arrow3 = new TArrow(14,50*yset_, 20,50*yset_,0.01,"<|>");
+    TArrow *arrow4 = new TArrow(20,50*yset_, 26,50*yset_,0.01,"<|>");
+    TArrow *arrow5 = new TArrow(26,50*yset_, 32,50*yset_,0.01,"<|>");
+    TArrow *arrow6 = new TArrow(32,50*yset_, 38,50*yset_,0.01,"<|>");
+    TArrow *arrow7 = new TArrow(38,50*yset_, 45,50*yset_,0.01,"<|>");
+    TArrow *arrow8 = new TArrow(45,50*yset_, 51,50*yset_,0.01,"<|>");
 
     arrow1->Draw(); arrow2->Draw(); arrow3->Draw();
     arrow4->Draw(); arrow5->Draw(); arrow6->Draw();
     arrow7->Draw(); arrow8->Draw();
     TLatex Tl;
     Tl.SetTextSize(0.05);
-    Tl.DrawLatex(2.5,2*yset_,"N^{ 0}_{ 2-4}");
-    Tl.DrawLatex(9.0,2*yset_,"N^{ 0}_{ 5-6}");
-    Tl.DrawLatex(15.0,2*yset_,"N^{ 0}_{ #geq7}");
-    Tl.DrawLatex(21.0,2*yset_,"N^{ #geq1}_{ 2-4}");
-    Tl.DrawLatex(26.0,2*yset_,"N^{ #geq1}_{ 5-6}");
-    Tl.DrawLatex(32.0,2*yset_,"N^{ #geq1}_{ #geq7}");
+    Tl.DrawLatex(2.5 ,2*50*yset_,"N^{ 0}_{ 2-4}");
+    Tl.DrawLatex(9.0 ,2*50*yset_,"N^{ 0}_{ 5-6}");
+    Tl.DrawLatex(15.0,2*50*yset_,"N^{ 0}_{ #geq7}");
+    Tl.DrawLatex(21.0,2*50*yset_,"N^{ #geq1}_{ 2-4}");
+    Tl.DrawLatex(27,2*50*yset_,"N^{ #geq1}_{ 5-6}");
+    Tl.DrawLatex(33,2*50*yset_,"N^{ #geq1}_{ #geq7}");
     Tl.SetTextSize(0.04);
-    Tl.DrawLatex(37.0,2*yset_,"EW : W tag");
-    Tl.DrawLatex(44.0,2*yset_,"EW : H tag");
+    Tl.DrawLatex(38,2*50*yset_,"EW : W tag");
+    Tl.DrawLatex(45,2*50*yset_,"EW : H tag");
   }
   
   if(varName=="AllSBins_v7_CD_SP"){
@@ -746,25 +809,21 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   }
 
   legend->Draw();
-  legend1->Draw();
-    ptstats->Draw();
-   ptstats2->Draw();
+  // legend1->Draw();
+  //   ptstats->Draw();
+  // ptstats2->Draw();
 
    TH1D *h4 = (TH1D*)pred_sr->Clone("h4");
   TH1D *h3 = (TH1D*)sr->Clone("h3");
 
-  TPad *pad2 = new TPad("pad1","pad1",0,0.0,1,0.3);
+  //  TPad *pad2 = new TPad("pad1","pad1",0,0.0,1,0.3);
   pad2->Draw();
   pad2->SetTopMargin(0);
-  pad2->SetBottomMargin(0.3);
+  // pad2->SetBottomMargin(0.3);
   pad2->cd();
   pad2->SetGrid(1);
 
   h3->GetYaxis()->SetRangeUser(0.5,1.5);
-  /*h3->GetXaxis()->SetRangeUser(xmin,xmax); */
-  /* h4->GetXaxis()->SetRangeUser(xmin,xmax); */
-
-  
   h3->SetLineColor(kBlack);
   h3->SetLineStyle(1);
   h3->SetLineWidth(2);
@@ -777,15 +836,20 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     
   else if(SRvsCR)
     {
-      if(lep=="LE")
+      if(varName=="AllSBins_v6_CD")
 	{
 	  h3->SetMinimum(0);  // Define Y ..                                                                                                   
-	  h3->SetMaximum(1); // .. range                                                                                                       
+	  h3->SetMaximum(0.04); // .. range                                                                                                       
+	}
+      else if(varName=="h_minDr_bestphoJets")
+	{
+	  h3->SetMinimum(0);  // Define Y ..                                                                                                   
+	  h3->SetMaximum(0.02); // .. range                                                                                                         
 	}
       else
 	{
 	  h3->SetMinimum(0);  // Define Y ..                                                                                                   
-	  h3->SetMaximum(5); // .. range                                                                                                         
+	  h3->SetMaximum(0.02); // .. range                                                                                                         
 	}
     }
   h3->Sumw2();
@@ -797,20 +861,43 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   h3->Draw("ep");       // Draw the ratio plot                                                                                                
 
   h3->SetTitle(0);
-  h3->GetXaxis()->SetTitleOffset(0.9);
+  if(varName=="METvBin2") h3->GetXaxis()->SetTitle("MET");
+  //  if(varName=="METvBin2") h3->GetXaxis()->SetTitle("");
+  else
    h3->GetXaxis()->SetTitle(varName);
-  h3->GetXaxis()->SetTitleSize(0.17);
-  h3->GetXaxis()->SetLabelSize(0.22);
+
 
   if(ExpvsPred)  h3->GetYaxis()->SetTitle("Exp/Pred");
   else if(SRvsCR) h3->GetYaxis()->SetTitle("SR/CR");
   TLine *line;
   
-  if(lep=="LE" && SRvsCR)
-    line = new TLine(xmin_,0.5,xmax_,0.5);
-  else
-    line = new TLine(xmin_,2.0,xmax_,2.0);
+  if(SRvsCR)  
+    {
+      if(varName=="AllSBins_v6_CD") line = new TLine(xmin_,0.02,xmax_,0.02);
+      if(varName=="h_minDr_bestphoJets") line = new TLine(xmin_,0.005,xmax_,0.005);
+      else line = new TLine(xmin_,0.01,xmax_,0.01);
 
+      h3->GetYaxis()->SetNdivisions(5);
+      h3->GetYaxis()->SetTitleOffset(0.25);
+      h3->GetYaxis()->SetTitleSize(0.20);
+      h3->GetYaxis()->SetLabelSize(0.14);
+      h3->GetXaxis()->SetTitleOffset(0.88);
+      h3->GetXaxis()->SetTitleSize(0.17);
+      h3->GetXaxis()->SetLabelSize(0.22);
+
+    }
+  else
+    {
+      h3->GetYaxis()->SetNdivisions(5);
+      h3->GetYaxis()->SetTitleOffset(0.17);
+      h3->GetYaxis()->SetTitleSize(0.25);
+      h3->GetYaxis()->SetLabelSize(0.21);
+      h3->GetXaxis()->SetTitleOffset(0.88);
+      h3->GetXaxis()->SetTitleSize(0.17);
+      h3->GetXaxis()->SetLabelSize(0.22);
+      line = new TLine(xmin_,1,xmax_,1);
+    }
+  
   line->SetLineColor(1);
   line->SetLineStyle(1);
   line->SetLineWidth(1);
@@ -818,10 +905,6 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
 
   
 
-  h3->GetYaxis()->SetNdivisions(5);
-  h3->GetYaxis()->SetTitleOffset(0.20);
-  h3->GetYaxis()->SetTitleSize(0.23);
-  h3->GetYaxis()->SetLabelSize(0.20);
 
 
   
@@ -830,13 +913,13 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   h3->GetXaxis()->SetTitleOffset(0.9);
    h3->GetXaxis()->SetTitle("Bin no.");
   h3->GetXaxis()->SetTitleSize(0.17);
-    TLine *line1V6=new TLine( 6.5,ymin,  6.5,ymax);
-    TLine *line2V6=new TLine(12.5,ymin, 12.5,ymax);
-    TLine *line3V6=new TLine(18.5,ymin, 18.5,ymax);
-    TLine *line4V6=new TLine(24.5,ymin, 24.5,ymax);
-    TLine *line5V6=new TLine(30.5,ymin, 30.5,ymax);
-    TLine *line6V6=new TLine(36.5,ymin, 36.5,ymax);
-    TLine *line7V6=new TLine(43.5,ymin, 43.5,ymax);
+    TLine *line1V6=new TLine( 8,ymin,  8,ymax);
+    TLine *line2V6=new TLine(14,ymin, 14,ymax);
+    TLine *line3V6=new TLine(20,ymin, 20,ymax);
+    TLine *line4V6=new TLine(26,ymin, 26,ymax);
+    TLine *line5V6=new TLine(32,ymin, 32,ymax);
+    TLine *line6V6=new TLine(38,ymin, 38,ymax);
+    TLine *line7V6=new TLine(45,ymin, 45,ymax);
     
     pad2->cd(); pad2->SetGridx(0);
 
@@ -899,15 +982,18 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
         line7V7->Draw(); line8V7->Draw();
         line9V7->Draw(); line10V7->Draw();
    }
-  /* /\* for(int i=bin0;i<=bin1;i++) *\/ */
-  /* /\*   { cout<<TF->GetBinContent(i)<<" +- "<<TF->GetBinError(i)<<endl;} *\/ */
-  /* /\* cout<<"The TF content in bin"<<endl; *\/ */
-  /* /\* for(int i=bin0;i<=bin1;i++) *\/ */
-  /* /\*   { cout<<TF->GetBinContent(i)<<endl;} *\/ */
-  /* /\* cout<<"The Transfer Factor error in bin"<<endl; *\/ */
-  /* /\* for(int i=bin0;i<=bin1;i++) *\/ */
-  /* /\*   { cout<<TF->GetBinError(i)<<endl;} *\/ */
-  /* /\* cout<<"==============="<<endl; *\/ */
+  pad2->SetGridx(0);
+  pad1->SetGridx(0);
+  /* cout<<"The TF content in bin"<<endl; */
+  /* for(int i=0;i<=51;i++) */
+  /*   { cout<<h3->GetBinLowEdge(i)<<" : "<<h3->GetBinContent(i)<<endl;} */
+  /* cout<<"==============="<<endl; */
+  
+  /* /\* /\\* for(int i=bin0;i<=bin1;i++) *\\/ *\/ */
+  /* /\* /\\*   { cout<<TF->GetBinContent(i)<<endl;} *\\/ *\/ */
+  /* /\* /\\* cout<<"The Transfer Factor error in bin"<<endl; *\\/ *\/ */
+  /* for(int i=0;i<=45;i++) */
+  /*   { cout<<h3->GetBinError(i)<<endl;} */
   c1->SaveAs(pdf);
   c1->SaveAs(png);
 }
