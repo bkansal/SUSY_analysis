@@ -35,7 +35,9 @@ class NtupleVariables : public TSelector {
    Bool_t          BadChargedCandidateFilter;
    Bool_t          BadPFMuonFilter;
    Int_t           BTags;
+   Int_t           BTagsclean;
    Int_t           BTagsDeepCSV;
+   Int_t           BTagsDeepCSVclean;
    Int_t           BTagsDeepCSVJECdown;
    Int_t           BTagsDeepCSVJECup;
    Int_t           BTagsDeepCSVJERdown;
@@ -325,7 +327,9 @@ class NtupleVariables : public TSelector {
    TBranch        *b_BadChargedCandidateFilter;   //!
    TBranch        *b_BadPFMuonFilter;   //!
    TBranch        *b_BTags;   //!
+   TBranch        *b_BTagsclean;   //!
    TBranch        *b_BTagsDeepCSV;   //!
+   TBranch        *b_BTagsDeepCSVclean;   //!
    TBranch        *b_BTagsDeepCSVJECdown;   //!
    TBranch        *b_BTagsDeepCSVJECup;   //!
    TBranch        *b_BTagsDeepCSVJERdown;   //!
@@ -833,7 +837,9 @@ void NtupleVariables::Init(TTree *tree, string nameData)
    fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
    fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
    fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
+   fChain->SetBranchAddress("BTagsclean", &BTagsclean, &b_BTagsclean);
    fChain->SetBranchAddress("BTagsDeepCSV", &BTagsDeepCSV, &b_BTagsDeepCSV);
+   fChain->SetBranchAddress("BTagsDeepCSVclean", &BTagsDeepCSVclean, &b_BTagsDeepCSVclean);
    fChain->SetBranchAddress("BTagsDeepCSVJECdown", &BTagsDeepCSVJECdown, &b_BTagsDeepCSVJECdown);
    fChain->SetBranchAddress("BTagsDeepCSVJECup", &BTagsDeepCSVJECup, &b_BTagsDeepCSVJECup);
    fChain->SetBranchAddress("BTagsDeepCSVJERdown", &BTagsDeepCSVJERdown, &b_BTagsDeepCSVJERdown);

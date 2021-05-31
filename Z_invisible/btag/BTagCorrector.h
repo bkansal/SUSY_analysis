@@ -43,7 +43,9 @@ class BTagCorrector {
 		    TH2F* n_eff_b = (TH2F*)file->Get("n_eff_b");
 		    TH2F* d_eff_b = (TH2F*)file->Get("d_eff_b");
 		    h_eff_b = (TH2F*)n_eff_b->Clone("h_eff_b");
+		    //		    cout<<"1"<<endl;
 		    h_eff_b->Divide(d_eff_b);
+		    // cout<<"2"<<endl;
 		  }
 		  if(!h_eff_c){
 		    TH2F* n_eff_c = (TH2F*)file->Get("n_eff_c");

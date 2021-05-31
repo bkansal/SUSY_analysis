@@ -32,12 +32,13 @@ class Z_invisible : public NtupleVariables{
   int getBinNoV7_v1(int);
   //  int getBinNoV6(int);
   int getBinNoV6(TLorentzVector, int);
-  int getBinNoV6_EW(bool,bool);
+  int getBinNoV6_EW(bool,bool,double);
+  int getBinNoV6_SP(bool,bool,bool,bool,int,int,double);
   int getBinNoV6_EW1(bool);
-  int getBinNoV6_EWplusSP_SR(bool,bool,bool,int);
-  int getBinNoV6_EWplusSP_CR(bool,bool,bool,bool,int);
-  int getBinNoV7_le(int);
-  int getBinNoV7_le2(bool,bool,bool,bool,int);
+  int getBinNoV6_EWplusSP_SR(bool,bool,bool,bool,int,int,double);
+  int getBinNoV6_EWplusSP_CR(bool,bool,bool,bool,int,int,double);
+  int getBinNoV7_le(int,int);
+  int getBinNoV7_le2(bool,bool,bool,bool,int,int);
   void storeBTagEff();
   
   double getGendRLepPho();
@@ -150,7 +151,12 @@ class Z_invisible : public NtupleVariables{
   TH1D *h_minDr_bestphoEle;
   TH1D *h_minDr_bestphoJets;
   TH1D *h_minDr_bestphoremEle;
+  TH1D *h_minDphi_bestphoJets;
   TH1D *h_minDr_bestphoremJets;
+  TH1D *h_dRgenl1recol1;
+  TH1D *h_dRgenl2recol2;
+  TH2D *h2_dRgenl1recol1_PID;
+  TH1D *h_genzMass;
   TH1D *h_NEMobj;
   TH1D *h_ElectronPt;
   TH1D *h_ElectronPhi;
@@ -230,6 +236,10 @@ class Z_invisible : public NtupleVariables{
   TH1D *h_minDr_Elejet3;
   TH1D *h_minDr_Elejet4;
   TH1D *h_minDr_EleJets;
+  TH1D *h_minDphi_Elejet1;
+  TH1D *h_minDr_Zjet1;
+  TH1D *h_minDphi_Zjet1;
+  TH1D *h_minDphi_Elejet2;
   TH2D *h2_dPhivseta_jet1;
   TH2D *h2_dPhivseta_jet2;
   TH2D *h2_dPhivseta_jet3;
@@ -243,6 +253,8 @@ class Z_invisible : public NtupleVariables{
   TH1D *h_hadAk8jetPt;
   TH1D *h_CM_Ele;
   TH1D *h_EMObj_pT;
+  TH1D *h_EMObj_Eta;
+  TH1D *h_EMObj_Phi;
   TH2D *h2_PhoPtQMultJet;
   TH2D *h2_PhoPtQMultJet_v2;
   TH2D *h2_PhoPtnJets;
@@ -257,13 +269,19 @@ class Z_invisible : public NtupleVariables{
   TH1D *h_dR_bandjets;
   TH1D *h_dR_bandrecoe;
   TH1D *h_deepcsv;
+  TH1D *h_deepcsv_v2;
+  TH1D *h_deepcsv_v3;
+  TH1D *h_deepcsv_v4;
   TH1D *h_dR_geneandrecoe;
   TH2D *h2_QMultlleadJetPt;
   TH2D *h2_QMultlleadbJet;
   TH2D *h2_METleadbJet;
   TH2D *h2_QMultlleadbJet_v2;
+  TH2D *h2_btag_probwt;
+  TH1D *h_zpt;  
+  TH1D *h_HT;
+  TH1D *h_genzpt;  
 
-  
   TH1D *h_nvtx_elec0;
   TH1D *h_ST_elec0;
   TH1D *h_MET_elec0;
@@ -754,7 +772,7 @@ class Z_invisible : public NtupleVariables{
   TH1D *h_SBins_v6_CD_EW_43bin;
   TH1D *h_SBins_v6_CD_EW_50bin;
   TH1D *h_SBins_v6_CD_EW_7bin;
-  TH1D *h_SBins_v6_CD_EW_7bin_noSB;
+  TH1D *h_SBins_v6_CD_EW_7bin_elec1_closure;
 
   TH1D *h_SBins_v6_CD_elec0_acc;                                                                                               
   TH1D *h_SBins_v6_CD_elec0_id;                                                                                                  
@@ -835,6 +853,7 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h_RunNum=new TH1I("runs","Run nos.",300000,0,300000);
   h_intLumi=new TH1D("intLumi","integrated luminosity in /fb",10000,25,200); 
   h_ST=new TH1D("ST","ST",400,0,4000);
+  h_HT=new TH1D("HT","HT",400,0,4000);
   h_MET=new TH1D("MET","MET",200,0,2000);
   h2_MET_nJets=new TH2D("MET_nJets","MET (Y axis) wrt nJets (X axis)",25,0,25,200,0,2000);
   h2_MET_elepT=new TH2D("MET_elepT","MET (Y axis) wrt Electron pT (X axis)",300,0,1500,200,0,2000);
@@ -847,13 +866,21 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h_nremJets=new TH1D("nremJets","nJets",25,0,25);
   h_dR_bandgene=new TH1D("h_dR_bandgene","MinDr b/w gen b and gen e",500,0,5);
   h_deepcsv=new TH1D("h_deepcsv","Deep CSV",10,0,10);
+  h_deepcsv_v2=new TH1D("h_deepcsv_v2","Deep CSV",10,0,10);
+  h_deepcsv_v3=new TH1D("h_deepcsv_v3","Deep CSV",10,0,10);
+  h_deepcsv_v4=new TH1D("h_deepcsv_v4","Deep CSV",10,0,10);
   h_dR_bandjets=new TH1D("h_dR_bandjets","MinDr b/w gen b and jets",500,0,5);
   h_dR_bandrecoe=new TH1D("h_dR_bandrecoe","MinDr b/w gen b and Reco EMobject",500,0,5);
   h_dR_geneandrecoe=new TH1D("h_dR_geneandrecoe","Dr b/w gen e and Reco EMobject",500,0,5);
   h_minDr_bestphoEle=new TH1D("h_minDr_bestphoEle","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
   h_minDr_bestphoJets=new TH1D("h_minDr_bestphoJets","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
+  h_minDphi_bestphoJets=new TH1D("h_minDphi_bestphoJets","dphi b/w Reco Photon and Reco Jets ",500,-5,5);
   h_minDr_bestphoremEle=new TH1D("h_minDr_bestphoremEle","Mindr b/w Reco Photon and Reco Lepton ",500,0,5);
   h_minDr_bestphoremJets=new TH1D("h_minDr_bestphoremJets","Mindr b/w Reco Photon and Reco Jets ",500,0,5);
+  h2_dRgenl1recol1_PID=new TH2D("h2_dRgenl1recol1_PID","Mindr b/w gen l1 and Reco l1 ",500,0,5,200,-100,100);
+  h_dRgenl1recol1=new TH1D("h_dRgenl1recol1","Mindr b/w gen l1 and Reco l1 ",500,0,5);
+  h_dRgenl2recol2=new TH1D("h_dRgenl2recol2","Mindr b/w gen l2 and Reco l2 ",500,0,5);
+
   h_dPhi_phoMET=new TH1D("dPhi_phoMET","dphi between photon and MET",80,-4,4);
 
   h_BestPhotonPt=new TH1D("BestPhotonPt","Pt of the Best Photon",300,0,1500);
@@ -868,6 +895,8 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h2_BestPhotonEta_nJets=new TH2D("BestPhotonEta_nJets","x: Electron Eta vs charged multiplicity in the matching jet",200,-5,5,25,0,25);
   h2_BestPhotonEta_MET=new TH2D("BestPhotonEta_MET","x: Electron Eta vs charged multiplicity in the matching jet",200,-5,5,200,0,2000);
   h_NEMobj=new TH1D("NEMobj","No. of the Electrons",10,0,10);
+  h_zpt=new TH1D("zPt","Pt of the z",300,0,1500);
+  h_genzpt=new TH1D("genzPt","Pt of the gen z",300,0,1500);
   h_ElectronPt=new TH1D("ElectronPt","Pt of the Electrons",300,0,1500);
   h_ElectronEta=new TH1D("ElectronEta","Eta of the Electrons",400,-5,5);
   h_ElectronPhi=new TH1D("ElectronPhi","Phi of the Electrons",400,-5,5);
@@ -920,6 +949,10 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h_dPhi_METlep1=new TH1D("dPhi_METlep1","dphi between leading MET Vec and Muon",40,0,4);
   h2_BestPhotonPt_jetmatchphoratio=new TH2D("BestPhotonPt_jetmatchphoratio","Best Photon Pt (x axis) vs jet(match to photon) Pt/Photon Pt (yaxis)",300,0,1500,1000,0,5);
   h2_BestPhotonPt_jetphoratio=new TH2D("BestPhotonPt_jetphoratio","Best Photon Pt (x axis) vs jet Pt/Photon Pt (yaxis)",300,0,1500,1000,0,5);
+  h_minDphi_Zjet1=new TH1D("h_minDphi_Zjet1","dphi b/w Reco lepton and Reco first leading jet ",500,-5,5);
+  h_minDphi_Elejet1=new TH1D("h_minDphi_Elejet1","dphi b/w Reco lepton and Reco first leading jet ",500,-5,5);
+  h_minDphi_Elejet2=new TH1D("h_minDphi_Elejet2","dphi b/w Reco lepton and Reco Second leading jet ",500,-5,5);
+  h_minDr_Zjet1=new TH1D("h_minDr_Zjet1","dr b/w Reco lepton and Reco first leading jet ",500,0,5);
   h_minDr_Elejet1=new TH1D("h_minDr_Elejet1","dr b/w Reco lepton and Reco first leading jet ",500,0,5);
   h_minDr_Elejet2=new TH1D("h_minDr_Elejet2","dr b/w Reco lepton and Reco Second leading jet ",500,0,5);
   h_minDr_Elejet3=new TH1D("h_minDr_Elejet3","dr b/w Reco lepton and Reco third leading jet ",500,0,5);
@@ -943,6 +976,7 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h_dPhi_phojet4=new TH1D("dPhi_phojet4","dphi between photon and Jet4",80,-4,4);
   h_MET_CaloMET=new TH1D("MET_CaloMET","MET/Calo MET ",500,0,10);
   h_dPhi_MET_CaloMET=new TH1D("dPhi_MET_CaloMET","dPhi(MET,Calo MET) ",80,-4,4);
+  h_genzMass=new TH1D("genzMass","invariant mass from e- & e+",2000,0,500);
   h_invMass=new TH1D("invMass","invariant mass from e- & e+",2000,0,500);
   h2_HT5HT_dPhiMETj1=new TH2D("HT5HT_dPhiMETj1","HT5/HT vs dPhi(MET, J1)",200,0,4,100,0,3);
   h2_HT5HT_dPhiMETj2=new TH2D("HT5HT_dPhiMETj2","HT5/HT vs dPhi(MET, J2)",200,0,4,100,0,3);
@@ -958,6 +992,8 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h_hadAk8jetPt=new TH1D("hadAk8jetPt","Soft dropped Pt of AK8 Jet",2000,0,1000);
   h_CM_Ele=new TH1D("Qmulti","charged multiplicity in jet matching Ele",50,0,50);
   h_EMObj_pT=new TH1D("EMObj_Pt","Pt of the EM object",300,0,1500);
+  h_EMObj_Eta=new TH1D("EMObj_Eta","Eta of the EM object",400,-5,5);
+  h_EMObj_Phi=new TH1D("EMObj_Phi","Phi of the EM object",400,-5,5);
    h2_PhoPtQMultJet=new TH2D("PhoPtQMultJet","x: Photon Pt vs charged multiplicity in the matching jet",ptlow2.size()-1,&(ptlow2[0]),QMultLowedge.size()-1,&(QMultLowedge[0]));
    h2_PhoPtMET=new TH2D("PhoPtMET","x: Photon Pt vs MET",300,0,1500,200,0,2000);
    h2_nJetsMET=new TH2D("nJetsMET","x: nJets vs MET",25,0,25,200,0,2000);
@@ -977,7 +1013,7 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h2_QMultlleadbJet=new TH2D("QMultlleadbJet","x: Qmultiplicity in jet matched to e & y: Deep CSV for jet matched to e",50,0,50,300,0,3);
   h2_METleadbJet=new TH2D("METleadbJet","x: MET & y: Deep CSV for jet matched to e",200,0,2000,300,0,3);
   h2_QMultlleadbJet_v2=new TH2D("QMultlleadbJet_v2","x: Qmultiplicity in jet matched to EMobject as e & y: dR(b tag,EM object as e)",300,0,1500,300,-3,3);
-
+  h2_btag_probwt=new TH2D("h2_btag_probwt","x : nBTags & y : wt * prob",50,0,50,2000,0,2);
   
   h_nvtx_elec0=new TH1D("nvtx_elec0","no. of vertices",100,0,100);
   h_ST_elec0=new TH1D("ST_elec0","ST",400,0,4000);
@@ -1363,7 +1399,7 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h_METvBin_nocut=new TH1D("METvBin_nocut","MET in variable bins without any cut",METLowEdge.size()-1,&(METLowEdge[0]));
   h_METvBin1=new TH1D("METvBin1","MET in variable bins",METLowEdge_v1.size()-1,&(METLowEdge_v1[0]));
   h_METvBin_nocut1=new TH1D("METvBin_nocut1","MET in variable bins without any cut",METLowEdge_v1.size()-1,&(METLowEdge_v1[0]));
-  h_METvBin2=new TH1D("METvBin2","MET in variable bins",METLowEdge_v2.size()-1,&(METLowEdge_v2[0]));
+  h_METvBin2=new TH1D("METvBin2","MET in variable bins",METLowEdge_v3.size()-1,&(METLowEdge_v3[0]));
   h_METvBin_nocut2=new TH1D("METvBin_nocut2","MET in variable bins without any cut",METLowEdge_v2.size()-1,&(METLowEdge_v2[0]));
 
   h_MET_nj1=new TH1D("MET_nj1","MET",200,0,1200);  
@@ -1469,20 +1505,21 @@ void Z_invisible::BookHistogram(const char *outFileName) {
   h_GmatchedObj=new TH1D("GmatchedObj","Gen Obj close to Reco-Gamma",62,-0.75,30.25);
   h_PdgIdPhoParent = new TH1D("PdgIdPhoParent","PdgID of the Photon's parent",62,-0.75,30.25);
 
-  h_SBins_v6_CD = new TH1D("AllSBins_v6_CD","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",36,0.5,36.5);
+  h_SBins_v6_CD = new TH1D("AllSBins_v6_CD","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",8,1,9);
  h_SBins_v6_CD_EW_43bin = new TH1D("AllSBins_v6_CD_EW_43bin","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] [(WTag : [65,105]),(HTag : [105,140])]",43,0.5,43.5);
  h_SBins_v6_CD_EW_50bin = new TH1D("AllSBins_v6_CD_EW_50bin","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0,51);
  // h_SBins_v6_CD_EW_50bin = new TH1D("AllSBins_v6_CD_EW_50bin","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
  h_SBins_v6_CD_EW_14bin = new TH1D("AllSBins_v6_CD_EW_14bin","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] [(WTag : [65,105]),(HTag : [105,140])]",14,0.5,14.5);
- h_SBins_v6_CD_EW_7bin = new TH1D("AllSBins_v6_CD_EW_7bin","search bins v6:[(WTag : [65,105])]",7,0.5,7.5);
- h_SBins_v6_CD_EW_7bin_noSB = new TH1D("AllSBins_v6_CD_EW_7bin_noSB","search bins v6:[(WTag : [65,105])]",7,0.5,7.5);
+ h_SBins_v6_CD_EW_7bin = new TH1D("AllSBins_v6_CD_EW_7bin","search bins v6:[(WTag : [65,105])]",4,1,5);
+
+ h_SBins_v6_CD_EW_7bin_elec1_closure = new TH1D("AllSBins_v6_CD_EW_7bin_elec1_closure","search bins v6:[(WTag : [65,105])]",4,1,5);
 
   h_SBins_v6_CD_EW = new TH1D("AllSBins_v6_CD_EW","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
   h_SBins_v6_CD_EW_htag = new TH1D("AllSBins_v6_CD_EW_htag","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,0.5,37.5);
 
   h_SBins_v6_CD_SP = new TH1D("AllSBins_v6_CD_SP","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",12,1,13 );
 
-  h_SBins_v7_CD = new TH1D("AllSBins_v7_CD","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
+  h_SBins_v7_CD = new TH1D("AllSBins_v7_CD","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",37,1,38);
   h_SBins_v7_CD_EW = new TH1D("AllSBins_v7_CD_EW","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
   h_SBins_v7_CD_EW_htag = new TH1D("AllSBins_v7_CD_EW_htag","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5);
   h_SBins_v7_CD_SP = new TH1D("AllSBins_v7_CD_SP","search bins v7:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",31,0.5,31.5 );
