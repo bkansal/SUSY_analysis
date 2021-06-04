@@ -1,0 +1,1 @@
+root://cmseos.fnal.gov//store/user/bkansal/GMSB_skims_TreesV18/for_bkg_estimation/fake_rate/CR_Run2018C_MET_17Sep2018.root

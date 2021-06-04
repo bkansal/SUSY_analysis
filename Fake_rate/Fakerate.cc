@@ -93,29 +93,15 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
     {
       if(s_data.Contains("2016")){
 	TF = TFile::Open("fake_rate_2016.root","READ");
-	//	TF2 = TFile::Open("fake_rate_2016_v2.root","READ");
-	//	tf = (TH2D*)TF->Get("fr");
        	tf=(TH2D*)TF->FindObjectAny("fr");
-       	//tf2=(TH2D*)TF2->FindObjectAny("fr");
-	//	tf=(TH3D*)TF->FindObjectAny("fr");
-       	//tf1=(TH3D*)TF->FindObjectAny("fr");
-
       }
       if(s_data.Contains("2017")){
 	TF = TFile::Open("fake_rate_2017.root","READ");
-	//TF2 = TFile::Open("fake_rate_2017_v2.root","READ");
-	//	tf = (TH2D*)TF->Get("fr");
 	tf=(TH2D*)TF->FindObjectAny("fr");
-	//	tf2=(TH2D*)TF2->FindObjectAny("fr");
-       	//tf1=(TH3D*)TF->FindObjectAny("fr");
       }
       if(s_data.Contains("2018")){
 	TF = TFile::Open("fake_rate_2018.root","READ");
-	//	TF2 = TFile::Open("fake_rate_2018_v2.root","READ");
-	//	tf = (TH2D*)TF->Get("fr");
 	tf=(TH2D*)TF->FindObjectAny("fr");
-	//       	tf2=(TH2D*)TF2->FindObjectAny("fr");
-       	//tf1=(TH3D*)TF->FindObjectAny("fr");
       }
     }
   else
@@ -178,14 +164,21 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
     bool EWselec_SB2=false;
     bool EWselec1=false;
 
-    if(!s_data.Contains("data")){
-      if(s_data.Contains("2016")) lumiInfb=35.922;
-      //      if(s_data.Contains("2017")) lumiInfb=27.986;
-      if(s_data.Contains("2017")) lumiInfb=41.529;
-      if(s_data.Contains("2018")) lumiInfb=59.74;
-      if(s_data.Contains("FastSim") && s_data.Contains("2016")) lumiInfb=137.19;
-      if(s_data=="ZG_v17_2017") lumiInfb=77.49;
-    }
+    if(!s_data.Contains("data"))
+      {
+        if(s_data.Contains("2016")) {lumiInfb=35.922;deepCSVvalue = 0.6321;}
+        //      if(s_data.Contains("2017")) lumiInfb=27.986;                                                                                                                
+        if(s_data.Contains("2017")) {lumiInfb=41.529;deepCSVvalue = 0.4941;}
+        if(s_data.Contains("2018")) {lumiInfb=59.74;deepCSVvalue = 0.4184;}
+        if(s_data.Contains("FastSim") && s_data.Contains("2016")) lumiInfb=137.19;
+      }
+    if(s_data.Contains("data"))
+      {
+        if(s_data.Contains("2016")) {deepCSVvalue = 0.6321;}
+        if(s_data.Contains("2017")) {deepCSVvalue = 0.4941;}
+        if(s_data.Contains("2018")) {deepCSVvalue = 0.4184;}
+      }
+
     
     if(s_data.Contains("data")) wt=1;
 
@@ -565,16 +558,6 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
    TLorentzVector genEle1, genPho1;
    vector<TLorentzVector> v_genEle2,v_genPho2;
    if(!s_data.Contains("data")){
-     // for(int i=0 ; i < GenElectrons->size(); i++)
-     //   {
-     // 	 if((*GenElectrons)[i].Pt()!=0)
-     // 	   {
-     // 	     nGenEle1++;
-     // 	     genEle1 = ((*GenElectrons)[i]);
-     // 	     v_genEle2.push_back(genEle1);
-     // 	   }
-       
-     //   }
      for(int i=0 ; i < GenParticles->size(); i++)
        {
 	 if((*GenParticles)[i].Pt()!=0 && (abs((*GenParticles_PdgId)[i])==11) && (abs((*GenParticles_ParentId)[i])<=24))
@@ -589,7 +572,6 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	     genPho1 = ((*GenParticles)[i]);
 	     v_genPho2.push_back(genPho1);
 	   }
-       
        }
    }
 	
@@ -610,10 +592,6 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	     fail_realphoton++;
 	     fakePhoton=true;
 	   }
-
-	 // if(MinDr(bestEMObj,v_genEle2)<0.2) {fakePhoton=true;fail_realphoton++;}
-	 // for(int i=0; i<v_genPho2.size();i++)
-	 //   if(MinDr(bestEMObj,v_genPho2)<0.2 && ((v_genPho2[i].Pt()/bestEMObj.Pt())>0.9) && ((v_genPho2[i].Pt()/bestEMObj.Pt())<1.1)) {fakePhoton=false; pass_realphoton++;} 	   
 
 	 if(!fakePhoton)
 	   continue;
@@ -637,6 +615,10 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
     int minDRindx=-100,photonMatchingJetIndx=-100,nHadJets=0;
     double minDR=99999,ST=0,remJetPt=0;
     vector<TLorentzVector> hadJets, remJets;
+    double nbjets=0;
+    int bJet1Idx = -1;
+
+    vector<TLorentzVector> nonbjets,bjets;
 
     for(int i=0;i<Jets->size();i++){
       if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) )
@@ -661,22 +643,18 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 		hadJets.push_back((*Jets)[i]);
 		if(q==1) leadjet_qmulti=(*Jets_chargedMultiplicity)[q];
 		if(q==1) leadjet_Pt=(*Jets)[q].Pt();	
+		if((*Jets_bJetTagDeepCSVBvsAll)[i] > deepCSVvalue){
+		  bjets.push_back((*Jets)[i]); bJet1Idx = i;}
 	      }
 	  }      
       }  
     }
     //    cout<<jentry<<" ====== break ========"<<endl;
-    if( minDR<0.3)// && (*Jets)[photonMatchingJetIndx].Pt()>30 && (abs((*Jets)[i].Eta()) <= 2.4))
+    if( minDR<0.3)
       {
 	photonMatchingJetIndx=minDRindx;
 	qmulti=(*Jets_chargedMultiplicity)[photonMatchingJetIndx];
-	// if( photonMatchingJetIndx>=0 ){
-	//  	  //break;
-	// }
-	//       	if(bestEMObjIsEle && qmulti ==0) continue;
 	leadbjet_tag=(*Jets_bJetTagDeepCSVBvsAll)[photonMatchingJetIndx];
-	// if(leadbjet_tag<0)
-	//   cout<<jentry<<" : "<<leadjet_qmulti<<" : "<<leadbjet_tag<<endl;
       }
      
       
@@ -700,6 +678,9 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	if( (abs(hadJets[i].Eta()) < 2.4) ){nHadJets++;}
       }
     
+    for(int i=0;i<bjets.size();i++)
+      if( (abs(bjets[i].Eta()) < 2.4) ){nbjets++;}
+
     if( minDR<0.3 ){
       ST=ST+bestEMObj.Pt();
     }
@@ -707,7 +688,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 
     
     //Minimum MET
-    if( MET>300)  
+    if( MET>200)  
       {
 	h_selectBaselineYields_->Fill("MET>200",wt);
       }
@@ -765,13 +746,13 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
     double Ak8Mass,max=0.0,Ak8Mass1;
     for(int i=0;i<JetsAK8->size();i++)
       if( ((*JetsAK8)[i].Pt() > 200.0) && (abs((*JetsAK8)[i].Eta()) <= 2.4) ){
-	double dR4=bestPhoton.DeltaR((*JetsAK8)[i]);
+	double dR4=bestEMObj.DeltaR((*JetsAK8)[i]);
 	if(dR4<minDR4){minDR4=dR4;minDR4indx=i;}
       }
     
     for(int i=0;i<JetsAK8->size();i++)
       if( ((*JetsAK8)[i].Pt() > 200.0) && (abs((*JetsAK8)[i].Eta()) <= 2.4) ){
-	if( !(minDR4 < 0.3 && i==minDR4indx) ){
+	if( !(minDR4 < 0.8 && i==minDR4indx) ){
 	  hadAK8JetID=(*JetsAK8_ID)[i];
 	  if(hadAK8JetID)
 	    {
@@ -781,10 +762,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	}
       }
   
-    // if(JetsAK8->size() > 0 && (*JetsAK8)[0].Pt() > 200) dphi1AK8 = abs(DeltaPhi((*JetsAK8)[0].Phi(),METPhi));
-    // if(JetsAK8->size() > 1 && (*JetsAK8)[1].Pt() > 200) dphi2AK8 = abs(DeltaPhi((*JetsAK8)[1].Phi(),METPhi));
 
-    // if(dphi1AK8 < 1.5 || dphi2AK8 < 0.5) continue;
     if(hadAK8Jets.size() == 0)
       {
 	Ak8Mass=0;
@@ -846,16 +824,9 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
       }
 
 	
-    //    if((nHadJets>=7 && BTagsDeepCSV==0)) continue; 
 
-	//	continue;
-
-    //   //================================================
-    //    getBinNoV7(bestEMObj,minDRindx);
-    //if(process && EWselection && hadJetID && minDR<0.3)
     vector<TLorentzVector> v_genb,v_gene;
     vector<TLorentzVector> v_btag;
-    //	cout<<jentry<<" : "<<leadbjet_tag<<endl;
     vector<int> Parent_id , id;
     vector<double> dR_bandjets; 
     if(process && EWselection && hadJetID)
@@ -865,9 +836,9 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	if(bestEMObjIsEle )
 	  {
 	    nele++;
-	    if((s_data.Contains("2016")) && leadbjet_tag>0.6321) continue;
-	    if((s_data.Contains("2017")) && leadbjet_tag>0.4941) continue;
-	    if((s_data.Contains("2018")) && leadbjet_tag>0.4184) continue;
+	    //	    if((s_data.Contains("2016")) && leadbjet_tag>0.6321) continue;
+	    //	    if((s_data.Contains("2017")) && leadbjet_tag>0.4941) continue;
+	    //	    if((s_data.Contains("2018")) && leadbjet_tag>0.4184) continue;
 	    
 	    h_deepcsv->Fill(leadbjet_tag,wt);
 
@@ -880,7 +851,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	    h_SBins_v7_CD_SP_elec1->Fill(sBin7_SP_elec1,wt);
 	    int sBin6_SP_elec1 = getBinNoV6(bestEMObj,nHadJets);
 	    h_SBins_v6_CD_SP_elec1->Fill(sBin6_SP_elec1,wt);
-	    int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+	    int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
 	    h_SBins_v6_CD_EW_50bin_elec1->Fill(sBin6_50bin,wt);
 
 	    h_MET->Fill(MET,wt);
@@ -888,7 +859,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	    h_METvBin2->Fill(MET,wt);
 	    h_nJets->Fill(nHadJets,wt);
 	    h_ST->Fill(ST,wt);
-	    h_BTags->Fill(BTagsDeepCSV,wt);
+	    h_BTags->Fill(nbjets,wt);
 	    //	    h_NEMobj->Fill(NElectrons,wt);
 	    h_NEMobj->Fill(goodPho_.size(),wt);
 
@@ -1047,7 +1018,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 		h_SBins_v7_CD_SP_elec1_closure->Fill(sBin7_SP_elec1_closure,wt2);
 		int sBin6_SP_elec1_closure = getBinNoV6(bestEMObj,nHadJets);
 		h_SBins_v6_CD_SP_elec1_closure->Fill(sBin6_SP_elec1_closure,wt2);
-		int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+		int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
 		h_SBins_v6_CD_EW_50bin_elec1_closure->Fill(sBin6_50bin,wt2);
 
 		h_MET_elec1_closure->Fill(MET,wt2);
@@ -1055,7 +1026,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 		h_METvBin2_elec1_closure->Fill(MET,wt2);
 		h_nJets_elec1_closure->Fill(nHadJets,wt2);
 		h_ST_elec1_closure->Fill(ST,wt2);
-		h_BTags_elec1_closure->Fill(BTagsDeepCSV,wt2);
+		h_BTags_elec1_closure->Fill(nbjets,wt2);
 		//h_NEMobj_elec1_closure->Fill(NElectrons,wt2);
 		h_NEMobj_elec1_closure->Fill(goodPho_.size(),wt2);
 		//h_minDr_bestphoEle_elec1_closure->Fill(minDRindx,wt2);
@@ -1141,7 +1112,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	    h_SBins_v7_CD_SP_elec0->Fill(sBin7_SP_elec0,wt);
 	    int sBin6_SP_elec0 = getBinNoV6(bestEMObj,nHadJets);
 	    h_SBins_v6_CD_SP_elec0->Fill(sBin6_SP_elec0,wt);
-	    int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+	    int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
 	    h_SBins_v6_CD_EW_50bin_elec0->Fill(sBin6_50bin,wt);
                
 	    h_MET_elec0->Fill(MET,wt);
@@ -1149,7 +1120,7 @@ void Fakerate::EventLoop(const char *data,const char *inputFileList) {
 	    h_nJets_elec0->Fill(nHadJets,wt);
 	    h_ST_elec0->Fill(ST,wt);
 	    //	    h_BestPhotonPt_elec0->Fill()
-	    h_BTags_elec0->Fill(BTagsDeepCSV,wt);
+	    h_BTags_elec0->Fill(nbjets,wt);
 	    //	    if(goodPho_.size() < 2)
 	    h_NEMobj_elec0->Fill(goodPho_.size(),wt);
 	    //	    h_minDr_bestphoEle_elec0->Fill(MinDr2(hadJets,bestEMObj),wt);
@@ -1457,14 +1428,14 @@ int Fakerate::getBinNoV7_le2(bool EWselec, bool EWselec1, bool EWselec_Htag , bo
 
 
 
-int Fakerate::getBinNoV6_EWplusSP_CR(bool EWselec, bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nHadJets){
+int Fakerate::getBinNoV6_EWplusSP_CR(bool EWselec, bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nbjets, int nHadJets){
 
   int sBin=-100,m_i=0;
 
   //  if(!((EWselec_Wtag || EWselec_Htag) && EWselec1))
    if(!(EWselec && EWselec1))
     { 
-      if(BTagsDeepCSV==0 ){
+      if(nbjets==0 ){
 	if(nHadJets>=2 && nHadJets<=4)     { sBin=0;}
 	else if(nHadJets==5 || nHadJets==6){ sBin=7;}
 	else if(nHadJets>=7)               { sBin=13;}
@@ -1501,11 +1472,11 @@ break; }
       m_i++;
       if(MET >= METLowEdge_v3_1[i] && MET < METLowEdge_v3_1[i+1]){ sBin = sBin+m_i;
 	// if(sBin1==13)
-	// cout<<sBin1<<" : "<<sBin<<" : "<<nHadJets<<" : "<<BTagsDeepCSV<<" : "<<METLowEdge_v3_1[i]<<" - "<<METLowEdge_v3_1[i+1]<<" : "<<MET<<endl;
+	// cout<<sBin1<<" : "<<sBin<<" : "<<nHadJets<<" : "<<nbjets<<" : "<<METLowEdge_v3_1[i]<<" - "<<METLowEdge_v3_1[i+1]<<" : "<<MET<<endl;
 	break;}
-	//if(nHadJets>=7 && BTagsDeepCSV==0) cout<<nHadJets<<" : "<<MET<<endl;break; }
+	//if(nHadJets>=7 && nbjets==0) cout<<nHadJets<<" : "<<MET<<endl;break; }
       else if(MET >= METLowEdge_v3_1[METLowEdge_v3_1.size()-1])  { sBin = sBin+6;
-	// if(sBin1==13) cout<<sBin1<<" : "<<sBin<<" : "<<nHadJets<<" : "<<BTagsDeepCSV<<" : "<<METLowEdge_v3_1[METLowEdge_v3_1.size()-1]<<" : "<<MET<<endl;
+	// if(sBin1==13) cout<<sBin1<<" : "<<sBin<<" : "<<nHadJets<<" : "<<nbjets<<" : "<<METLowEdge_v3_1[METLowEdge_v3_1.size()-1]<<" : "<<MET<<endl;
 	break; }
       //      else if(MET >= METLowEdge_v3_1[METLowEdge_v3_1.size()-1])  { sBin = 37   ;break; }
      

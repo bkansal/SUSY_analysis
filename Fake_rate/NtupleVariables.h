@@ -617,6 +617,7 @@ class NtupleVariables : public TSelector {
    double  DeltaR(double eta1, double phi1, double eta2, double phi2);
    void    sortTLorVec(vector<TLorentzVector> *);   
    double  MinDr(TLorentzVector, vector<TLorentzVector>);
+  double  MinDr2(vector<TLorentzVector>,TLorentzVector);
 };
 
 #endif

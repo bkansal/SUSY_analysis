@@ -35,10 +35,11 @@ class Fakerate : public NtupleVariables{
   int getBinNoV6_EW(bool,bool);
   int getBinNoV6_EW1(bool);
   int getBinNoV6_EWplusSP_SR(bool,bool,bool,int);
-  int getBinNoV6_EWplusSP_CR(bool,bool,bool,bool,int);
+  int getBinNoV6_EWplusSP_CR(bool,bool,bool,bool,int,int);
   int getBinNoV7_le(int);
   int getBinNoV7_le2(bool,bool,bool,bool,int);
   
+  double deepCSVvalue=0;
   double getGendRLepPho();
   bool check_eMatchedtoGamma(TLorentzVector);
   void print(Long64_t);

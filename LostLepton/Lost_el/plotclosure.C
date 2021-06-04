@@ -3,9 +3,10 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   //  bool ExpvsPred=false,DatavsMC=false,SRvsCR=true;
   //  bool ExpvsPred=true,DatavsMC=false,SRvsCR=false;
   // gStyle->SetOptStat(0);
-  
+    bool data_pred=true;
+  //bool data_pred=false;
   TFile *f1, *f2,*f3;
-  string lep="LM";
+  string lep="LL";
   ///  TString path= "rootoutput/newselec_LE_v2/";
   //  TString path= "rootoutput/newselec_LE_noISRjet/";
   //    TString path= "rootoutput/newselec_LEplusLM_noISRjet/";
@@ -27,9 +28,15 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
       //      path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
       //      path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/WGJets_TF/";
  // path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
-       path="rootoutput/newselec_LM_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/";
+      //        path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/";
+	//       path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/TTGJets_TF/";
       //         path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/";
-      //         path="./";
+      //        path="rootoutput/newselec_LM_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v4_usingfullRun2_MET_caloMET/";
+      //            path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v4_usingfullRun2_BTagDeepCSV/";
+	  	    path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v5_usingfullRun2_BTagDeepCSV/";
+      //      path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v3_usingfullRun2_MET_caloMET/";
+      //                path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v3_usingfullRun2_BTagDeepCSV/";
+
     }
   else
     {
@@ -43,14 +50,23 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   TLatex textOnTop,intLumiE;
   
   TString filename;
-  //TString a="WGJets";
+  TString b="Run2_METdata";
   TString a="TTWGJ";
+
+  if(data_pred && ntuples=="v18")
+    {
+      if(year == "full_Run2")
+	filename  = path+b+"_CR_v18.root";
+      else
+	filename= path+"Run"+year+"_METdata_CR_v18.root";  
+      f2 = new TFile(filename);
+    }
   if(ntuples=="v18")
     {
       if(year == "full_Run2")
 	filename  = path+a+"_CR_v18.root";
       else 
-	filename= path+a+"_"+year+"_CR_v18_v2.root";
+	filename= path+a+"_"+year+"_CR_v18.root";
     }
   else
     {
@@ -154,15 +170,25 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
  else if(varName=="AllSBins_v6_CD_EW_50bin"){
    gStyle->SetOptStat(0);
    c1 = new TCanvas("stackhist","stackhist",1000,1000);
-    cr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");    
-    sr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec0");
-    if(ExpvsPred)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1_closure");
-    if(SRvsCR)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
+    cr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
+    if(!data_pred)
+      {
+	sr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec0");
+	if(ExpvsPred)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1_closure");
+	if(SRvsCR)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
+      }
+    if(data_pred)
+      {
+	sr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
+	if(ExpvsPred)   pred_sr     = (TH1D*)f2->Get("AllSBins_v6_CD_EW_50bin_elec1_closure");
+	if(SRvsCR)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
+      }
     pred_sr->GetYaxis()->SetTitle("Bin no.");
      
     bin=51.5;
     //    xmin=-100000,xmax = 100000,xmin_=0,xmax_=50;
-    xmin=-1,xmax = 50,xmin_=-1,xmax_=50;
+    //  xmin=-1,xmax = 50,xmin_=-1,xmax_=50;
+    xmin=0,xmax = 52,xmin_=0,xmax_=52;
     ymin=0 , ymax=1.99, ymin_=0.005 , ymax_=100000, yset_=200;
     title="closure test using optimized search bins";
   pred_sr->SetTitle(0);
@@ -360,13 +386,18 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     pred_sr->SetTitle(title);
     }
 
-  
-  for(int i=xmin_;i<=10;i++)
-    { cout<<pred_sr->GetBinContent(i)<<endl;}
- cout<<"The sr content"<<endl;
-  for(int i=xmin_;i<=10;i++)
-    { cout<<sr->GetBinContent(i)<<endl;}
-  /* cout<<"==============="<<endl; */
+  cout<<"Pred.  ==========  obs. "<<endl; 
+  for(int i=xmin_;i<=52;i++)
+    cout<<setprecision(4)<<pred_sr->GetBinContent(i)<<" +- "<<pred_sr->GetBinError(i)<<endl;
+
+    /* { cout<<pred_sr->GetBinContent(i)<<endl;//" ====== "<<sr->GetBinContent(i)<<endl;} */
+    /* } */
+  cout<<"The sr content"<<endl;
+  for(int i=xmin_;i<=52;i++)
+    cout<<setprecision(4)<<sr->GetBinContent(i)<<" +- "<<sr->GetBinError(i)<<endl;
+
+  //{ cout<<sr->GetBinContent(i)<<endl;}
+  cout<<"==============="<<endl;
 
   /* for(int i=0;i<=53;i++) */
   /* /\*   { cout<<i<<" , CR : "<<cr->GetBinContent(i)<<" , Pred : SR : "<<pred_sr->GetBinContent(i)<<" ,  SR : "<<sr->GetBinContent(i)<<endl;} */
@@ -465,44 +496,66 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   legend1->SetTextSize(0.04);
   legend->SetTextSize(0.08);
   // legend1->Draw();
-  if(ExpvsPred)
+  if(data_pred)
     {
-      if(lep=="LE")
+      if(ExpvsPred )
 	{
-	  legend->AddEntry(pred_sr,"Pred : TF x (1e + #gamma )","lp");
-	  legend->AddEntry(sr,"Exp : (0e + #gamma )","lp");
-	  /* legend->AddEntry(pred_sr,"CR : 1e + #gamma","lp"); */
-	  /* legend->AddEntry(sr,"SR : 0e + #gamma","lp"); */
-	}
-      else if (lep=="LM")
-	{
-	  legend->AddEntry(pred_sr,"Pred : TF x (1 #mu + #gamma )","lp");
-	  legend->AddEntry(sr,"Exp : (0 #mu + #gamma )","lp");
-	}
-      else if(lep=="LL")
-	{
-	  legend->AddEntry(pred_sr,"Pred : TF x (1 l + #gamma )","lp");
-	  legend->AddEntry(sr,"Exp : (0 l + #gamma )","lp");
+	  if(lep=="LE")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1e + #gamma )","lp");
+	      legend->AddEntry(sr,"Obs. : (1e + #gamma )","lp");
+	    }
+	  else if (lep=="LM")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1 #mu + #gamma )","lp");
+	      legend->AddEntry(sr,"Obs. : (1 #mu + #gamma )","lp");
+	    }
+	  else if(lep=="LL")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1 l + #gamma )","lp");
+	      legend->AddEntry(sr,"Obs. : (1 l + #gamma )","lp");
+	    }
 	}
     }
-  if(SRvsCR)
+  if(!data_pred)
     {
-      if(lep=="LE")
+      if(ExpvsPred )
 	{
-	  legend->AddEntry(pred_sr,"CR : (1e + #gamma )","lp");
-	  legend->AddEntry(sr,"SR : (0e + #gamma )","lp");
-	  /* legend->AddEntry(pred_sr,"CR : 1e + #gamma","lp"); */
-	  /* legend->AddEntry(sr,"SR : 0e + #gamma","lp"); */
+	  if(lep=="LE")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1e + #gamma )","lp");
+	      legend->AddEntry(sr,"Exp : (0e + #gamma )","lp");
+	    }
+	  else if (lep=="LM")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1 #mu + #gamma )","lp");
+	      legend->AddEntry(sr,"Exp : (0 #mu + #gamma )","lp");
+	    }
+	  else if(lep=="LL")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1 l + #gamma )","lp");
+	      legend->AddEntry(sr,"Exp : (0 l + #gamma )","lp");
+	    }
 	}
-      else if (lep=="LM")
+    
+      
+      if(SRvsCR)
 	{
-	  legend->AddEntry(pred_sr,"CR : (1 #mu + #gamma )","lp");
-	  legend->AddEntry(sr,"SR : (0 #mu + #gamma )","lp");
-	}
-      else if(lep=="LL")
-	{
-	  legend->AddEntry(pred_sr,"CR : TF x (1 l + #gamma )","lp");
-	  legend->AddEntry(sr,"SR : (0 l + #gamma )","lp");
+	  if(lep=="LE")
+	    {
+	      legend->AddEntry(pred_sr,"CR : (1e + #gamma )","lp");
+	      legend->AddEntry(sr,"SR : (0e + #gamma )","lp");
+	    }
+	  else if (lep=="LM")
+	    {
+	      legend->AddEntry(pred_sr,"CR : (1 #mu + #gamma )","lp");
+	      legend->AddEntry(sr,"SR : (0 #mu + #gamma )","lp");
+	    }
+	  else if(lep=="LL")
+	    {
+	      legend->AddEntry(pred_sr,"CR : TF x (1 l + #gamma )","lp");
+	      legend->AddEntry(sr,"SR : (0 l + #gamma )","lp");
+	    }
 	}
     }
   /* else(LM){ */
@@ -511,28 +564,27 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   legend->SetTextSize(0.06);
   
   if(varName=="AllSBins_v6_CD_EW_50bin"  ){
-    TLine *line1V6=new TLine( 6.5,ymin_,  6.5,ymax_);
-    TLine *line2V6=new TLine(12.5,ymin_, 12.5,ymax_);
-    TLine *line3V6=new TLine(18.5,ymin_, 18.5,ymax_);
-    TLine *line4V6=new TLine(24.5,ymin_, 24.5,ymax_);
-    TLine *line5V6=new TLine(30.5,ymin_, 30.5,ymax_);
-    TLine *line6V6=new TLine(36.5,ymin_, 36.5,ymax_);
-    TLine *line7V6=new TLine(43.5,ymin_, 43.5,ymax_);
+    TLine *line1V6=new TLine( 8,ymin_,  8,ymax_);
+    TLine *line2V6=new TLine(14,ymin_, 14,ymax_);
+    TLine *line3V6=new TLine(20,ymin_, 20,ymax_);
+    TLine *line4V6=new TLine(26,ymin_, 26,ymax_);
+    TLine *line5V6=new TLine(32,ymin_, 32,ymax_);
+    TLine *line6V6=new TLine(38,ymin_, 38,ymax_);
+    TLine *line7V6=new TLine(45,ymin_, 45,ymax_);
     
     pad1->cd(); pad1->SetGridx(0); pad1->SetGridy(0);
 
     line1V6->Draw();      line2V6->Draw();  line3V6->Draw();
     line4V6->Draw();      line5V6->Draw();
     line6V6->Draw();      line7V6->Draw();
-    TArrow *arrow1 = new TArrow( -0.5,yset_, 6.5,yset_,0.01,"<|>");
-
-    TArrow *arrow2 = new TArrow( 6.5,yset_,12.5,yset_,0.01,"<|>");
-    TArrow *arrow3 = new TArrow(12.5,yset_,18.5,yset_,0.01,"<|>");
-    TArrow *arrow4 = new TArrow(18.5,yset_, 24.5,yset_,0.01,"<|>");
-    TArrow *arrow5 = new TArrow(24.5,yset_, 30.5,yset_,0.01,"<|>");
-    TArrow *arrow6 = new TArrow(30.5,yset_, 36.5,yset_,0.01,"<|>");
-    TArrow *arrow7 = new TArrow(36.5,yset_, 43.5,yset_,0.01,"<|>");
-    TArrow *arrow8 = new TArrow(43.5,yset_, 50.5,yset_,0.01,"<|>");
+    TArrow *arrow1 = new TArrow( 1,yset_, 8,yset_,0.01,"<|>");
+    TArrow *arrow2 = new TArrow( 8,yset_, 14,yset_,0.01,"<|>");
+    TArrow *arrow3 = new TArrow(14,yset_, 20,yset_,0.01,"<|>");
+    TArrow *arrow4 = new TArrow(20,yset_, 26,yset_,0.01,"<|>");
+    TArrow *arrow5 = new TArrow(26,yset_, 32,yset_,0.01,"<|>");
+    TArrow *arrow6 = new TArrow(32,yset_, 38,yset_,0.01,"<|>");
+    TArrow *arrow7 = new TArrow(38,yset_, 45,yset_,0.01,"<|>");
+    TArrow *arrow8 = new TArrow(45,yset_, 51,yset_,0.01,"<|>");
 
     arrow1->Draw(); arrow2->Draw(); arrow3->Draw();
     arrow4->Draw(); arrow5->Draw(); arrow6->Draw();
@@ -548,6 +600,43 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
     Tl.SetTextSize(0.04);
     Tl.DrawLatex(37.0,2*yset_,"EW : W tag");
     Tl.DrawLatex(44.0,2*yset_,"EW : H tag");
+    /* TLine *line1V6=new TLine( 6.5,ymin_,  6.5,ymax_); */
+    /* TLine *line2V6=new TLine(12.5,ymin_, 12.5,ymax_); */
+    /* TLine *line3V6=new TLine(18.5,ymin_, 18.5,ymax_); */
+    /* TLine *line4V6=new TLine(24.5,ymin_, 24.5,ymax_); */
+    /* TLine *line5V6=new TLine(30.5,ymin_, 30.5,ymax_); */
+    /* TLine *line6V6=new TLine(36.5,ymin_, 36.5,ymax_); */
+    /* TLine *line7V6=new TLine(43.5,ymin_, 43.5,ymax_); */
+    
+    /* pad1->cd(); pad1->SetGridx(0); pad1->SetGridy(0); */
+
+    /* line1V6->Draw();      line2V6->Draw();  line3V6->Draw(); */
+    /* line4V6->Draw();      line5V6->Draw(); */
+    /* line6V6->Draw();      line7V6->Draw(); */
+    /* TArrow *arrow1 = new TArrow( -0.5,yset_, 6.5,yset_,0.01,"<|>"); */
+
+    /* TArrow *arrow2 = new TArrow( 6.5,yset_,12.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow3 = new TArrow(12.5,yset_,18.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow4 = new TArrow(18.5,yset_, 24.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow5 = new TArrow(24.5,yset_, 30.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow6 = new TArrow(30.5,yset_, 36.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow7 = new TArrow(36.5,yset_, 43.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow8 = new TArrow(43.5,yset_, 50.5,yset_,0.01,"<|>"); */
+
+    /* arrow1->Draw(); arrow2->Draw(); arrow3->Draw(); */
+    /* arrow4->Draw(); arrow5->Draw(); arrow6->Draw(); */
+    /* arrow7->Draw(); arrow8->Draw(); */
+    /* TLatex Tl; */
+    /* Tl.SetTextSize(0.05); */
+    /* Tl.DrawLatex(2.5,2*yset_,"N^{ 0}_{ 2-4}"); */
+    /* Tl.DrawLatex(9.0,2*yset_,"N^{ 0}_{ 5-6}"); */
+    /* Tl.DrawLatex(15.0,2*yset_,"N^{ 0}_{ #geq7}"); */
+    /* Tl.DrawLatex(21.0,2*yset_,"N^{ #geq1}_{ 2-4}"); */
+    /* Tl.DrawLatex(26.0,2*yset_,"N^{ #geq1}_{ 5-6}"); */
+    /* Tl.DrawLatex(32.0,2*yset_,"N^{ #geq1}_{ #geq7}"); */
+    /* Tl.SetTextSize(0.04); */
+    /* Tl.DrawLatex(37.0,2*yset_,"EW : W tag"); */
+    /* Tl.DrawLatex(44.0,2*yset_,"EW : H tag"); */
   }
   
   if(varName=="AllSBins_v7_CD_SP"){
@@ -712,7 +801,7 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   }
 
   legend->Draw();
-  legend1->Draw();
+  //  legend1->Draw();
   
    TH1D *h4 = (TH1D*)pred_sr->Clone("h4");
   TH1D *h3 = (TH1D*)sr->Clone("h3");
@@ -794,13 +883,13 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   h3->GetXaxis()->SetTitleOffset(0.9);
    h3->GetXaxis()->SetTitle("Bin no.");
   h3->GetXaxis()->SetTitleSize(0.17);
-    TLine *line1V6=new TLine( 6.5,ymin,  6.5,ymax);
-    TLine *line2V6=new TLine(12.5,ymin, 12.5,ymax);
-    TLine *line3V6=new TLine(18.5,ymin, 18.5,ymax);
-    TLine *line4V6=new TLine(24.5,ymin, 24.5,ymax);
-    TLine *line5V6=new TLine(30.5,ymin, 30.5,ymax);
-    TLine *line6V6=new TLine(36.5,ymin, 36.5,ymax);
-    TLine *line7V6=new TLine(43.5,ymin, 43.5,ymax);
+    TLine *line1V6=new TLine( 8,ymin,  8,ymax);
+    TLine *line2V6=new TLine(14,ymin, 14,ymax);
+    TLine *line3V6=new TLine(20,ymin, 20,ymax);
+    TLine *line4V6=new TLine(26,ymin, 26,ymax);
+    TLine *line5V6=new TLine(32,ymin, 32,ymax);
+    TLine *line6V6=new TLine(38,ymin, 38,ymax);
+    TLine *line7V6=new TLine(45,ymin, 45,ymax);
     
     pad2->cd(); pad2->SetGridx(0);
 
@@ -869,7 +958,7 @@ void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPr
   /* /\* for(int i=bin0;i<=bin1;i++) *\/ */
   /* /\*   { cout<<TF->GetBinError(i)<<endl;} *\/ */
   /* /\* cout<<"==============="<<endl; *\/ */
-  c1->SaveAs(pdf);
   c1->SaveAs(png);
+  // c1->SaveAs(png);
 }
 

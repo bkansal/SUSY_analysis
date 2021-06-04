@@ -16,11 +16,13 @@ TString Tf="sBin7_SP";
 //TString Tf="nHadJets";
 //TString Tf="MET";
 //TString Tf="METvBin2";
-bool full_Run2=false;
-bool applyE_SF=true;
+bool full_Run2=true;
+bool applyE_SF=false;
 bool apply_METfilters=true;
 bool apply_L1=true;
 bool apply_HEMveto=true;
+bool elec=true;
+bool muon=false;
 int main(int argc, char* argv[])
 {
 
@@ -83,44 +85,51 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
   if(!full_Run2)
     {
       if(s_data.Contains("2017")){
-	TF = TFile::Open("Run2017_TF_LE_v6_CD.root","READ");
-	E_SF= TFile::Open("samples/ElectronScaleFactors_Run2017.root","READ");
-	e_id=(TH2F*)E_SF->Get("Run2017_CutBasedVetoNoIso94XV2");
-	e_iso=(TH2F*)E_SF->Get("Run2017_Mini");
+	if(elec) TF = TFile::Open("Run2017_TF_LE_v6_CD.root","READ");
+        if(muon) TF = TFile::Open("Run2017_TF_LM_v6_CD.root","READ");
+	// E_SF= TFile::Open("samples/ElectronScaleFactors_Run2017.root","READ");
+	// e_id=(TH2F*)E_SF->Get("Run2017_CutBasedVetoNoIso94XV2");
+	// e_iso=(TH2F*)E_SF->Get("Run2017_Mini");
 
-	e_id->Multiply(e_iso);
+	// e_id->Multiply(e_iso);
        }
       if(s_data.Contains("2018")){
-	TF = TFile::Open("Run2018_TF_LE_v6_CD.root","READ");
-	E_SF= TFile::Open("samples/ElectronScaleFactors_Run2018.root","READ");
-	e_id=(TH2F*)E_SF->Get("Run2018_CutBasedVetoNoIso94XV2");
-	e_iso=(TH2F*)E_SF->Get("Run2018_Mini");
-	e_id->Multiply(e_iso);
+	if (elec) TF = TFile::Open("Run2018_TF_LE_v6_CD.root","READ");
+        if(muon) TF = TFile::Open("Run2018_TF_LM_v6_CD.root","READ");
+	// E_SF= TFile::Open("samples/ElectronScaleFactors_Run2018.root","READ");
+	// e_id=(TH2F*)E_SF->Get("Run2018_CutBasedVetoNoIso94XV2");
+	// e_iso=(TH2F*)E_SF->Get("Run2018_Mini");
+	// e_id->Multiply(e_iso);
        }
       if(s_data.Contains("2016")){
-	TF = TFile::Open("Run2016_TF_LE_v6_CD.root","READ");
- 	E_SF= TFile::Open("samples/ElectronScaleFactors_Run2016.root","READ");
-	Egamma_SF=TFile::Open("samples/2016_ElectronWPVeto_Fall17V2.root","READ");
-	e_id=(TH2F*)E_SF->Get("Run2016_CutBasedVetoNoIso94XV2");
-	e_iso=(TH2F*)E_SF->Get("Run2016_Mini");
-	e_SF=(TH2F*)Egamma_SF->Get("EGamma_SF2D");
-	e_id->Multiply(e_iso);
+	if(elec) TF = TFile::Open("Run2016_TF_LE_v6_CD.root","READ");
+        if(muon) TF = TFile::Open("Run2016_TF_LM_v6_CD.root","READ");
+ 	// E_SF= TFile::Open("samples/ElectronScaleFactors_Run2016.root","READ");
+	// Egamma_SF=TFile::Open("samples/2016_ElectronWPVeto_Fall17V2.root","READ");
+	// e_id=(TH2F*)E_SF->Get("Run2016_CutBasedVetoNoIso94XV2");
+	// e_iso=(TH2F*)E_SF->Get("Run2016_Mini");
+	// e_SF=(TH2F*)Egamma_SF->Get("EGamma_SF2D");
+	// e_id->Multiply(e_iso);
       }
     }
   else
     {
       if(s_data.Contains("2017")){
-	TF = TFile::Open("Runfull_Run2_TF_LE_v6_CD.root","READ");
+        if(elec) TF = TFile::Open("Runfull_Run2_TF_LE_v6_CD.root","READ");
+	if(muon) TF = TFile::Open("Runfull_Run2_TF_LM_v6_CD.root","READ");
       }
       if(s_data.Contains("2018")){
-	TF = TFile::Open("Runfull_Run2_TF_LE_v6_CD.root","READ");
-      }
+	if(elec) TF = TFile::Open("Runfull_Run2_TF_LE_v6_CD.root","READ");
+        if(muon) TF = TFile::Open("Runfull_Run2_TF_LM_v6_CD.root","READ");
+ 
+     }
       if(s_data.Contains("2016")){
-	TF = TFile::Open("Runfull_Run2_TF_LE_v6_CD.root","READ");
-	E_SF= TFile::Open("samples/ElectronScaleFactors_Run2016.root","READ");
-	e_id=(TH2F*)E_SF->Get("Run2016_CutBasedVetoNoIso94XV2");
-	e_iso=(TH2F*)E_SF->Get("Run2016_Mini");
-	e_id->Multiply(e_iso);
+	if(elec) TF = TFile::Open("Runfull_Run2_TF_LE_v6_CD.root","READ");
+        if(muon) TF = TFile::Open("Runfull_Run2_TF_LM_v6_CD.root","READ");
+	// E_SF= TFile::Open("samples/ElectronScaleFactors_Run2016.root","READ");
+	// e_id=(TH2F*)E_SF->Get("Run2016_CutBasedVetoNoIso94XV2");
+	// e_iso=(TH2F*)E_SF->Get("Run2016_Mini");
+	// e_id->Multiply(e_iso);
       }
     }
     
@@ -132,7 +141,7 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
     tf = (TH1D*)TF->Get("tf");
   if(Tf=="sBin6_SP")
     tf_SP = (TH1D*)TF->Get("tf_SP");
-  if(Tf=="sBin7_SP" || Tf=="nHadJets" || Tf=="BTags" || Tf=="MET" || Tf=="METvBin2")
+  if(Tf=="sBin7_SP" || Tf=="nHadJets" || Tf=="BTagsDeepCSV" || Tf=="MET" || Tf=="METvBin2")
     tf_SP_2 = (TH1D*)TF->Get("tf_SP_2");
   if(Tf=="sBin7_SP_tmp")
     tf_SP_3 = (TH1D*)TF->Get("tf_SP_3");
@@ -140,7 +149,7 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
   
   if(s_data.Contains("v17"))
     {
-      puhist = (TH1*)pufile->Get("pu_weights_down");
+      puhist = (TH1*)pufile->Get("pu_weights_up");
     }
 
   bool v17=true, v12=false;
@@ -179,12 +188,23 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
     bool EWselec_SB2=false;
     bool EWselec1=false;
 
-    if(s_data.Contains("2016")) lumiInfb=35.922;
-    if(s_data.Contains("2017")) lumiInfb=41.529;
-    if(s_data.Contains("2018")) lumiInfb=59.74;
-    if(s_data.Contains("FastSim") && s_data.Contains("2016")) lumiInfb=137.19;
-    if(s_data=="ZG_v17_2017") lumiInfb=77.49;
 
+    if(!s_data.Contains("data"))
+      {
+        if(s_data.Contains("2016")) {lumiInfb=35.922;deepCSVvalue = 0.6321;}
+        //      if(s_data.Contains("2017")) lumiInfb=27.986;                                                                                                                
+        if(s_data.Contains("2017")) {lumiInfb=41.529;deepCSVvalue = 0.4941;}
+        if(s_data.Contains("2018")) {lumiInfb=59.74;deepCSVvalue = 0.4184;}
+        if(s_data.Contains("FastSim") && s_data.Contains("2016")) lumiInfb=137.19;
+      }
+    if(s_data.Contains("data"))
+      {
+        if(s_data.Contains("2016")) {deepCSVvalue = 0.6321;}
+        if(s_data.Contains("2017")) {deepCSVvalue = 0.4941;}
+        if(s_data.Contains("2018")) {deepCSVvalue = 0.4184;}
+      }
+
+    
 
     if((s_data.Contains("v17_2016") || s_data.Contains("v17_2017") ) && apply_L1){
       //      cout<<jentry<<" : NonPrefiringProb ="<<NonPrefiringProb<<" , lumiInfb = "<<lumiInfb<<" , pile up = "<<puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))))<<endl;
@@ -197,25 +217,44 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
       h_nEvts->Fill(1,wt);
     }
 
-
-    if(s_data.Contains("2018")){
+    bool HEMaffected = false;
+    //////-======== HEM issue ==================//////////////                                                                                                            
+    if(s_data.Contains("2018") && apply_HEMveto){
       for(int i=0; i<Electrons->size();i++)
-        if((*Electrons)[i].Pt() >30 && (*Electrons)[i].Eta() > -3.0 && (*Electrons)[i].Eta() < -1.4 && (*Electrons)[i].Phi() > -1.57 && (*Electrons)[i].Phi() < -0.87) continue;
+        if((*Electrons)[i].Pt() >30 && (*Electrons)[i].Eta() > -3.0 && (*Electrons)[i].Eta() < -1.4 && (*Electrons)[i].Phi() > -1.57 && (*Electrons)[i].Phi() < -0.87) {
+HEMaffected = true; break;}
       for(int i=0; i<Jets->size();i++)
-        if((*Jets)[i].Pt() > 30 && (*Jets)[i].Eta() > -3.2 && (*Jets)[i].Eta() < -1.2 && (*Jets)[i].Phi() > -1.77 && (*Jets)[i].Phi() < -0.67 && DeltaPhi((*Jets)[i].Pt(),MHTPhi)<0.5) continue;
+        if((*Jets)[i].Pt() > 30 && (*Jets)[i].Eta() > -3.2 && (*Jets)[i].Eta() < -1.2 && (*Jets)[i].Phi() > -1.77 && (*Jets)[i].Phi() < -0.67 && DeltaPhi((*Jets)[i].Pt(),METPhi)<0.5) {HEMaffected = true; break;}
+      if(HEMaffected == true) continue;
     }
 
     
     if(s_data.Contains("data")){
       wt=1*0.9;
       h_nEvts->Fill(1,wt);
+      bool tighte_trgpass=true;
+      if(TriggerPass->size()!=148) continue;
+      //        cout<<"No. of Triggers passed : "<<TriggerPass->size()<<endl;                                                    
+      if((*TriggerPass)[124]==1) tighte_trgpass=true;
+      else if((*TriggerPass)[110]==1) tighte_trgpass=true;
+      else if((*TriggerPass)[112]==1) tighte_trgpass=true;
+      else if((*TriggerPass)[116]==1) tighte_trgpass=true;
+      else if((*TriggerPass)[118]==1) tighte_trgpass=true;
+      else if((*TriggerPass)[120]==1) tighte_trgpass=true;
+      else tighte_trgpass=false;
+
+      if(tighte_trgpass==false)  continue;                                                                                     
+
     }
 
 
     //ISR weighting, end.
     //    if(!(MET<500 || MET>600)) continue;
     if(PFCaloMETRatio >=  5) continue;
+    //    if(MET/CaloMET > 2.0) continue;
 
+
+    //    if(MET>500) continue;
     // if(wt<0)
     //   wt=abs(wt);
 
@@ -226,17 +265,30 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
       }				    
     if(!s_data.Contains("FastSim") && apply_METfilters==true){
 
-      if(s_data.Contains("data_2016"))
+      //  if(s_data.Contains("data"))
+      // 	 {
+      // 	   //      	  if(s_data.Contains("2016")) ecalBadCalibReducedExtraFilter = 1;                                        
+      // 	   if(!(globalSuperTightHalo2016Filter == 1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && EcalDeadCellTriggerPrimitiveFilter == 1 && BadPFMuonFilter  && eeBadScFilter==1 && NVtx>0  && JetID && JetIDAK8 && ecalBadCalibReducedExtraFilter)) continue;
+      //   }
+      // if(s_data.Contains("v17"))
+      //   {
+      // 	  //      	  eeBadScFilter = 1;                                                                                              
+      //     if(!(globalSuperTightHalo2016Filter == 1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && EcalDeadCellTriggerPrimitiveFilter == 1 && BadPFMuonFilter && NVtx>0 && eeBadScFilter==1 && JetID && JetIDAK8 && ecalBadCalibReducedExtraFilter)) continue;
+      //   }
+      if(PFCaloMETRatio >=  5) continue;
+
+    
+      if(s_data.Contains("data"))
       	if(!(PrimaryVertexFilter==1 && globalSuperTightHalo2016Filter == 1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && EcalDeadCellTriggerPrimitiveFilter == 1 && BadPFMuonFilter  && eeBadScFilter==1 && NVtx>0)) continue;
 
-      if(s_data.Contains("v17_2016"))
+      if(s_data.Contains("v17"))
       	if(!(PrimaryVertexFilter==1 && globalSuperTightHalo2016Filter == 1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && EcalDeadCellTriggerPrimitiveFilter == 1 && BadPFMuonFilter && NVtx>0)) continue;
       
-      if(s_data.Contains("data_2018") || s_data.Contains("data_2017"))
-      	if(!(PrimaryVertexFilter==1 && globalSuperTightHalo2016Filter==1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && EcalDeadCellTriggerPrimitiveFilter == 1 && BadPFMuonFilter && ecalBadCalibReducedFilter && ecalBadCalibReducedExtraFilter && eeBadScFilter==1)) continue;
+      // if(s_data.Contains("data_2018") || s_data.Contains("data_2017"))
+      // 	if(!(PrimaryVertexFilter==1 && globalSuperTightHalo2016Filter==1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && EcalDeadCellTriggerPrimitiveFilter == 1 && BadPFMuonFilter && ecalBadCalibReducedFilter && ecalBadCalibReducedExtraFilter && eeBadScFilter==1)) continue;
 
-      if(s_data.Contains("v17_2018") || s_data.Contains("v17_2017"))
-      	if(!(PrimaryVertexFilter==1 && globalSuperTightHalo2016Filter==1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && EcalDeadCellTriggerPrimitiveFilter == 1 && BadPFMuonFilter && ecalBadCalibReducedFilter && ecalBadCalibReducedExtraFilter)) continue;
+      // if(s_data.Contains("v17_2018") || s_data.Contains("v17_2017"))
+      // 	if(!(PrimaryVertexFilter==1 && globalSuperTightHalo2016Filter==1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && EcalDeadCellTriggerPrimitiveFilter == 1 && BadPFMuonFilter && ecalBadCalibReducedFilter && ecalBadCalibReducedExtraFilter)) continue;
 
       //      if(!(CSCTightHaloFilter==1 && HBHENoiseFilter==1 && HBHEIsoNoiseFilter==1 && eeBadScFilter==1 && EcalDeadCellTriggerPrimitiveFilter==1 && BadPFMuonFilter && NVtx > 0) ) continue;
     }
@@ -264,8 +316,8 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
     h_selectBaselineYields_2->Fill("CR : Electrons = 1",wt);
 
     // h_selectBaselineYields_2->Fill("MET>200",wt);
-    // h_selectBaselineYields_2->Fill("BTags >= 1",wt);
-    // h_selectBaselineYields_2->Fill("BTags = 0",wt);
+    // h_selectBaselineYields_2->Fill("BTagsDeepCSV >= 1",wt);
+    // h_selectBaselineYields_2->Fill("BTagsDeepCSV = 0",wt);
 
    bool event_passed_old=false, event_passed_new=false;
 
@@ -277,24 +329,25 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
    if(bestPhotonIndxAmongPhotons<0) continue;
    bool bestPhoHasPxlSeed=true;
    if((*Photons_hasPixelSeed)[bestPhotonIndxAmongPhotons]<0.001) bestPhoHasPxlSeed=false;
+
    if( bestPhoHasPxlSeed ) continue;
-   // if(s_data.Contains("v17_2016"))
-   //   {
-   //     if((s_data.Contains("TTJets")||s_data.Contains("TTJets_v17")||s_data.Contains("TTJets2_v17"))){
-   // 	 double isrWt = 0;
-   // 	 vector<double> D_values={1.0697, 1.0150, 0.9917, 0.9435, 0.95};
-   // 	 vector<double> isrwt_arr={1., 0.920, 0.821, 0.715, 0.662, 0.561, 0.511};
-   // 	 if(NJetsISR>=6) isrWt = isrwt_arr[6];
-   // 	 else isrWt = isrwt_arr[NJetsISR];
+   if(s_data.Contains("v17_2016"))
+     {
+       if((s_data.Contains("TTJets")||s_data.Contains("TTJets_v17")||s_data.Contains("TTJets2_v17"))){
+   	 double isrWt = 0;
+   	 vector<double> D_values={1.0697, 1.0150, 0.9917, 0.9435, 0.95};
+   	 vector<double> isrwt_arr={1., 0.920, 0.821, 0.715, 0.662, 0.561, 0.511};
+   	 if(NJetsISR>=6) isrWt = isrwt_arr[6];
+   	 else isrWt = isrwt_arr[NJetsISR];
       
-   // 	 if(madHT<600) isrWt = isrWt*D_values[0];
-   // 	 else if(madHT < 800) isrWt = isrWt*D_values[1];
-   // 	 else if(madHT < 1200) isrWt = isrWt*D_values[2];
-   // 	 else if(madHT < 2500) isrWt = isrWt*D_values[3];
-   // 	 else isrWt = isrWt*D_values[4];
-   // 	 wt = wt*isrWt;
-   //     }
-   //   }
+   	 if(madHT<600) isrWt = isrWt*D_values[0];
+   	 else if(madHT < 800) isrWt = isrWt*D_values[1];
+   	 else if(madHT < 1200) isrWt = isrWt*D_values[2];
+   	 else if(madHT < 2500) isrWt = isrWt*D_values[3];
+   	 else isrWt = isrWt*D_values[4];
+   	 wt = wt*isrWt;
+       }
+     }
   
     //=========================================================================//
 
@@ -307,49 +360,84 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
     else continue;
 
     
-    // //veto Muon
-
-    
-    if (NMuons > 0) continue;
-    else
-      h_selectBaselineYields_->Fill("veto Muon",wt);                                                                           
-
-    // //exactly 1 reco electron or 0 reco electron
-    if (NElectrons > 1) continue;
-    else
-      h_selectBaselineYields_2->Fill("veto electron > 1",wt);     
-
-    if(isoMuonTracks ==0 && isoPionTracks==0)
-      {
-	int a;
-	h_selectBaselineYields_->Fill("Iso track",wt);
-      }
-    else continue;                                   
-    
-    
-
     double mt_ele=0,mt_pho=0,mt_ele1=0;
 
     TLorentzVector v_lep1,v_lep2;
-    for(int i=0 ; i<Electrons->size() ; i++)
+
+    if(elec)
       {
-    	if(NElectrons==1 && (*Electrons_passIso)[i]==1)
-    	  {
-	    if( ((*Electrons)[i].Pt() > 10) && abs((*Electrons)[i].Eta()) < 2.5 )
-	      {
-		lep++;
-		nlep++;
-		e_index=i;
-		v_lep1=(*Electrons)[i];
-	      }
+	if (NMuons > 0) continue;
+	else
+	  h_selectBaselineYields_->Fill("veto Muon",wt);
+
+	// //exactly 1 reco electron or 0 reco electron                                                                                                                    
+	if (NElectrons > 1) continue;
+	else
+	  h_selectBaselineYields_2->Fill("veto electron > 1",wt);
+
+        //No iso tracks from mu and pion                                                                                                                                   
+	if(isoMuonTracks ==0 && isoPionTracks==0)
+	  {
+	    int a;
+	    h_selectBaselineYields_->Fill("Iso track",wt);
 	  }
+	else continue;
+
+	//selsct iso electron
+	for(int i=0 ; i<Electrons->size() ; i++)
+	  if(NElectrons==1 && (*Electrons_passIso)[i]==1)
+	    {
+	      if( ((*Electrons)[i].Pt() > 10) && abs((*Electrons)[i].Eta()) < 2.5 )
+		{
+		  lep++;
+		  nlep++;
+		  e_index=i;
+		  v_lep1=(*Electrons)[i];
+		  if(nlep>1) cout<<i<<""<<e_index<<" , e pt = "<<v_lep1.Pt()<<endl;
+		}
+	    }
+      }
+    
+    if(muon)
+      {
+	//Veto electrons
+	if (NElectrons > 0) continue;
+	else
+	  h_selectBaselineYields_->Fill("veto Electron",wt);
+	
+	// //exactly 1 reco electron or 0 reco electron                                                                                                                   
+	if (NMuons > 1) continue;
+	else
+	  h_selectBaselineYields_2->Fill("veto muon > 1",wt);
+
+	//No iso tracks from e and pion
+	if(isoElectronTracks ==0 && isoPionTracks==0)
+	  {
+	    int a;
+	    h_selectBaselineYields_->Fill("Iso track",wt);
+	  }
+	else continue;
+
+	//select isolated muon
+	for(int i=0 ; i<Muons->size() ; i++)
+	  if(NMuons==1 && (*Muons_passIso)[i]==1)
+	    {
+	      if( ((*Muons)[i].Pt() > 10) && abs((*Muons)[i].Eta()) < 2.5 )
+		{
+		  lep++;
+		  nlep++;
+		  e_index=i;
+		  v_lep1=(*Muons)[i];
+		  if(nlep>1) cout<<i<<""<<e_index<<" , mu pt = "<<v_lep1.Pt()<<endl;
+		}
+	    }
       }
       
     mt_ele=sqrt(2*v_lep1.Pt()*MET*(1-cos(DeltaPhi(METPhi,v_lep1.Phi()))));
     if(mt_ele>100) continue;
-    //    if(!(bestPhoton.Eta() > -1 && bestPhoton.Eta() < -0.5 )) continue;
+
  
-     elec_reco++;
+    elec_reco++;
 
     
     if( bestPhoHasPxlSeed || (bestPhoton.Pt()<100)  )
@@ -358,6 +446,10 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
     //========= hadjet -> removing jets which are matched with photon within mindr 0.3 =====//
     bool hadJetID=false;
  
+    double nbjets=0;
+    int bJet1Idx = -1;
+
+    vector<TLorentzVector> nonbjets,bjets;
     int minDRindx=-100,photonMatchingJetIndx=-100,nHadJets=0;
     double minDR=99999,ST=0;
     vector<TLorentzVector> hadJets;
@@ -372,22 +464,16 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	}
     }
 
-    // for(int i=0;i<Jets->size();i++){
-    //   if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
-    //     if( !(minDR < 0.3 && i==minDRindx) ){
-    // 	  hadJets.push_back((*Jets)[i]);
-    // 	  if(hadJetID) hadJetID=(*Jets_ID)[i];
-	  
-    // 	}
-    //   }
-    // }
+    if( minDR > 0.3 )  minDRindx   = -100;
+
     for(int i=0;i<Jets->size();i++){
       if( ((*Jets)[i].Pt() > 30.0) && (abs((*Jets)[i].Eta()) <= 2.4) ){
-        if( !(minDR < 0.3 && i==minDRindx) ){
+        if(  i!=minDRindx ){
 	  hadJetID=(*Jets_ID)[i];
 	  if(hadJetID)
 	    hadJets.push_back((*Jets)[i]);
-	    
+	  if((*Jets_bJetTagDeepCSVBvsAll)[i] > deepCSVvalue){
+	    bjets.push_back((*Jets)[i]); bJet1Idx = i;}	    
 	}
       }
     }
@@ -402,6 +488,8 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	if( (abs(hadJets[i].Eta()) < 2.4) ){ST=ST+(hadJets[i].Pt());}
 	if( (abs(hadJets[i].Eta()) < 2.4) ){nHadJets++;}
       }
+    for(int i=0;i<bjets.size();i++)
+      if( (abs(bjets[i].Eta()) < 2.4) ){nbjets++;}
     
     if( minDR<0.3 ){
       ST=ST+bestPhoton.Pt();
@@ -410,9 +498,9 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 
     
     //Minimum MET
-    if( MET>100)  
+    if( MET>200)  
       {
-	h_selectBaselineYields_->Fill("MET>100",wt);
+	h_selectBaselineYields_->Fill("MET>200",wt);
       }
     else continue;
 
@@ -447,7 +535,8 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
       }
     else continue;
     
-    if(photonMatchingJetIndx>=0 && ((*Jets)[photonMatchingJetIndx].Pt())/(bestPhoton.Pt()) < 1.0) continue;
+    //    if(photonMatchingJetIndx>=0 && (((*Jets)[photonMatchingJetIndx].Pt())/(bestPhoton.Pt()) < 1.0 || ((*Jets)[photonMatchingJetIndx].Pt())/(bestPhoton.Pt()) > 1.2)) continue;
+    if(photonMatchingJetIndx>=0 && (((*Jets)[photonMatchingJetIndx].Pt())/(bestPhoton.Pt()) < 1.0)) continue;
     if(photonMatchingJetIndx<0) continue;
 
     // //============== New Trigger selections ================				     
@@ -455,27 +544,19 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 
     if( !((MET>200 && bestPhoton.Pt()>100) ) )continue;
     else 
-    h_selectBaselineYields_->Fill("MET>250 & photon pt>100 selec",wt);
-    bool process= false;
-    if(!bestPhoHasPxlSeed && bestPhoton.Pt()>=100 && ST>300 && nHadJets>=2 && MET > 200 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3 && NMuons==0 &&((isoMuonTracks==0)&&(isoPionTracks==0)))
-      process =true;
-    else continue;
+    h_selectBaselineYields_->Fill("MET>200 & photon pt>100 selec",wt);
+    bool process= true;
+    if(elec)
+      {
+	process = process && !bestPhoHasPxlSeed && bestPhoton.Pt()>=100 && ST>300 && nHadJets>=2 && MET > 200 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3 && NMuons==0 && isoMuonTracks==0 && isoPionTracks==0;
+      }
 
-    
-    //============== Old Trigger selections ================                                                                                  
-    // if( (ST <= 500) ) continue;
+    if(muon)
+      {
+        process = process && !bestPhoHasPxlSeed && bestPhoton.Pt()>=100 && ST>300 && nHadJets>=2 && MET > 200 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3 && NElectrons==0 && isoElectronTracks==0 && isoPionTracks==0;
+      }
 
-    // if( !((ST>800 && bestPhoton.Pt()>100) || (bestPhoton.Pt()>190)) ) continue;
-    // else    
-    //  h_selectBaselineYields_->Fill("ST & photon pt selec",wt);
-    // bool process= false;
-    // if(!bestPhoHasPxlSeed && bestPhoton.Pt()>=100 && ST>500 && nHadJets>=2 && MET > 100 && dPhi_METjet1 > 0.3 && dPhi_METjet2 > 0.3 && NMuons==0 &&((isoMuonTracks==0)&&(isoPionTracks==0))){
-    //    process =true;
-    //    evtSurvived++;      
-    //    h_selectBaselineYields_->Fill("Before Pre-Selections",wt);
-       
-    // }
-    // else continue;
+      if(!process) continue;
 
     
      ///////////////-========After Baseline Selections ////////////
@@ -494,14 +575,14 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
     vector<double> hadAK8Mass, hadAK8Mass_matchedW;
     double Ak8Mass,max=0.0,Ak8Mass1;
     for(int i=0;i<JetsAK8->size();i++)
-      if( ((*JetsAK8)[i].Pt() > 30.0) && (abs((*JetsAK8)[i].Eta()) <= 2.4) ){
+      if( ((*JetsAK8)[i].Pt() > 200.0) && (abs((*JetsAK8)[i].Eta()) <= 2.4) ){
 	double dR4=bestPhoton.DeltaR((*JetsAK8)[i]);
 	if(dR4<minDR4){minDR4=dR4;minDR4indx=i;}
       }
     
     for(int i=0;i<JetsAK8->size();i++)
-      if( ((*JetsAK8)[i].Pt() > 30.0) && (abs((*JetsAK8)[i].Eta()) <= 2.4) ){
-	if( !(minDR4 < 0.3 && i==minDR4indx) ){
+      if( ((*JetsAK8)[i].Pt() > 200.0) && (abs((*JetsAK8)[i].Eta()) <= 2.4) ){
+	if( !(minDR4 < 0.8 && i==minDR4indx) ){
 	  hadAK8JetID=(*JetsAK8_ID)[i];
 	  if(hadAK8JetID)
 	    {
@@ -579,21 +660,16 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 
     if(process && EWselection && hadJetID)
       {
-	// if(NElectrons>0){
-	//   double dr2=MinDr(bestPhoton,*Electrons);
-	//   if(dr2<=0.2) continue;
-	// }
-	if(NElectrons>0){
+
+	if(NElectrons>0 && elec){
 	  double dr2=bestPhoton.DeltaR((*Electrons)[e_index]);
 	  if(dr2<=0.2) continue;
 	}
-
-	if(NElectrons==1) ele++;
+	if(NElectrons==1 && elec) ele++;
+        if(NMuons==1 && muon) ele++;
 
 	if(!s_data.Contains("data") ){
-
-	  //	  cout<<"============================"<<endl;
-
+	  
 	  //==================================== After Baseline Events selection ========================
 	  int nGenMu=0,nGenEle=0,nGenTau=0,nGenHad=0,nGenLep=0,nGenEle_tau=0,nGenMu_tau=0,nGentau_lep=0,nGentau_had=0,nGentau_had1=0,nGenTau1=0,nGenEle1=0,nGenEle_tau1=0,nGenMu1=0,nGenMu_tau1=0,o=0;
 	  TLorentzVector genPho1,genEle1,neutr,genMu1,genTau1,genHad1,genLep1,gentau_lep1,gentau_had1;
@@ -718,22 +794,34 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	  h_mindr_ph_tau->Fill(MinDr(bestPhoton,v_genTau2),wt);
 
 	  
-	  if(NElectrons==0 ){
-	     
-	     
-	    if(nGenMu1==0 && nGenEle1==0 && v_genTau2.size()==0) continue;//to reject W->qq' type of events
-	    if(nGentau_had1>1) continue;                                                                                                   
-	    survived_vetohad++;
-	    if(nGenMu1>0) continue;
-	    if(nGenEle1==0) continue;
-	    survived_elecge1++;
+
+	  ////////// SR region ///////////////////
+	  if((NElectrons==0 && elec) || (NMuons==0 && muon)){
+	    if(elec)
+	      {	     	     
+		if(nGenMu1==0 && nGenEle1==0 && v_genTau2.size()==0) continue;//to reject W->qq' type of events
+		if(nGentau_had1>1) continue;                                                                                                   
+		survived_vetohad++;
+		if(nGenMu1>0) continue;
+		if(nGenEle1==0) continue;
+		survived_elecge1++;
+		if(v_genEle2.size()==0) {TLorentzVector v1;v_genEle2.push_back(v1);}
+		sortTLorVec(&v_genEle2);
+		v_genEle1=v_genEle2;
+	      }
+	    if(muon)
+	      {
+		if(nGenMu1==0 && nGenEle1==0 && v_genTau2.size()==0) continue;//to reject W->qq' type of events
+		survived_vetohad++;
+		if(!(nGenEle1==0 || (nGenEle1==1 && nGenMu1==1))) continue;
+		survived_elecge1++;
+		if(v_genMu2.size()==0) {TLorentzVector v1;v_genMu2.push_back(v1);}
+		sortTLorVec(&v_genMu2);
+                v_genEle1=v_genMu2;
+	      }
 
 	    total++;
 	       
-	    //cout<<jentry<<" : e fakes as photon = "<<(*Photons_electronFakes)[bestPhotonIndxAmongPhotons]<<" , MindR b/w bestphoton & gen e = "<<MinDr(bestPhoton,v_genEle2)<<endl;
-
-
-
 	    if(!(*Photons_electronFakes)[bestPhotonIndxAmongPhotons])
 	      { h_mindr_lep_goodph->Fill(MinDr(bestPhoton,v_genEle2),wt);
 		//h_mindr_goodph_lep->Fill(MinDr((*Photons)[bestPhotonIndxAmongPhotons],v_genEle1),wt);
@@ -744,203 +832,220 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 		fail_realphoton++;
 		continue;
 	      }
-	    
-
+	 
 	    
 	    if(isoElectronTracks!=0 || isoMuonTracks!=0 || isoPionTracks!=0) continue;	 
 	    elec_reco0++;
 
-	    if(v_genEle2.size()==0) {TLorentzVector v1;v_genEle2.push_back(v1);}
-	    sortTLorVec(&v_genEle2);
-	 
-	    if(nGenEle1 == 0) elec_gen++;
-	    if(nGenEle1 == 1) elec_gen3++;
-	    if(nGenEle1 == 2) elec_gen4++;
-	    if(nGenTau1 > 0) elec_gen2++;
-	   
-	    // if(nGenMu_tau1 > 0) elec_gen3++; 
-	    // if(nGenEle_tau1 > 0) elec_gen4++;
-	    if(nGentau_had1 > 0) gentauhad2++; 
-
-	    
+	    if(elec)
+	      {	 
+		if(v_genEle1.size() == 0) elec_gen++;
+		if(v_genEle1.size() == 1) elec_gen3++;
+		if(v_genEle1.size() == 2) elec_gen4++;
+		if(nGenTau1 > 0) elec_gen2++;
+		if(nGentau_had1 > 0) gentauhad2++; 
+	      }
 	    int n=0,l=0,m=0,o=0;
-	 
 	    elec_reco0_before++;
-      
 	    cr_el=0,m=0;
 	    int q=0,u=0;
-
-
 	    bool acceptance=true,id=true,iso=true,cr=true,sr=true;  
-	    for(int i=0; i<nGenEle1; i++){
-	      if (NElectrons == 0 && q<1) {
-		//	cout<<jentry<<" , MindR b/w bestphoton & gen e = "<<MinDr(bestPhoton,v_genEle2)<<" , no of gen  = "<<nGenEle1<<" , 1st e Pt = "<<v_genEle2[0].Pt()<<" , best photon Pt = "<<bestPhoton.Pt()<<endl;
+	    for(int i=0; i<v_genEle1.size(); i++){
 
-		if(Electrons->size()>0 && (*Electrons_passIso)[i]==1)
-		  cout<<jentry<<" : "<<Electrons->size()<<endl;
+	      elec_reco0_genel++;
+	      q++;
+	      if(elec) h_selectBaselineYields_->Fill("SR : Electrons = 0",wt);
+	      if(muon) h_selectBaselineYields_->Fill("SR : Muons = 0",wt);
+	      int sBin6 = getBinNoV7_le(nbjets,nHadJets);
+	      h_SBins_v6_CD_elec0->Fill(sBin6,wt);	
+	      int sBin7_SP_elec0 = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
+	      h_SBins_v7_CD_SP_elec0->Fill(sBin7_SP_elec0,wt);
+	      int sBin6_SP_elec0 = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
+	      h_SBins_v6_CD_SP_elec0->Fill(sBin6_SP_elec0,wt);
+	      int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
+	      h_SBins_v6_CD_EW_50bin_elec0->Fill(sBin6_50bin,wt);
+	      h2_njetnbjet_phopt_vBin_elec0->Fill(sBin7_SP_elec0,bestPhoton.Pt(),wt);
+	      h2_njetnbjet_phopt_elec0->Fill(sBin7_SP_elec0,bestPhoton.Pt(),wt);
+	      
+	      sBin7_SP_elec0 = getBinNoV7(nbjets,nHadJets);
+	      h_SBins_v7_CD_SP_tmp_elec0->Fill(sBin7_SP_elec0,wt);
 
-		  
-		elec_reco0_genel++;
-		q++;
-		h_selectBaselineYields_->Fill("SR : Electrons = 0",wt);
-		int sBin6 = getBinNoV7_le(nHadJets);
-		h_SBins_v6_CD_elec0->Fill(sBin6,wt);	
-		int sBin7_SP_elec0 = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
-		h_SBins_v7_CD_SP_elec0->Fill(sBin7_SP_elec0,wt);
-		int sBin6_SP_elec0 = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
-		h_SBins_v6_CD_SP_elec0->Fill(sBin6_SP_elec0,wt);
-		int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
-		h_SBins_v6_CD_EW_50bin_elec0->Fill(sBin6_50bin,wt);
-		h2_njetnbjet_phopt_vBin_elec0->Fill(sBin7_SP_elec0,bestPhoton.Pt(),wt);
-		h2_njetnbjet_phopt_elec0->Fill(sBin7_SP_elec0,bestPhoton.Pt(),wt);
-
-		sBin7_SP_elec0 = getBinNoV7(nHadJets);
-		h_SBins_v7_CD_SP_tmp_elec0->Fill(sBin7_SP_elec0,wt);
-
-		h2_MET_nJets_elec0->Fill(nHadJets,MET,wt);
-		h2_METvBin2_nJets_elec0->Fill(nHadJets,MET,wt);
-		h2_nbjets_nJets_elec0->Fill(nHadJets,BTags,wt);
-
-		
-		h_MET_elec0->Fill(MET,wt);
-		h_METvBin2_elec0->Fill(MET,wt);
-		h_nJets_elec0->Fill(nHadJets,wt);
-		h_ST_elec0->Fill(ST,wt);
-		h_BTags_elec0->Fill(BTags,wt);
-		h_minDr_bestphoEle_elec0->Fill(MinDr(bestPhoton,*Electrons),wt);
-		h_minDr_bestphoJets_elec0->Fill(MinDr(bestPhoton,hadJets),wt);
-
-		h_BestPhotonPt_vBin_elec0->Fill(bestPhoton.Pt(),wt);    
-		h_BestPhotonPt_elec0->Fill(bestPhoton.Pt(),wt);    
-                h_BestPhotonPhi_elec0->Fill(bestPhoton.Phi(),wt);
-                h_BestPhotonEta_elec0->Fill(bestPhoton.Eta(),wt);
-
-		if(BTags == 0)
-		  {
-		    h_BestPhotonPt_0b_elec0->Fill(bestPhoton.Pt(),wt);    
-		    h_BestPhotonPt_0b_vBin_elec0->Fill(bestPhoton.Pt(),wt);    
-		  }
-		if(BTags > 0)
-		  {
-		    h_BestPhotonPt_ge1b_elec0->Fill(bestPhoton.Pt(),wt);    
-		    h_BestPhotonPt_ge1b_vBin_elec0->Fill(bestPhoton.Pt(),wt);    
-		  }
-		for(int j=0; j<Electrons->size();j++){
-		  h_ElectronPt_elec0->Fill((*Electrons)[j].Pt(),wt);
-		  h_ElectronEta_elec0->Fill(abs((*Electrons)[j].Eta()),wt);
-		  h_ElectronPhi_elec0->Fill(abs((*Electrons)[j].Phi()),wt);
+	      h2_MET_nJets_elec0->Fill(nHadJets,MET,wt);
+	      h2_METvBin2_nJets_elec0->Fill(nHadJets,MET,wt);
+	      h2_nbjets_nJets_elec0->Fill(nHadJets,nbjets,wt);	
+	      h_MET_elec0->Fill(MET,wt);
+	      h_METvBin2_elec0->Fill(MET,wt);
+	      h_nJets_elec0->Fill(nHadJets,wt);
+	      h_ST_elec0->Fill(ST,wt);
+	      h_BTags_elec0->Fill(nbjets,wt);
+	      h_minDr_bestphoEle_elec0->Fill(MinDr(bestPhoton,*Electrons),wt);
+	      h_minDr_bestphoJets_elec0->Fill(MinDr(bestPhoton,hadJets),wt);
+	      h_BestPhotonPt_vBin_elec0->Fill(bestPhoton.Pt(),wt);    
+	      h_BestPhotonPt_elec0->Fill(bestPhoton.Pt(),wt);    
+	      h_BestPhotonPhi_elec0->Fill(bestPhoton.Phi(),wt);
+	      h_BestPhotonEta_elec0->Fill(bestPhoton.Eta(),wt);
+	      if(nbjets == 0)
+		{
+		  h_BestPhotonPt_0b_elec0->Fill(bestPhoton.Pt(),wt);    
+		  h_BestPhotonPt_0b_vBin_elec0->Fill(bestPhoton.Pt(),wt);    
 		}
-		for(int j=0; j<hadJets.size();j++){ 
+	      if(nbjets > 0)
+		{
+		  h_BestPhotonPt_ge1b_elec0->Fill(bestPhoton.Pt(),wt);    
+		  h_BestPhotonPt_ge1b_vBin_elec0->Fill(bestPhoton.Pt(),wt);    
+		}
+		
+	      if(elec)
+		{
+		  for(int j=0; j<Electrons->size();j++)
+		    {
+		      h_ElectronPt_elec0->Fill((*Electrons)[j].Pt(),wt);
+		      h_ElectronEta_elec0->Fill(abs((*Electrons)[j].Eta()),wt);
+		      h_ElectronPhi_elec0->Fill(abs((*Electrons)[j].Phi()),wt);
+		    }
+		}
+	      if(muon)
+		{
+                  for(int j=0; j<Muons->size();j++)
+		    {
+		      h_ElectronPt_elec0->Fill((*Muons)[j].Pt(),wt);
+		      h_ElectronEta_elec0->Fill((*Muons)[j].Eta(),wt);
+		      h_ElectronPhi_elec0->Fill((*Muons)[j].Phi(),wt);
+		    }		  
+		}
+
+	      for(int j=0; j<hadJets.size();j++)
+		{ 
 		  h_JetPt_elec0->Fill(hadJets[j].Pt(),wt);
 		  h_JetEta_elec0->Fill(abs(hadJets[j].Eta()),wt);
 		  h_JetPhi_elec0->Fill(abs(hadJets[j].Phi()),wt);
 		}
-		h_mTPhoMET_elec0->Fill(mTPhoMET,wt); 
-		// h_dPhi_METjet1_elec0->Fill(dPhi_METjet1,wt);
-		// h_dPhi_METjet2_elec0->Fill(dPhi_METjet2,wt);
-		// h_dPhi_phojet1_elec0->Fill(dPhi_phojet1,wt);
-		// h_dPhi_phojet2_elec0->Fill(dPhi_phojet2,wt);
-		h_dPhi_phoMET_elec0->Fill(dPhi_phoMET,wt);	
+	      h_mTPhoMET_elec0->Fill(mTPhoMET,wt); 
+	      h_dPhi_phoMET_elec0->Fill(dPhi_phoMET,wt);	
+	      h_hadAk8Mass_elec0->Fill(Ak8Mass,wt);
+	      if(hadAK8Jets.size() > 0)
+		h_hadAk8jetPt_elec0->Fill(hadAK8Jets[0].Pt(),wt);
+	      if(hadJets.size() > 0)
+		{
+		  dPhi_METjet1 = (DeltaPhi(METPhi,(hadJets)[0].Phi()));
+		  dPhi_phojet1 = (DeltaPhi(bestPhoton.Phi(),hadJets[0].Phi()));
+		  h_dPhi_phojet1_elec0->Fill(dPhi_phojet1,wt);
+		  h_dPhi_METjet1_elec0->Fill(dPhi_METjet1,wt);
+		}
 
-		// 		if(hadAK8Jets.size() > 0)
-		h_hadAk8Mass_elec0->Fill(Ak8Mass,wt);
-		if(hadAK8Jets.size() > 0)
-		  h_hadAk8jetPt_elec0->Fill(hadAK8Jets[0].Pt(),wt);
-            if(hadJets.size() > 0)
-              {
-                dPhi_METjet1 = (DeltaPhi(METPhi,(hadJets)[0].Phi()));
-                dPhi_phojet1 = (DeltaPhi(bestPhoton.Phi(),hadJets[0].Phi()));
-                h_dPhi_phojet1_elec0->Fill(dPhi_phojet1,wt);
-                h_dPhi_METjet1_elec0->Fill(dPhi_METjet1,wt);
-              }
-
-            if(hadJets.size() > 1)
+	      if(hadJets.size() > 1)
               {
                 dPhi_METjet2 = (DeltaPhi(METPhi,(hadJets)[1].Phi()));
                 dPhi_phojet2 = (DeltaPhi(bestPhoton.Phi(),hadJets[1].Phi()));
                 h_dPhi_phojet2_elec0->Fill(dPhi_phojet2,wt);
                 h_dPhi_METjet2_elec0->Fill(dPhi_METjet2,wt);
               }
+	      
+	      if(Electrons->size()>0 && elec)
+		h2_leadElectronEta_Phi_elec0->Fill((*Electrons)[0].Eta(),(*Electrons)[0].Phi(),wt);
+	      if(Muons->size()>0 && muon)
+		h2_leadElectronEta_Phi_elec0->Fill((*Muons)[0].Eta(),(*Muons)[0].Phi(),wt);
 
-	    if(Electrons->size()>0)
-		  h2_leadElectronEta_Phi_elec0->Fill((*Electrons)[0].Eta(),(*Electrons)[0].Phi(),wt);
-		if(hadJets.size()>0){
-		  h2_leadJetEta_Phi_elec0->Fill(hadJets[0].Eta(),hadJets[0].Phi(),wt);
-		  h_leadJetPhi_elec0->Fill(abs(hadJets[0].Phi()),wt);
-		  h_leadJetEta_elec0->Fill(abs(hadJets[0].Eta()),wt);
-		  h_leadJetPt_elec0->Fill(hadJets[0].Pt(),wt);
-		}	  
-		
+	      if(hadJets.size()>0){
+		h2_leadJetEta_Phi_elec0->Fill(hadJets[0].Eta(),hadJets[0].Phi(),wt);
+		h_leadJetPhi_elec0->Fill(abs(hadJets[0].Phi()),wt);
+		h_leadJetEta_elec0->Fill(abs(hadJets[0].Eta()),wt);
+		h_leadJetPt_elec0->Fill(hadJets[0].Pt(),wt);
+	      }	  
+	      
+	    }
+	  }// gen electron loop
+
+	  if(nGenMu1==0 && nGenEle1==0  && nGentau_had1 > 0 && muon)
+	    {
+	      elec_reco0++;
+	      h_selectBaselineYields_->Fill("SR : NMuons = 0",wt);
+	      int sBin6 = getBinNoV7_le(nbjets,nHadJets);
+	      h_SBins_v6_CD_elec0->Fill(sBin6,wt);
+	      int sBin7_SP_elec0 = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
+	      h_SBins_v7_CD_SP_elec0->Fill(sBin7_SP_elec0,wt);
+	      int sBin6_SP_elec0 = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
+	      h_SBins_v6_CD_SP_elec0->Fill(sBin6_SP_elec0,wt);
+	      int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
+	      h_SBins_v6_CD_EW_50bin_elec0->Fill(sBin6_50bin,wt);
+	      h2_njetnbjet_phopt_vBin_elec0->Fill(sBin7_SP_elec0,bestPhoton.Pt(),wt);
+	      h2_njetnbjet_phopt_elec0->Fill(sBin7_SP_elec0,bestPhoton.Pt(),wt);
+	      sBin7_SP_elec0 = getBinNoV7(nbjets,nHadJets);
+	      h_SBins_v7_CD_SP_tmp_elec0->Fill(sBin7_SP_elec0,wt);
+	      h2_MET_nJets_elec0->Fill(nHadJets,MET,wt);
+	      h2_METvBin2_nJets_elec0->Fill(nHadJets,MET,wt);
+	      h2_nbjets_nJets_elec0->Fill(nHadJets,BTags,wt);
+	      h_MET_elec0->Fill(MET,wt);
+	      h_METvBin2_elec0->Fill(MET,wt);
+	      h_nJets_elec0->Fill(nHadJets,wt);
+	      h_ST_elec0->Fill(ST,wt);
+	      h_BTags_elec0->Fill(BTagsDeepCSV,wt);
+	      h_minDr_bestphoEle_elec0->Fill(MinDr(bestPhoton,*Muons),wt);
+	      h_minDr_bestphoJets_elec0->Fill(MinDr(bestPhoton,hadJets),wt);
+	      h_BestPhotonPt_vBin_elec0->Fill(bestPhoton.Pt(),wt);
+	      h_BestPhotonPt_elec0->Fill(bestPhoton.Pt(),wt);
+	      h_BestPhotonPhi_elec0->Fill(bestPhoton.Phi(),wt);
+	      h_BestPhotonEta_elec0->Fill(bestPhoton.Eta(),wt);
+
+	      if(BTags == 0)
+		{
+		  h_BestPhotonPt_0b_elec0->Fill(bestPhoton.Pt(),wt);
+		  h_BestPhotonPt_0b_vBin_elec0->Fill(bestPhoton.Pt(),wt);
+		}
+	      if(BTags > 0)
+		{
+		  h_BestPhotonPt_ge1b_elec0->Fill(bestPhoton.Pt(),wt);
+		  h_BestPhotonPt_ge1b_vBin_elec0->Fill(bestPhoton.Pt(),wt);
+		}
+
+	      for(int j=0; j<Muons->size();j++){
+		h_ElectronPt_elec0->Fill((*Muons)[j].Pt(),wt);
+		h_ElectronEta_elec0->Fill((*Muons)[j].Eta(),wt);
+		h_ElectronPhi_elec0->Fill((*Muons)[j].Phi(),wt);
+	      }
+	      for(int j=0; j<hadJets.size();j++){
+		h_JetPt_elec0->Fill(hadJets[j].Pt(),wt);
+		h_JetEta_elec0->Fill(hadJets[j].Eta(),wt);
+		h_JetPhi_elec0->Fill(hadJets[j].Phi(),wt);
+	      }
+	      h_mTPhoMET_elec0->Fill(mTPhoMET,wt);
+	      if(hadJets.size() > 0)    dPhi_phojet1 = abs(DeltaPhi(bestPhoton.Phi(),hadJets[0].Phi()));
+	      if(hadJets.size() > 1)    dPhi_phojet2 = abs(DeltaPhi(bestPhoton.Phi(),hadJets[1].Phi()));
+	      dPhi_phoMET = abs(DeltaPhi(bestPhoton.Phi(),METPhi));
+	      dPhi_METjet1 = abs(DeltaPhi(METPhi,(hadJets)[0].Phi()));
+	      dPhi_METjet2 = abs(DeltaPhi(METPhi,(hadJets)[1].Phi()));
+	      h_dPhi_METjet1_elec0->Fill(dPhi_METjet1,wt);
+	      h_dPhi_METjet2_elec0->Fill(dPhi_METjet2,wt);
+	      h_dPhi_phojet1_elec0->Fill(dPhi_phojet1,wt);
+	      h_dPhi_phojet2_elec0->Fill(dPhi_phojet2,wt);
+	      h_dPhi_phoMET_elec0->Fill(dPhi_phoMET,wt);
+	      if(Muons->size()>0)
+		h2_leadElectronEta_Phi_elec0->Fill((*Muons)[0].Eta(),(*Muons)[0].Phi(),wt);
+	      if(hadJets.size()>0){
+		h2_leadJetEta_Phi_elec0->Fill(hadJets[0].Eta(),hadJets[0].Phi(),wt);
+		h_leadJetPhi_elec0->Fill(hadJets[0].Phi(),wt);
+		h_leadJetEta_elec0->Fill(hadJets[0].Eta(),wt);
+		h_leadJetPt_elec0->Fill(hadJets[0].Pt(),wt);
 	      }
 
-	      if(nGenEle1==1 || (acceptance & id & nGenEle1>1)){
-		////acceptance check
-		acceptance=true; 
-		if(((abs(v_genEle2[i].Eta())>2.5)||(v_genEle2[i].Pt()<10) ||(Electrons->size()==0)))
-		  {     
-		    fail_acceptance++;
-		    acceptance=false;
-		    int sBin6 = getBinNoV7_le(nHadJets);
-		    h_SBins_v6_CD_elec0_acc->Fill(sBin6,wt);	
-		    int sBin7_SP_elec0_acc = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
-		    h_SBins_v7_CD_SP_elec0_acc->Fill(sBin7_SP_elec0_acc,wt);
-		    int sBin6_SP_elec0_acc = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
-		    h_SBins_v6_CD_SP_elec0_acc->Fill(sBin6_SP_elec0_acc,wt);
-	       
-		  }
-	     
-		if(acceptance)
-		  {
-		    pass_acceptance++;
-		    id=true;
-		    if(NElectrons==0)
-		      {
-			fail_id++;
-			id=false;
-		     
-			int sBin6 = getBinNoV7_le(nHadJets);
-			h_SBins_v6_CD_elec0_id->Fill(sBin6,wt);	
-			int sBin7_SP_elec0_id = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
-			h_SBins_v7_CD_SP_elec0_id->Fill(sBin7_SP_elec0_id,wt);
-			int sBin6_SP_elec0_id = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
-			h_SBins_v6_CD_SP_elec0_id->Fill(sBin6_SP_elec0_id,wt);
+	      h_hadAk8Mass_elec0->Fill(Ak8Mass,wt);
+	      if(hadAK8Jets.size() > 0)
+		h_hadAk8jetPt_elec0->Fill(hadAK8Jets[0].Pt(),wt);
+	    }
 
-		      }
-		  }
-
-		if(id && acceptance) pass_id++;
-
-		if(!id || !acceptance) 
-		  elec_reco1++;
-	      }	   
-	    }// gen electron loop
-	  }// NElectron = 0
-	}//MC for SR
+	}  //MC for SR
 
 	
+
 	//CR region for MC and data
-	if((NElectrons==1 && (cr_el < 1)))
+	if((NElectrons==1 && cr_el < 1 && elec) || (muon && NMuons==1 && cr_el < 1 && e_index >=0))
 	  {
-	    //	    if((*Electrons)[e_index].Pt()>300)
-	    //	    if(MET>1000)
-	    // if(nHadJets==5 && MET>=500 &&  MET<=600)
-	    //   {
-	    // 	if(s_data.Contains("v17_2016") || s_data.Contains("v17_2017")){
-	    // 	  cout<<jentry<<" : NonPrefiringProb ="<<NonPrefiringProb<<" , lumiInfb = "<<lumiInfb<<" , pile up = "<<puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))))<<" , wweight = "<<Weight<<endl;
-	    // 	  cout<<jentry<<" : "<<RunNum<<" : e pt : "<<(*Electrons)[e_index].Pt()<<" : e phi : "<<(*Electrons)[e_index].Phi()<<" , e eta : "<<(*Electrons)[e_index].Eta()<<endl;
-	    // 	  cout<<"Photon Pt : "<<bestPhoton.Pt()<<" , Photon Phi : "<<bestPhoton.Phi()<<" , Photon eta : "<<bestPhoton.Eta()<<endl;
-	    // 	  cout<<"MET : "<<MET<<" , MET Phi : "<<METPhi<<endl;
-	    // 	  cout<<"PVF : "<<PrimaryVertexFilter<<", GSTH : "<<globalSuperTightHalo2016Filter<<", HBHENoiseFilter : "<<HBHENoiseFilter<<", HBHEIsoNoiseFilter : "<<HBHEIsoNoiseFilter<<" , ECD : "<<EcalDeadCellTriggerPrimitiveFilter<<" , BadPFMuonFilter : "<<BadPFMuonFilter<<" , eeBadScFilter : "<<eeBadScFilter<<" , NVtx : "<<NVtx<<endl; 
-	    // 	}
-	    //   }
-	    //	    else continue;
 
 	    double eSF_wt=1.0,egammaSF_wt=1.0;
 	    if(applyE_SF==true)
 	      {
-		eSF_wt=e_id->GetBinContent(e_id->GetXaxis()->FindBin((*Electrons)[e_index].Eta()),e_id->GetYaxis()->FindBin((*Electrons)[e_index].Pt()));
-		egammaSF_wt=e_SF->GetBinContent(e_SF->GetXaxis()->FindBin((*Electrons)[e_index].Eta()),e_SF->GetYaxis()->FindBin((*Electrons)[e_index].Pt()));
-		
+	     	eSF_wt=e_id->GetBinContent(e_id->GetXaxis()->FindBin((*Electrons)[e_index].Eta()),e_id->GetYaxis()->FindBin((*Electrons)[e_index].Pt()));
+	     	egammaSF_wt=e_SF->GetBinContent(e_SF->GetXaxis()->FindBin((*Electrons)[e_index].Eta()),e_SF->GetYaxis()->FindBin((*Electrons)[e_index].Pt()));
 	      }
 	    else
 	      {
@@ -950,43 +1055,38 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	    wt=eSF_wt*egammaSF_wt*wt;  
 	    events_cr = events_cr+ 1 ; 
 	    cr_el++;
-	    h_selectBaselineYields_->Fill("CR : Electrons = 1",wt);
-	    int sBin6 = getBinNoV7_le(nHadJets);
+	    if(elec) h_selectBaselineYields_->Fill("CR : Electrons = 1",wt);
+            if(muon) h_selectBaselineYields_->Fill("CR : Muons = 1",wt);
+	    int sBin6 = getBinNoV7_le(nbjets,nHadJets);
 	    h_SBins_v6_CD_elec1->Fill(sBin6,wt);	
-	    int sBin7_SP_elec1 = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+	    int sBin7_SP_elec1 = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
 	    h_SBins_v7_CD_SP_elec1->Fill(sBin7_SP_elec1,wt);
-	    int sBin6_SP_elec1 = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+	    int sBin6_SP_elec1 = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
 	    h_SBins_v6_CD_SP_elec1->Fill(sBin6_SP_elec1,wt);
-	    int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+	    int sBin6_50bin= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
 	    h_SBins_v6_CD_EW_50bin_elec1->Fill(sBin6_50bin,wt);
-
-	    sBin7_SP_elec1 = getBinNoV7(nHadJets);
+	    sBin7_SP_elec1 = getBinNoV7(nbjets,nHadJets);
 	    h_SBins_v7_CD_SP_tmp_elec1->Fill(sBin7_SP_elec1,wt);
-
 
 	    h2_njetnbjet_phopt_vBin->Fill(sBin7_SP_elec1,bestPhoton.Pt(),wt);
 	    h2_njetnbjet_phopt->Fill(sBin7_SP_elec1,bestPhoton.Pt(),wt);
-     
 	    h2_MET_nJets->Fill(nHadJets,MET,wt);
-	    h2_MET_elepT->Fill(nHadJets,(*Electrons)[e_index].Pt(),wt);
+	    h2_MET_METPhi->Fill(METPhi,MET,wt);
+	    h2_MET_elepT->Fill((*Electrons)[e_index].Pt(),MET,wt);
 	    h2_METvBin2_nJets->Fill(nHadJets,MET,wt);
-	    h2_nbjets_nJets->Fill(nHadJets,BTags,wt);
-
+	    h2_nbjets_nJets->Fill(nHadJets,nbjets,wt);
 	    h_MET->Fill(MET,wt);
 	    h_METPhi->Fill(METPhi,wt);
 	    h_METvBin2->Fill(MET,wt);
 	    h_nJets->Fill(nHadJets,wt);
 	    h_ST->Fill(ST,wt);
-	    h_BTags->Fill(BTags,wt);
+	    h_BTags->Fill(nbjets,wt);
 	    h_minDr_bestphoEle->Fill(MinDr(bestPhoton,*Electrons),wt);
 	    h_minDr_bestphoJets->Fill(MinDr(bestPhoton,hadJets),wt);
 	    h_mTPhoMET->Fill(mTPhoMET,wt); 
-
             h_minDr_EleJets->Fill(MinDr((*Electrons)[e_index],hadJets),wt);
 
             dPhi_phoMET = abs(DeltaPhi(bestPhoton.Phi(),METPhi));
-
-	    
             if(hadJets.size() > 0)
               {
                 dPhi_METjet1 = (DeltaPhi(METPhi,(hadJets)[0].Phi()));
@@ -1002,7 +1102,6 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
               {
                 dPhi_METjet2 = (DeltaPhi(METPhi,(hadJets)[1].Phi()));
                 dPhi_phojet2 = (DeltaPhi(bestPhoton.Phi(),hadJets[1].Phi()));
-
                 h_dPhi_phojet2->Fill(dPhi_phojet2,wt);
                 h_dPhi_METjet2->Fill(dPhi_METjet2,wt);
                 h_minDr_Elejet2->Fill((*Electrons)[e_index].DeltaR(hadJets[1]),wt);
@@ -1038,23 +1137,37 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	    h_BestPhotonPt->Fill(bestPhoton.Pt(),wt);    
 	    h_BestPhotonPhi->Fill(bestPhoton.Phi(),wt);
 	    h_BestPhotonEta->Fill(bestPhoton.Eta(),wt);
-	    if(BTags == 0)
+	    if(nbjets == 0)
 	      {
 		h_BestPhotonPt_0b->Fill(bestPhoton.Pt(),wt);    
 		h_BestPhotonPt_0b_vBin->Fill(bestPhoton.Pt(),wt);    
 	      }
-	    if(BTags > 0)
+	    if(nbjets > 0)
 	      {
 		h_BestPhotonPt_ge1b->Fill(bestPhoton.Pt(),wt);    
 		h_BestPhotonPt_ge1b_vBin->Fill(bestPhoton.Pt(),wt);    
 	      }
 	    
-	    for(int j=0; j<Electrons->size();j++){
-	      h_ElectronPt->Fill((*Electrons)[j].Pt(),wt);
-	      h_ElectronEta->Fill((*Electrons)[j].Eta(),wt);
-	      h_ElectronPhi->Fill((*Electrons)[j].Phi(),wt);
-	      h2_ElectronEta_Phi->Fill((*Electrons)[j].Eta(),(*Electrons)[j].Phi(),wt);
-	    }
+	    if(elec)
+	      {
+		for(int j=0; j<Electrons->size();j++){
+		  h_ElectronPt->Fill((*Electrons)[j].Pt(),wt);
+		  h_ElectronEta->Fill((*Electrons)[j].Eta(),wt);
+		  h_ElectronPhi->Fill((*Electrons)[j].Phi(),wt);
+		  h2_ElectronEta_Phi->Fill((*Electrons)[j].Eta(),(*Electrons)[j].Phi(),wt);
+		}
+	      }
+	    if(muon)
+	      {
+		for(int j=0; j<Muons->size();j++){
+		  h_ElectronPt->Fill((*Muons)[j].Pt(),wt);
+		  h_ElectronEta->Fill((*Muons)[j].Eta(),wt);
+		  h_ElectronPhi->Fill((*Muons)[j].Phi(),wt);
+		  h2_ElectronEta_Phi->Fill((*Muons)[j].Eta(),(*Muons)[j].Phi(),wt);
+		  double dPhi_METlep = abs(DeltaPhi(METPhi,(*Muons)[j].Phi()));
+		  h_dPhi_METlep->Fill(dPhi_METlep,wt);
+		}
+	      }
 	    for(int j=0; j<hadJets.size();j++){ 
 	      h_JetPt->Fill(hadJets[j].Pt(),wt);
 	      h_JetEta->Fill(hadJets[j].Eta(),wt);
@@ -1073,24 +1186,26 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	    h_intLumi->Fill(lumiInfb,wt);
 
 
-	    
-	    // if(Electrons->size()>0)
-
-	    //   {
-	    // 	h_leadElectronPhi->Fill(abs((*Electrons)[0].Phi()),wt);
-	    // 	h_leadElectronEta->Fill(abs((*Electrons)[0].Eta()),wt);
-	    // 	h_leadElectronPt->Fill((*Electrons)[0].Pt(),wt);
-	    // 	h2_leadElectronEta_Phi->Fill((*Electrons)[0].Eta(),(*Electrons)[0].Phi(),wt);
-	    //   }
+      
 	    h2_BestPhotonPt_jetmatchphoratio->Fill(bestPhoton.Pt(),(*Jets)[photonMatchingJetIndx].Pt()/bestPhoton.Pt(),wt);
-	    //  cout<<(*Jets)[photonMatchingJetIndx].Pt()/bestPhoton.Pt()<<endl;
-	    
-	    h_leadElectronPhi->Fill((*Electrons)[e_index].Phi(),wt);
-	    h_leadElectronEta->Fill((*Electrons)[e_index].Eta(),wt);
-	    h_leadElectronPt->Fill((*Electrons)[e_index].Pt(),wt);
-	    h2_leadElectronEta_Phi->Fill((*Electrons)[e_index].Eta(),(*Electrons)[e_index].Phi(),wt);
-	    double dPhi_METlep1 = abs(DeltaPhi(METPhi,(*Electrons)[e_index].Phi()));
-	    h_dPhi_METlep1->Fill(dPhi_METlep1,wt);
+	    if(elec)
+	      {
+		h_leadElectronPhi->Fill((*Electrons)[e_index].Phi(),wt);
+		h_leadElectronEta->Fill((*Electrons)[e_index].Eta(),wt);
+		h_leadElectronPt->Fill((*Electrons)[e_index].Pt(),wt);
+		h2_leadElectronEta_Phi->Fill((*Electrons)[e_index].Eta(),(*Electrons)[e_index].Phi(),wt);
+		//		double dPhi_METlep1 = abs(DeltaPhi(METPhi,(*Electrons)[e_index].Phi()));
+		//h_dPhi_METlep1->Fill(dPhi_METlep1,wt);
+	      }
+	    if(muon)
+	      {
+		h_leadElectronPhi->Fill((*Muons)[e_index].Phi(),wt);
+		h_leadElectronEta->Fill((*Muons)[e_index].Eta(),wt);
+		h_leadElectronPt->Fill((*Muons)[e_index].Pt(),wt);
+		h2_leadElectronEta_Phi->Fill((*Muons)[e_index].Eta(),(*Muons)[e_index].Phi(),wt);
+		//double dPhi_METlep1 = abs(DeltaPhi(METPhi,(*Muons)[e_index].Phi()));
+		//h_dPhi_METlep1->Fill(dPhi_METlep1,wt);
+	      }
 
 	    if(hadJets.size()>0){
 	      h2_leadJetEta_Phi->Fill(hadJets[0].Eta(),hadJets[0].Phi(),wt);
@@ -1100,6 +1215,9 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	      h2_leadJetEta_Pt->Fill(hadJets[0].Eta(),hadJets[0].Pt(),wt);
 
 	    }
+            h_MET_CaloMET->Fill(MET/CaloMET,wt);
+            h_dPhi_MET_CaloMET->Fill(abs(DeltaPhi(METPhi,CaloMETPhi)),wt);
+            h_HT5HT->Fill(HT5/HT,wt);
 	    
 	    if(process && EWselection && (EWselec && EWselec1))
 	      {
@@ -1111,11 +1229,12 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 		h_METvBin_EW_v1->Fill(MET,wt);
 		h_METvBin_EW_v2->Fill(MET,wt);
 		h_ST_EW->Fill(ST,wt);
-		h_BTags_EW->Fill(BTags,wt);
+		h_BTags_EW->Fill(nbjets,wt);
 		h_intLumi_EW->Fill(lumiInfb,wt);
 		h_hadAk8Mass_EW->Fill(Ak8Mass,wt);
 		h_hadAk8Mass_EW_vBin->Fill(Ak8Mass,wt);
-		h_minDr_bestphoEle_EW->Fill(MinDr(bestPhoton,*Electrons),wt);
+		if(elec) h_minDr_bestphoEle_EW->Fill(MinDr(bestPhoton,*Electrons),wt);
+                if(muon) h_minDr_bestphoEle_EW->Fill(MinDr(bestPhoton,*Muons),wt);
 		h_minDr_bestphoJets_EW->Fill(MinDr(bestPhoton,hadJets),wt);
 	      }
 	    if(process && EWselection && !(EWselec && EWselec1))
@@ -1128,11 +1247,12 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 		h_METvBin_SP_v2->Fill(MET,wt);
 		h_nJets_SP->Fill(nHadJets,wt);
 		h_ST_SP->Fill(ST,wt);
-		h_BTags_SP->Fill(BTags,wt);
+		h_BTags_SP->Fill(nbjets,wt);
 		h_intLumi_SP->Fill(lumiInfb,wt);
 		h_hadAk8Mass_SP->Fill(Ak8Mass,wt);
 		h_hadAk8Mass_SP_vBin->Fill(Ak8Mass,wt);
-		h_minDr_bestphoEle_SP->Fill(MinDr(bestPhoton,*Electrons),wt);
+                if(elec) h_minDr_bestphoEle_SP->Fill(MinDr(bestPhoton,*Electrons),wt);
+                if(muon) h_minDr_bestphoEle_SP->Fill(MinDr(bestPhoton,*Muons),wt);
 		h_minDr_bestphoJets_SP->Fill(MinDr(bestPhoton,hadJets),wt);
 	      }
 
@@ -1142,7 +1262,7 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	    if(Tf=="sBin6_SP")
 	      {
 	    	if(!(EWselec && EWselec1)){
-	    	  if(BTags==0){
+	    	  if(nbjets==0){
 	    	    if(nHadJets==2)     { wt2=wt*tf_SP->GetBinContent(1);}
 	    	    else if(nHadJets==3)     { wt2=wt*tf_SP->GetBinContent(2);}
 	    	    else if(nHadJets==4)     { wt2=wt*tf_SP->GetBinContent(3);}
@@ -1156,7 +1276,7 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	    	  }
 	    	}
 	    	if((EWselec && EWselec1)){
-	    	  if(BTags==0){
+	    	  if(nbjets==0){
 	    	    if(nHadJets>=2 && nHadJets<=4)     { wt2=wt*tf_SP->GetBinContent(9);}
 	    	    else if((nHadJets==5 || nHadJets==6)){ wt2=wt*tf_SP->GetBinContent(10);}
 	    	  }
@@ -1170,7 +1290,7 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	    if(Tf=="sBin7_SP")
 	      {
 	    	if(!(EWselec && EWselec1)){
-	    	  if(BTags==0){
+	    	  if(nbjets==0){
 	    	    if(nHadJets==2)     { wt2=wt*tf_SP_2->GetBinContent(1);}
 	    	    else if(nHadJets==3)     { wt2=wt*tf_SP_2->GetBinContent(2);}
 	    	    else if(nHadJets==4)     { wt2=wt*tf_SP_2->GetBinContent(3);}
@@ -1223,7 +1343,7 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	    
 	    if(Tf=="sBin6")
 	      {	      
-	    	if(BTags==0){
+	    	if(nbjets==0){
 	    	  if(nHadJets==2)     { wt2=wt*tf->GetBinContent(1); }
 	    	  else if(nHadJets==3)     { wt2=wt*tf->GetBinContent(2);}
 	    	  else if(nHadJets==4)     { wt2=wt*tf->GetBinContent(3);}
@@ -1243,49 +1363,49 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 
 		if(nHadJets>=2 && nHadJets<=3)
 		  {
-		    if(BTags==0) wt2=wt*tf_SP_3->GetBinContent(1);
-		    else if(BTags==1) wt2=wt*tf_SP_3->GetBinContent(2);
+		    if(nbjets==0) wt2=wt*tf_SP_3->GetBinContent(1);
+		    else if(nbjets==1) wt2=wt*tf_SP_3->GetBinContent(2);
 		    else wt2=wt*tf_SP_3->GetBinContent(3);
 		  }
 		else if(nHadJets>=4 && nHadJets<=5)
 		  {
-		    if(BTags==0) wt2=wt*tf_SP_3->GetBinContent(4);
-		    else if(BTags==1) wt2=wt*tf_SP_3->GetBinContent(5);
-		    else if(BTags==2) wt2=wt*tf_SP_3->GetBinContent(6);
+		    if(nbjets==0) wt2=wt*tf_SP_3->GetBinContent(4);
+		    else if(nbjets==1) wt2=wt*tf_SP_3->GetBinContent(5);
+		    else if(nbjets==2) wt2=wt*tf_SP_3->GetBinContent(6);
 		    else wt2=wt*tf_SP_3->GetBinContent(7);
 		  }
 		else if(nHadJets>=6 && nHadJets<=7)
 		  {
-		    if(BTags==0) wt2=wt*tf_SP_3->GetBinContent(8);
-		    else if(BTags==1) wt2=wt*tf_SP_3->GetBinContent(9);
-		    else if(BTags==2) wt2=wt*tf_SP_3->GetBinContent(10);
+		    if(nbjets==0) wt2=wt*tf_SP_3->GetBinContent(8);
+		    else if(nbjets==1) wt2=wt*tf_SP_3->GetBinContent(9);
+		    else if(nbjets==2) wt2=wt*tf_SP_3->GetBinContent(10);
 		    else wt2=wt*tf_SP_3->GetBinContent(11);
 		  }
 		else if(nHadJets>=8 && nHadJets<=9)
 		  {
-		    if(BTags==0) wt2=wt*tf_SP_3->GetBinContent(12);
-		    else if(BTags==1) wt2=wt*tf_SP_3->GetBinContent(13);
-		    else if(BTags==2) wt2=wt*tf_SP_3->GetBinContent(14);
+		    if(nbjets==0) wt2=wt*tf_SP_3->GetBinContent(12);
+		    else if(nbjets==1) wt2=wt*tf_SP_3->GetBinContent(13);
+		    else if(nbjets==2) wt2=wt*tf_SP_3->GetBinContent(14);
 		    else wt2=wt*tf_SP_3->GetBinContent(15);
 		  }
 		else
 		  {
-		    if(BTags==0) wt2=wt*tf_SP_3->GetBinContent(16);
-		    else if(BTags==1) wt2=wt*tf_SP_3->GetBinContent(17);
-		    else if(BTags==2) wt2=wt*tf_SP_3->GetBinContent(18);
+		    if(nbjets==0) wt2=wt*tf_SP_3->GetBinContent(16);
+		    else if(nbjets==1) wt2=wt*tf_SP_3->GetBinContent(17);
+		    else if(nbjets==2) wt2=wt*tf_SP_3->GetBinContent(18);
 		    else wt2=wt*tf_SP_3->GetBinContent(19);
 		  }		
 	      }
-	    int sBin6_closure = getBinNoV7_le(nHadJets);
+	    int sBin6_closure = getBinNoV7_le(nbjets,nHadJets);
             h_SBins_v6_CD_elec1_closure->Fill(sBin6_closure,wt2);
-	    int sBin6_SP_elec1_closure = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+	    int sBin6_SP_elec1_closure = getBinNoV6(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
             h_SBins_v6_CD_SP_elec1_closure->Fill(sBin6_SP_elec1_closure,wt2);
-	    int sBin7_SP_elec1_closure = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+	    int sBin7_SP_elec1_closure = getBinNoV7_le2(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
             h_SBins_v7_CD_SP_elec1_closure->Fill(sBin7_SP_elec1_closure,wt2);
-	    int sBin6_50bin_closure= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nHadJets);
+	    int sBin6_50bin_closure= getBinNoV6_EWplusSP_CR(EWselec,EWselec1 ,EWselec_Htag,EWselec_Wtag,nbjets,nHadJets);
 	    h_SBins_v6_CD_EW_50bin_elec1_closure->Fill(sBin6_50bin_closure,wt2);
 
-            sBin7_SP_elec1_closure = getBinNoV7(nHadJets);
+            sBin7_SP_elec1_closure = getBinNoV7(nbjets,nHadJets); 
 	    h_SBins_v7_CD_SP_tmp_elec1_closure->Fill(sBin7_SP_elec1_closure,wt2);
 
 	    h2_njetnbjet_phopt_vBin_elec1_closure->Fill(sBin7_SP_elec1_closure,bestPhoton.Pt(),wt2);
@@ -1293,12 +1413,12 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 
 	    h2_MET_nJets_elec1_closure->Fill(nHadJets,MET,wt2);
 	    h2_METvBin2_nJets_elec1_closure->Fill(nHadJets,MET,wt2);
-	    h2_nbjets_nJets_elec1_closure->Fill(nHadJets,BTags,wt2);
+	    h2_nbjets_nJets_elec1_closure->Fill(nHadJets,nbjets,wt2);
 	    h_MET_elec1_closure->Fill(MET,wt2);
 	    h_METvBin2_elec1_closure->Fill(MET,wt2);
 	    h_nJets_elec1_closure->Fill(nHadJets,wt2);
 	    h_ST_elec1_closure->Fill(ST,wt2);
-	    h_BTags_elec1_closure->Fill(BTags,wt2);
+	    h_BTags_elec1_closure->Fill(nbjets,wt2);
 	    h_minDr_bestphoEle_elec1_closure->Fill(MinDr(bestPhoton,*Electrons),wt2);
 	    h_minDr_bestphoJets_elec1_closure->Fill(MinDr(bestPhoton,hadJets),wt2);
 
@@ -1310,21 +1430,32 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	    h_BestPhotonPt_elec1_closure->Fill(bestPhoton.Pt(),wt2);    
 	    h_BestPhotonPhi_elec1_closure->Fill(bestPhoton.Phi(),wt2);
 	    h_BestPhotonEta_elec1_closure->Fill(bestPhoton.Eta(),wt2);
-	    if(BTags == 0)
+	    if(nbjets == 0)
 	      {
 		h_BestPhotonPt_0b_elec1_closure->Fill(bestPhoton.Pt(),wt2);    
 		h_BestPhotonPt_0b_vBin_elec1_closure->Fill(bestPhoton.Pt(),wt2);    
 	      }
-	    if(BTags > 0)
+	    if(nbjets > 0)
 	      {
 		h_BestPhotonPt_ge1b_elec1_closure->Fill(bestPhoton.Pt(),wt2);    
 		h_BestPhotonPt_ge1b_vBin_elec1_closure->Fill(bestPhoton.Pt(),wt2);    
 	      }
-	    for(int j=0; j<Electrons->size();j++){
-	      h_ElectronPt_elec1_closure->Fill((*Electrons)[j].Pt(),wt2);
-	      h_ElectronEta_elec1_closure->Fill(abs((*Electrons)[j].Eta()),wt2);
-	      h_ElectronPhi_elec1_closure->Fill(abs((*Electrons)[j].Phi()),wt2);
-	    }
+	    if(elec)
+	      {
+		for(int j=0; j<Electrons->size();j++){
+		  h_ElectronPt_elec1_closure->Fill((*Electrons)[j].Pt(),wt2);
+		  h_ElectronEta_elec1_closure->Fill(abs((*Electrons)[j].Eta()),wt2);
+		  h_ElectronPhi_elec1_closure->Fill(abs((*Electrons)[j].Phi()),wt2);
+		}
+	      }
+	    if(muon)
+	      {
+		for(int j=0; j<Muons->size();j++){
+		  h_ElectronPt_elec1_closure->Fill((*Muons)[j].Pt(),wt2);
+		  h_ElectronEta_elec1_closure->Fill((*Muons)[j].Eta(),wt2);
+		  h_ElectronPhi_elec1_closure->Fill((*Muons)[j].Phi(),wt2);
+		}
+	      }
 	    for(int j=0; j<hadJets.size();j++){ 
 	      h_JetPt_elec1_closure->Fill(hadJets[j].Pt(),wt2);
 	      h_JetEta_elec1_closure->Fill(abs(hadJets[j].Eta()),wt2);
@@ -1344,6 +1475,26 @@ void Lostlepton::EventLoop(const char *data,const char *inputFileList) {
 	      h_leadJetEta_elec1_closure->Fill(abs(hadJets[0].Eta()),wt2);
 	      h_leadJetPt_elec1_closure->Fill(hadJets[0].Pt(),wt2);
 	    }	  
+	    if(elec)
+              {
+                h_leadElectronPhi_elec1_closure->Fill((*Electrons)[e_index].Phi(),wt);
+                h_leadElectronEta_elec1_closure->Fill((*Electrons)[e_index].Eta(),wt);
+                h_leadElectronPt_elec1_closure->Fill((*Electrons)[e_index].Pt(),wt);
+                h2_leadElectronEta_Phi_elec1_closure->Fill((*Electrons)[e_index].Eta(),(*Electrons)[e_index].Phi(),wt);
+		// double dPhi_METlep1 = abs(DeltaPhi(METPhi,(*Electrons)[e_index].Phi()));
+		// h_dPhi_METlep1_elec1_closure->Fill(dPhi_METlep1,wt);
+              }
+            if(muon)
+              {
+                h_leadElectronPhi_elec1_closure->Fill((*Muons)[e_index].Phi(),wt);
+                h_leadElectronEta_elec1_closure->Fill((*Muons)[e_index].Eta(),wt);
+                h_leadElectronPt_elec1_closure->Fill((*Muons)[e_index].Pt(),wt);
+                h2_leadElectronEta_Phi_elec1_closure->Fill((*Muons)[e_index].Eta(),(*Muons)[e_index].Phi(),wt);
+		// double dPhi_METlep1 = abs(DeltaPhi(METPhi,(*Muons)[e_index].Phi()));
+		//h_dPhi_METlep1_elec1_closure->Fill(dPhi_METlep1,wt);
+              }
+
+
 
 	  }
       }
@@ -1418,9 +1569,9 @@ TLorentzVector Lostlepton::getBestPhoton(){
   else return goodPho[highPtIndx];
 }
 
-// int Lostlepton::getBinNoV7(int nHadJets){
+// int Lostlepton::getBinNoV7(int nbjets, int nHadJets){
 //   int sBin=-100,m_i=0;
-//   if(BTags==0){
+//   if(nbjets==0){
 //     if(nHadJets>=2 && nHadJets<=4)     { sBin=0;}
 //     else if(nHadJets==5 || nHadJets==6){ sBin=6;}
 //     else if(nHadJets>=7)               { sBin=11;}
@@ -1448,50 +1599,50 @@ TLorentzVector Lostlepton::getBestPhoton(){
 //   }
 //   return sBin;
 // }
-int Lostlepton::getBinNoV7(int nHadJets){
+int Lostlepton::getBinNoV7(int nbjets, int nHadJets){
   int sBin=-100,m_i=0;
 
   if(nHadJets>=2 && nHadJets<=3)
     {
-      if(BTags==0) sBin=1;
-      else if(BTags==1) sBin=2;
+      if(nbjets==0) sBin=1;
+      else if(nbjets==1) sBin=2;
       else sBin=3;
     }
   else if(nHadJets>=4 && nHadJets<=5)
     {
-      if(BTags==0) sBin=4;
-      else if(BTags==1) sBin=5;
-      else if(BTags==2) sBin=6;
+      if(nbjets==0) sBin=4;
+      else if(nbjets==1) sBin=5;
+      else if(nbjets==2) sBin=6;
       else sBin=7;
     }
   else if(nHadJets>=6 && nHadJets<=7)
     {
-      if(BTags==0) sBin=8;
-      else if(BTags==1) sBin=9;
-      else if(BTags==2) sBin=10;
+      if(nbjets==0) sBin=8;
+      else if(nbjets==1) sBin=9;
+      else if(nbjets==2) sBin=10;
       else sBin=11;
     }
   else if(nHadJets>=8 && nHadJets<=9)
     {
-      if(BTags==0) sBin=12;
-      else if(BTags==1) sBin=13;
-      else if(BTags==2) sBin=14;
+      if(nbjets==0) sBin=12;
+      else if(nbjets==1) sBin=13;
+      else if(nbjets==2) sBin=14;
       else sBin=15;
     }
   else
     {
-      if(BTags==0) sBin=16;
-      else if(BTags==1) sBin=17;
-      else if(BTags==2) sBin=18;
+      if(nbjets==0) sBin=16;
+      else if(nbjets==1) sBin=17;
+      else if(nbjets==2) sBin=18;
       else sBin=19;
     }
 
   return sBin;
 }
 
-int Lostlepton::getBinNoV7_le(int nHadJets){
+int Lostlepton::getBinNoV7_le(int nbjets, int nHadJets){
   int sBin=-100,m_i=0;
-  if(BTags==0){
+  if(nbjets==0){
     if(nHadJets==2)     { sBin=1;}
     else if(nHadJets==3)     { sBin=2;}
     else if(nHadJets==4)     { sBin=3;}
@@ -1506,11 +1657,11 @@ int Lostlepton::getBinNoV7_le(int nHadJets){
   return sBin;
 }
 
-int Lostlepton::getBinNoV7_le2(bool EWselec, bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nHadJets){
+int Lostlepton::getBinNoV7_le2(bool EWselec, bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nbjets, int nHadJets){
   int sBin=-100,m_i=0;
   if(!(EWselec && EWselec1))
     {
-      if(BTags==0){
+      if(nbjets==0){
         if(nHadJets==2)     { sBin=1;}
         else if(nHadJets==3)     { sBin=2;}
         else if(nHadJets==4)     { sBin=3;}
@@ -1534,9 +1685,9 @@ int Lostlepton::getBinNoV7_le2(bool EWselec, bool EWselec1, bool EWselec_Htag , 
   return sBin;
 }
 
-// int Lostlepton::getBinNoV6(int nHadJets){
+// int Lostlepton::getBinNoV6(int nbjets, int nHadJets){
 //   int sBin=-100,m_i=0;
-//   if(BTags==0){
+//   if(nbjets==0){
 //     if(nHadJets>=2 && nHadJets<=4)     { sBin=0;}
 //     else if(nHadJets==5 || nHadJets==6){ sBin=7;}
 //     else if(nHadJets>=7)               { sBin=13;}
@@ -1565,11 +1716,11 @@ int Lostlepton::getBinNoV7_le2(bool EWselec, bool EWselec1, bool EWselec_Htag , 
 //   return sBin;
 // }
 
-int Lostlepton::getBinNoV6(bool EWselec, bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nHadJets){
+int Lostlepton::getBinNoV6(bool EWselec, bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nbjets, int nHadJets){
   int sBin=-100,m_i=0;
   if(!(EWselec && EWselec1))
     {
-      if(BTags==0){
+      if(nbjets==0){
         if(nHadJets==2)     { sBin=1;}
         else if(nHadJets==3)     { sBin=2;}
         else if(nHadJets==4)     { sBin=3;}
@@ -1584,7 +1735,7 @@ int Lostlepton::getBinNoV6(bool EWselec, bool EWselec1, bool EWselec_Htag , bool
     }
   else if ((EWselec && EWselec1))
     {
-      if(BTags==0){
+      if(nbjets==0){
         if(nHadJets>=2 && nHadJets<=4 )     { sBin=9;}
         else if((nHadJets==5 || nHadJets==6)){ sBin=10;}
       }
@@ -1642,82 +1793,80 @@ int Lostlepton::getBinNoV6_EW1(bool EWselec){
   return sBin;
 }
 
-int Lostlepton::getBinNoV6_EWplusSP_CR(bool EWselec, bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nHadJets){
-
+int Lostlepton::getBinNoV6_EWplusSP_CR(bool EWselec, bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nbjets, int nHadJets){
   int sBin=-100,m_i=0;
 
-  //  if(!((EWselec_Wtag || EWselec_Htag) && EWselec1))
-   if(!(EWselec && EWselec1))
-    { 
-      if(BTags==0 ){
-	if(nHadJets>=2 && nHadJets<=4)     { sBin=0;}
-	else if(nHadJets==5 || nHadJets==6){ sBin=7;}
-	else if(nHadJets>=7)               { sBin=13;}
+  //  if(!((EWselec_Wtag || EWselec_Htag) && EWselec1))                                                                           
+  if(!(EWselec && EWselec1))
+    {
+      if(nbjets==0 ){
+        if(nHadJets>=2 && nHadJets<=4)     { sBin=0;}
+        else if(nHadJets==5 || nHadJets==6){ sBin=7;}
+        else if(nHadJets>=7)               { sBin=13;}
       }
       else{
-	if(nHadJets>=2 && nHadJets<=4)     { sBin=19;}
+        if(nHadJets>=2 && nHadJets<=4)     { sBin=19;}
 	else if(nHadJets==5 || nHadJets==6){ sBin=25;}
-	else if(nHadJets>=7)               { sBin=31;}
+        else if(nHadJets>=7)               { sBin=31;}
       }
     }
-   if((EWselec_Wtag && !EWselec_Htag) && EWselec1){
+  if((EWselec_Wtag && !EWselec_Htag) && EWselec1){
     sBin=37;
-   }
-   else if((!EWselec_Wtag && EWselec_Htag) && EWselec1){
-     sBin=44;
-   }
-  if(sBin==0){
-    for(int i=0;i<METLowEdge_v2.size()-1;i++){
-      if(METLowEdge_v2[i]<249.99) continue;
-      m_i++;
-      if(MET >= METLowEdge_v2[i] && MET < METLowEdge_v2[i+1]){ sBin = sBin+m_i;break; }
-      else if(MET >= METLowEdge_v2[METLowEdge_v2.size()-1])  { sBin = 7         ;break; }
-    }
+  }
+  else if((!EWselec_Wtag && EWselec_Htag) && EWselec1){
+    sBin=44;
   }
 
-  else if(sBin==7 || sBin==13 || sBin==19 || sBin==25 || sBin==31){
-    for(int i=0;i<METLowEdge_v2_1.size()-1;i++){
-      if(METLowEdge_v2_1[i]<249.99) continue;
+  if(sBin==0){
+    for(int i=0;i<METLowEdge_v3.size()-1;i++){
+      if(METLowEdge_v3[i]<199.99) continue;
+      int sBin1=sBin;
       m_i++;
-      if(MET >= METLowEdge_v2_1[i] && MET < METLowEdge_v2_1[i+1]){ sBin = sBin+m_i;break; }
-      else if(MET >= METLowEdge_v2_1[METLowEdge_v2_1.size()-1])  { sBin = sBin+6   ;break; }
-      else if(MET >= METLowEdge_v2_1[METLowEdge_v2_1.size()-1])  { sBin = 37   ;break; }
-
+      if(MET >= METLowEdge_v3[i] && MET < METLowEdge_v3[i+1]){ sBin = sBin+m_i;
+	break; }
+      else if(MET >= METLowEdge_v3[METLowEdge_v3.size()-1])  { sBin = 7         ;
+        break; }
+    }
+  }
+  else if(sBin==7 || sBin==13 || sBin==19 || sBin==25 || sBin==31){
+    int sBin1=sBin;
+    for(int i=0;i<METLowEdge_v3_1.size()-1;i++){
+      if(METLowEdge_v3_1[i]<199.99) continue;
+      m_i++;
+      if(MET >= METLowEdge_v3_1[i] && MET < METLowEdge_v3_1[i+1]){ sBin = sBin+m_i;break;}
+      else if(MET >= METLowEdge_v3_1[METLowEdge_v3_1.size()-1])  { sBin = sBin+6; break; }
     }
   }
 
   else if(sBin==37){
-    for(int i=0;i<METLowEdge_v2.size()-1;i++){
-      if(METLowEdge_v2[i]<249.99) continue;
+    for(int i=0;i<METLowEdge_v3.size()-1;i++){
+      if(METLowEdge_v3[i]<199.99) continue;
       m_i++;
-      if(MET >= METLowEdge_v2[i] && MET < METLowEdge_v2[i+1]){ sBin = sBin+m_i;break; }
-      else if(MET >= METLowEdge_v2[METLowEdge_v2.size()-1])  { sBin = sBin+7   ;break; }
-      else if(MET >= METLowEdge_v2[METLowEdge_v2.size()-1])  { sBin = 44   ;break; }
-
-   }
+      if(MET >= METLowEdge_v3[i] && MET < METLowEdge_v3[i+1]){ sBin = sBin+m_i;break; }
+      else if(MET >= METLowEdge_v3[METLowEdge_v3.size()-1])  { sBin = 44   ;break; }
+    }
   }
 
   else if(sBin==44){
-    for(int i=0;i<METLowEdge_v2.size()-1;i++){
-      if(METLowEdge_v2[i]<249.99) continue;
+    for(int i=0;i<METLowEdge_v3.size()-1;i++){
+      if(METLowEdge_v3[i]<199.99) continue;
       m_i++;
-      if(MET >= METLowEdge_v2[i] && MET < METLowEdge_v2[i+1]){ sBin = sBin+m_i;break; }
-      else if(MET >= METLowEdge_v2[METLowEdge_v2.size()-1])  { sBin = sBin+7   ;break; }
-      else if(MET >= METLowEdge_v2[METLowEdge_v2.size()-1])  { sBin = 51   ;break; }
-
-   }
+      if(MET >= METLowEdge_v3[i] && MET < METLowEdge_v3[i+1]){ sBin = sBin+m_i;break; }
+      else if(MET >= METLowEdge_v3[METLowEdge_v3.size()-1])  { sBin = 52   ;break; }
+    }
   }
+
   return sBin;
 }
 
- int Lostlepton::getBinNoV6_EWplusSP_SR(bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nHadJets){
+ int Lostlepton::getBinNoV6_EWplusSP_SR(bool EWselec1, bool EWselec_Htag , bool EWselec_Wtag,int nbjets, int nHadJets){
 
   int sBin=-100,m_i=0;
 
 
   if(!(EWselec_Wtag || EWselec_Htag || EWselec1))
     {
-      if(BTags==0){
+      if(nbjets==0){
 	if(nHadJets>=2 && nHadJets<=4)     { sBin=0;}
 	else if(nHadJets==5 || nHadJets==6){ sBin=6;}
 	else if(nHadJets>=7)               { sBin=11;}

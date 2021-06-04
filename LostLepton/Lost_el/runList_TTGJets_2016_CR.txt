@@ -1,1 +1,0 @@
-/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.TTGJets_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8.root

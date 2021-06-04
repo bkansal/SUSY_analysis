@@ -39,3 +39,12 @@ double NtupleVariables::MinDr(TLorentzVector v1,vector<TLorentzVector> v2)
     }
   return dr;
 }
+double NtupleVariables::MinDr2(vector<TLorentzVector> v1,TLorentzVector v2)
+{
+  double dr = 60;
+  for(int j=0;j<v1.size();j++)
+    { if(dr>=v1[j].DeltaR(v2))
+	{ dr = v1[j].DeltaR(v2);}
+    }
+  return dr;
+}

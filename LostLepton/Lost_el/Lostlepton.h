@@ -24,18 +24,18 @@ class Lostlepton : public NtupleVariables{
   void     EventLoop(const char *,const char *);
   void     BookHistogram(const char *);
   TLorentzVector getBestPhoton();
-  int getBinNoV4(int);
-  int getBinNoV7(int);
+  int getBinNoV4(int,int);
+  int getBinNoV7(int,int);
   //  int getBinNoV7_closure(int,TFile);
-  int getBinNoV7_v1(int);
-  //  int getBinNoV6(int);
-  int getBinNoV6(bool,bool,bool,bool,int);
+  int getBinNoV7_v1(int,int);
+  //  int getBinNoV6(int,int);
+  int getBinNoV6(bool,bool,bool,bool,int,int);
   int getBinNoV6_EW(bool,bool);
   int getBinNoV6_EW1(bool);
-  int getBinNoV6_EWplusSP_SR(bool,bool,bool,int);
-  int getBinNoV6_EWplusSP_CR(bool,bool,bool,bool,int);
-  int getBinNoV7_le(int);
-  int getBinNoV7_le2(bool,bool,bool,bool,int);
+  int getBinNoV6_EWplusSP_SR(bool,bool,bool,int,int);
+  int getBinNoV6_EWplusSP_CR(bool,bool,bool,bool,int,int);
+  int getBinNoV7_le(int,int);
+  int getBinNoV7_le2(bool,bool,bool,bool,int,int);
   
   double getGendRLepPho();
   bool check_eMatchedtoGamma();
@@ -47,7 +47,7 @@ class Lostlepton : public NtupleVariables{
   float HT_PtCut=30;
   float MHT_PtCut=30;//keep MHT_PtCut <= HT_PtCut and <= Njets_PtCut
   float Njets_PtCut=30;
-
+  double deepCSVvalue=0;
   float HT_EtaCut=2.4;
   float MHT_EtaCut=5;
   float Njets_EtaCut=2.4;
@@ -66,8 +66,8 @@ class Lostlepton : public NtupleVariables{
   vector<double> METLowEdge_v1={100,250,270,350,450,600,750,900,2000};
   vector<double> METLowEdge_v2={200,250,300,370,450,600,750,900,2000};
   vector<double> METLowEdge_v2_1={200,250,300,370,450,600,750,2000};
-  vector<double> METLowEdge_v3={300,370,450,600,750,900,2000};
-  vector<double> METLowEdge_v3_1={300,370,450,600,750,2000};
+  vector<double> METLowEdge_v3={200,300,370,450,600,750,900};
+  vector<double> METLowEdge_v3_1={200,300,370,450,600,750};
 
   /* vector<double> METLowEdge1={200,270,350,450,750,2000}; */
   /* vector<double> METLowEdge2={200,270,350,450,2000}; */
@@ -95,6 +95,7 @@ class Lostlepton : public NtupleVariables{
   TH1D *h_intLumi;
   TH1D *h_ST;
   TH2D *h2_MET_nJets;
+  TH2D *h2_MET_METPhi;
   TH2D *h2_MET_elepT;
   TH2D *h2_METvBin2_nJets;
   TH2D *h2_nbjets_nJets;
@@ -130,6 +131,10 @@ class Lostlepton : public NtupleVariables{
   TH1D *h_dPhi_phojet3;
   TH1D *h_dPhi_phojet4;
   TH1D *h_dPhi_phoMET;
+  TH1D *h_dPhi_MET_CaloMET;
+  TH1D *h_MET_CaloMET;
+  TH1D *h_HT5HT;
+
   TH1D *h_leadElectronPt;
   TH1D *h_leadElectronPhi;
   TH1D *h_leadElectronEta;
@@ -205,6 +210,10 @@ class Lostlepton : public NtupleVariables{
   TH1D *h_hadAk8jetPt_elec0;
   TH1D *h_hadAk8Mass_elec0;
   
+  TH1D *h_leadElectronPt_elec1_closure;
+  TH1D *h_leadElectronPhi_elec1_closure;
+  TH1D *h_leadElectronEta_elec1_closure;
+  //  TH2D *h2_leadElectronEta_Phi_elec1_closure;
   TH1D *h_hadAk8Mass_elec1_closure;
   TH1D *h_ST_elec1_closure;
   TH1D *h_MET_elec1_closure;
@@ -615,6 +624,7 @@ void Lostlepton::BookHistogram(const char *outFileName) {
   h_ST=new TH1D("ST","ST",400,0,4000);
   h_MET=new TH1D("MET","MET",200,0,2000);
   h2_MET_nJets=new TH2D("MET_nJets","MET (Y axis) wrt nJets (X axis)",25,0,25,200,0,2000);
+  h2_MET_METPhi=new TH2D("MET_METPhi","MET (Y axis) wrt METPhi (X axis)",400,-5,5,200,0,2000);
   h2_MET_elepT=new TH2D("MET_elepT","MET (Y axis) wrt Electron pT (X axis)",300,0,1500,200,0,2000);
   h2_METvBin2_nJets=new TH2D("METvBin2_nJets","MET (Y axis) wrt nJets (X axis)",25,0,25,METLowEdge_v2.size()-1,&(METLowEdge_v2[0]));
   h2_nbjets_nJets=new TH2D("nbjets_nJets","nbjets (Y axis) wrt nJets (X axis)",25,0,25,10,0,10);
@@ -677,6 +687,9 @@ void Lostlepton::BookHistogram(const char *outFileName) {
   h_dPhi_phojet2=new TH1D("dPhi_phojet2","dphi between photon and Jet2",80,-4,4);
   h_dPhi_phojet3=new TH1D("dPhi_phojet3","dphi between photon and Jet3",80,-4,4);
   h_dPhi_phojet4=new TH1D("dPhi_phojet4","dphi between photon and Jet4",80,-4,4);
+  h_MET_CaloMET=new TH1D("MET_CaloMET","MET/Calo MET ",500,0,10);
+  h_dPhi_MET_CaloMET=new TH1D("dPhi_MET_CaloMET","dPhi(MET,Calo MET) ",80,-4,4);
+  h_HT5HT=new TH1D("HT5HT"," HT5/HT ",100,0,3);
   h2_njetnbjet_phopt_vBin=new TH2D("njetnbjet_phopt_vBin","NJet x NbTag (x axis) wrt #gamma pT (yaxis)",10,1,11,PhoLowEdge.size()-1,&(PhoLowEdge[0]));
   h2_njetnbjet_phopt=new TH2D("njetnbjet_phopt","NJet x NbTag (x axis) wrt #gamma pT (yaxis)",10,1,11,300,0,1500);
   h_hadAk8jetPt=new TH1D("hadAk8jetPt","Soft dropped Pt of AK8 Jet",2000,0,1000);
@@ -761,6 +774,10 @@ void Lostlepton::BookHistogram(const char *outFileName) {
   h2_njetnbjet_phopt_elec1_closure=new TH2D("njetnbjet_phopt_elec1_closure","NJet x NbTag (x axis) wrt #gamma pT (yaxis)",10,1,11,300,0,1500);
   h_hadAk8jetPt_elec1_closure=new TH1D("hadAk8jetPt_elec1_closure","Soft dropped Pt of AK8 Jet",2000,0,1000);
   h_hadAk8Mass_elec1_closure=new TH1D("hadAk8Mass_elec1_closure","Soft dropped mass of AK8 Jet",1000,0,300);
+  h_leadElectronPt_elec1_closure=new TH1D("leadElectronPt_elec1_closure","Leading Electron Pt ",300,0,1500);
+  h_leadElectronPhi_elec1_closure=new TH1D("leadElectronPhi_elec1_closure","Leading Electron Phi ",400,-5,5);
+  h_leadElectronEta_elec1_closure=new TH1D("leadElectronEta_elec1_closure","Leading Electron Eta ",400,-5,5);
+  //  h2_leadElectronEta_Phi_elec1_closure=new TH2D("leadElectronEta_Phi_elec1_closure","Leading Electron Eta (x axis) vs Phi (yaxis)",200,-5,5,200,-5,5);
 
   h_intLumi_EW=new TH1D("intLumi_EW","2016 integrated luminosity in /fb",2500,25,50); 
   h_ST_EW=new TH1D("ST_EW","ST 2016",400,0,4000);
@@ -1099,9 +1116,13 @@ void Lostlepton::BookHistogram(const char *outFileName) {
   h_SBins_v6_CD_elec0 = new TH1D("AllSBins_v6_CD_elec0","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",8,1,9);
   h_SBins_v6_CD_elec1 = new TH1D("AllSBins_v6_CD_elec1","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",8,1,9);
   h_SBins_v6_CD_elec1_closure = new TH1D("AllSBins_v6_CD_elec1_closure","search bins v6:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)]_CD",8,1,9);
-  h_SBins_v6_CD_EW_50bin_elec0 = new TH1D("AllSBins_v6_CD_EW_50bin_elec0","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
-  h_SBins_v6_CD_EW_50bin_elec1_closure = new TH1D("AllSBins_v6_CD_EW_50bin_elec1_closure","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
-  h_SBins_v6_CD_EW_50bin_elec1 = new TH1D("AllSBins_v6_CD_EW_50bin_elec1","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5);
+  /* h_SBins_v6_CD_EW_50bin_elec0 = new TH1D("AllSBins_v6_CD_EW_50bin_elec0","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5); */
+  /* h_SBins_v6_CD_EW_50bin_elec1_closure = new TH1D("AllSBins_v6_CD_EW_50bin_elec1_closure","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5); */
+  /* h_SBins_v6_CD_EW_50bin_elec1 = new TH1D("AllSBins_v6_CD_EW_50bin_elec1","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",51,0.5,51.5); */
+  h_SBins_v6_CD_EW_50bin_elec0 = new TH1D("AllSBins_v6_CD_EW_50bin_elec0","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",52,0,52);
+  h_SBins_v6_CD_EW_50bin_elec1_closure = new TH1D("AllSBins_v6_CD_EW_50bin_elec1_closure","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]",52,0,52);
+  h_SBins_v6_CD_EW_50bin_elec1 = new TH1D("AllSBins_v6_CD_EW_50bin_elec1","search bins v6:[(WTag : [65,105]),(HTag : [105,140])]\
+",52,0,52);
 
   h_SBins_v7_CD_SP_elec0_acc = new TH1D("AllSBins_v7_CD_SP_elec0_acc","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);
   h_SBins_v7_CD_SP_elec0_id = new TH1D("AllSBins_v7_CD_SP_elec0_id","search bins SP:[0b,1b] x [(NJ=2to4),(NJ:5or6),(NJ>=7)] + EW : Wtag & Htag",10,1,11);

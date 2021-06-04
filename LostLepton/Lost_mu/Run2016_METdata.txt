@@ -1,7 +1,0 @@
-../METdata_samples/Run2016B_MET_17Jul2018.root
-../METdata_samples/Run2016C_MET_17Jul2018.root
-../METdata_samples/Run2016D_MET_17Jul2018.root
-../METdata_samples/Run2016E_MET_17Jul2018.root
-../METdata_samples/Run2016F_MET_17Jul2018.root
-../METdata_samples/Run2016G_MET_17Jul2018.root
-../METdata_samples/Run2016H_MET_17Jul2018.root

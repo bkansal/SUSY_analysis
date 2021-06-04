@@ -1,7 +1,0 @@
-/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
-/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
-/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
-/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
-/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
-/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root
-/eos/uscms/store/user/bkansal/GMSB_skims_TreesV17/for_bkg_estimation/lost_electron//new2//CR_Summer16v3.WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root

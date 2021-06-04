@@ -53,7 +53,13 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
   if(ntuple=="v18")
     {
       //   path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
-      path="./";
+      //           path="./tmp/";
+      //      path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v3_usingfullRun2_MET_caloMET/";
+      //      path="rootoutput/newselec_LM_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v4_usingfullRun2/";
+      path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v5_usingfullRun2_BTagDeepCSV/";
+      //      path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v5_usingfullRun2_BTagDeepCSV/";                                                           
+      //      path="rootoutput/newselec_LM_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v4_usingfullRun2_BTagDeepCSV/";                                                           
+
     }
   else
     {
@@ -191,7 +197,8 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
     legend2=new TLegend(0.1,0.78,0.4,0.9);
     legend2->SetNColumns(2);
     bin=51.5;
-    xmin=-1,xmax = 50,xmin_=0,xmax_=51;
+    //   xmin=-1,xmax = 50,xmin_=0,xmax_=51;
+    xmin=1,xmax = 52,xmin_=1,xmax_=52;
     ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=100000,ymax2_=1000, yset_=200;
 
     
@@ -269,8 +276,8 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
     h_1=(TH1D*)f_1->FindObjectAny(varName);
     h_2=(TH1D*)f_2->FindObjectAny(varName);
     h_3=(TH1D*)f_3->FindObjectAny(varName);
-    xmin_=0,xmax_=600,xmin=0,xmax=600;
-    rebin=5;
+    xmin_=30,xmax_=400,xmin=30,xmax=400;
+    rebin=2;
     h_0->Rebin(rebin);
     h_1->Rebin(rebin);
     h_2->Rebin(rebin);
@@ -499,7 +506,7 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
     }
- else if(varName=="dPhi_METjet1" || varName=="dPhi_METjet2" || varName=="dPhi_METjet3" || varName=="dPhi_METjet4" || varName=="dPhi_METlep" || varName=="dPhi_METlep1" || varName=="dPhi_phojet1" || varName=="dPhi_phojet2" || varName=="dPhi_phojet3" || varName=="dPhi_phojet4")
+ else if(varName=="dPhi_METjet1" || varName=="dPhi_METjet2" || varName=="dPhi_METjet3" || varName=="dPhi_METjet4" || varName=="dPhi_METlep" || varName=="dPhi_METlep1" || varName=="dPhi_phojet1" || varName=="dPhi_phojet2" || varName=="dPhi_phojet3" || varName=="dPhi_phojet4" || varName=="MET_CaloMET" || varName=="HT5HT" || varName=="dPhi_MET_CaloMET")
    {
   c1= new TCanvas("stackhist","stackhist",700,600);
       cr          = (TH1D*)f1->Get(varName);
@@ -510,14 +517,21 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
     h_2=(TH1D*)f_2->FindObjectAny(varName);
     h_3=(TH1D*)f_3->FindObjectAny(varName);
     rebin=2;
-    h_0->Rebin(rebin);
-    h_1->Rebin(rebin);
-    h_2->Rebin(rebin);
-    h_3->Rebin(rebin);
     legend2=new TLegend(0.6,0.75,0.9,0.85);
     legend2->SetNColumns(2);
     xmin_=0,xmax_=4,xmin=0,xmax=4;
     ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
+
+    if(varName=="MET_CaloMET")    xmin_=0,xmax_=5,xmin=0,xmax=5, rebin=4;
+    if(varName=="HT5HT")    xmin_=0,xmax_=3,xmin=0,xmax=3, rebin=1;
+    if(varName=="dPhi_METjet1"|| varName=="dPhi_METjet2" || varName=="dPhi_METjet3" || varName=="dPhi_METjet4")    xmin_=0,xmax_=4,xmin=0,xmax=4,rebin=1;
+    if(varName=="dPhi_MET_CaloMET")    xmin_=0,xmax_=4,xmin=0,xmax=4, rebin=1;
+    ymin_=0.5,ymax_=10000;
+
+    h_0->Rebin(rebin);
+    h_1->Rebin(rebin);
+    h_2->Rebin(rebin);
+    h_3->Rebin(rebin);
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
@@ -584,6 +598,7 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
   hs_var->SetMaximum(ymax_);
   hs_var->GetXaxis()->SetRangeUser(xmin,xmax);
   pred_sr->Draw("e1 same");
+  //  sr->Draw("e1 same");
  
   pad1->cd();
   
@@ -631,27 +646,27 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
  // legend1->Draw();
   
   if(varName=="AllSBins_v6_CD_EW_50bin_elec1"  ){
-    TLine *line1V6=new TLine( 6.5,ymin_,  6.5,ymax2_);
-    TLine *line2V6=new TLine(12.5,ymin_, 12.5,ymax2_);
-    TLine *line3V6=new TLine(18.5,ymin_, 18.5,ymax2_);
-    TLine *line4V6=new TLine(24.5,ymin_, 24.5,ymax2_);
-    TLine *line5V6=new TLine(30.5,ymin_, 30.5,ymax2_);
-    TLine *line6V6=new TLine(36.5,ymin_, 36.5,ymax2_);
-    TLine *line7V6=new TLine(43.5,ymin_, 43.5,ymax2_);
+    TLine *line1V6=new TLine( 8,ymin_, 8 ,ymax2_);
+    TLine *line2V6=new TLine(14,ymin_,14 ,ymax2_);
+    TLine *line3V6=new TLine(20,ymin_,20 ,ymax2_);
+    TLine *line4V6=new TLine(26,ymin_,26 ,ymax2_);
+    TLine *line5V6=new TLine(32,ymin_,32 ,ymax2_);
+    TLine *line6V6=new TLine(38,ymin_,38 ,ymax2_);
+    TLine *line7V6=new TLine(45,ymin_,45 ,ymax2_);
     
     pad1->cd(); pad1->SetGridx(0); pad1->SetGridy(0);
 
     line1V6->Draw();      line2V6->Draw();  line3V6->Draw();
     line4V6->Draw();      line5V6->Draw();
     line6V6->Draw();      line7V6->Draw();
-    TArrow *arrow1 = new TArrow( -0.5,yset_, 6.5,yset_,0.01,"<|>");
-    TArrow *arrow2 = new TArrow( 6.5,yset_,12.5,yset_,0.01,"<|>");
-    TArrow *arrow3 = new TArrow(12.5,yset_,18.5,yset_,0.01,"<|>");
-    TArrow *arrow4 = new TArrow(18.5,yset_, 24.5,yset_,0.01,"<|>");
-    TArrow *arrow5 = new TArrow(24.5,yset_, 30.5,yset_,0.01,"<|>");
-    TArrow *arrow6 = new TArrow(30.5,yset_, 36.5,yset_,0.01,"<|>");
-    TArrow *arrow7 = new TArrow(36.5,yset_, 43.5,yset_,0.01,"<|>");
-    TArrow *arrow8 = new TArrow(43.5,yset_, 50.5,yset_,0.01,"<|>");
+    TArrow *arrow1 = new TArrow(1,yset_  , 8,yset_,0.01,"<|>");
+    TArrow *arrow2 = new TArrow( 8,yset_,14,yset_,0.01,"<|>");
+    TArrow *arrow3 = new TArrow(14,yset_,20,yset_,0.01,"<|>");
+    TArrow *arrow4 = new TArrow(20,yset_,26,yset_,0.01,"<|>");
+    TArrow *arrow5 = new TArrow(26,yset_,32,yset_,0.01,"<|>");
+    TArrow *arrow6 = new TArrow(32,yset_,38,yset_,0.01,"<|>");
+    TArrow *arrow7 = new TArrow(38,yset_,45,yset_,0.01,"<|>");
+    TArrow *arrow8 = new TArrow(45,yset_,51,yset_,0.01,"<|>");
 
     arrow1->Draw(); arrow2->Draw(); arrow3->Draw();
     arrow4->Draw(); arrow5->Draw(); arrow6->Draw();
@@ -769,15 +784,16 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
 
   
   if(varName=="AllSBins_v6_CD_EW_50bin_elec1"  ){
-    TLine *line1V6=new TLine( 6.5,ymin,  6.5,ymax);
-    TLine *line2V6=new TLine(12.5,ymin, 12.5,ymax);
-    TLine *line3V6=new TLine(18.5,ymin, 18.5,ymax);
-    TLine *line4V6=new TLine(24.5,ymin, 24.5,ymax);
-    TLine *line5V6=new TLine(30.5,ymin, 30.5,ymax);
-    TLine *line6V6=new TLine(36.5,ymin, 36.5,ymax);
-    TLine *line7V6=new TLine(43.5,ymin, 43.5,ymax);
+    TLine *line1V6=new TLine( 8,ymin, 8,ymax);
+    TLine *line2V6=new TLine(14,ymin,14,ymax);
+    TLine *line3V6=new TLine(20,ymin,20,ymax);
+    TLine *line4V6=new TLine(26,ymin,26,ymax);
+    TLine *line5V6=new TLine(32,ymin,32,ymax);
+    TLine *line6V6=new TLine(38,ymin,38,ymax);
+    TLine *line7V6=new TLine(45,ymin,45,ymax);
     
     pad2->cd(); pad2->SetGridx(0);
+    h3->GetXaxis()->SetTitle("Bin no.");
 
     line1V6->Draw();      line2V6->Draw();  line3V6->Draw();
     line4V6->Draw();      line5V6->Draw();
@@ -801,7 +817,7 @@ void plotdatavsMC(TString varName, TString year, TString ntuple)
     line7V7->Draw(); line8V7->Draw();
   }
   c1->SaveAs(pdf);
-  c1->SaveAs(png);
+  //  c1->SaveAs(png);
 
 }
 

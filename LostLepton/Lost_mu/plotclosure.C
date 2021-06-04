@@ -1,138 +1,425 @@
-void plotclosure()
+void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPred = true, bool SRvsCR=false)
 {
+  //  bool ExpvsPred=false,DatavsMC=false,SRvsCR=true;
+  //  bool ExpvsPred=true,DatavsMC=false,SRvsCR=false;
+  // gStyle->SetOptStat(0);
+    bool data_pred=true;
+  //bool data_pred=false;
   TFile *f1, *f2,*f3;
+  string lep="LL";
+  ///  TString path= "rootoutput/newselec_LE_v2/";
+  //  TString path= "rootoutput/newselec_LE_noISRjet/";
+  //    TString path= "rootoutput/newselec_LEplusLM_noISRjet/";
+  //  TString path ="rootoutput/newselec_LE_noISRjet_METfilters_nogenpromptpho_forWGandTTG/";
+  //   TString path ="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID/TF_v1/";
+  /* TString path ="rootoutput/newselec_LM_noISRjet_METfilters_EW_hadjetID/TF_v3_usingfullRun2/"; */
+  //   TString path ="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID/TF_v3_usingfullRun2/";
+  //  TString path ="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID/TF_v3/";
+  //  TString path ="rootoutput/newselec_LL_noISRjet_METfilters_nogenpromptpho_forWGandTTG_EW/";
+  //   TString path="./";
+  //  TString path= "rootoutput/newselec_LM_noISRjet_v2/";
+  //  TString path= "rootoutput/newselec_LE_noISRjet_noHEM/";
+  //  TString path = "rootoutput/newselec_LE_noISRjet_noHEM_noprefire/";
+  //  TString path = "rootoutput/tmp/";
+  TString path;
+  if(ntuples=="v18")
+    {
+      //      path="rootoutput/newselec_LE_noISRjet_METfilters_nogenpromptpho_forWGandTTG_EW_hadjetID_v18/TF_v3_usingfullRun2/";
+      //      path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
+      //      path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/WGJets_TF/";
+ // path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
+      //        path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/";
+	//       path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/TTGJets_TF/";
+      //         path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3/";
+      //        path="rootoutput/newselec_LM_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v4_usingfullRun2_MET_caloMET/";
+      //            path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v4_usingfullRun2_BTagDeepCSV/";
+	  	    path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v5_usingfullRun2_BTagDeepCSV/";
+      //      path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v3_usingfullRun2_MET_caloMET/";
+      //                path="rootoutput/newselec_LL_noISRjet_METfilters_EW_hadjetID_newPU_v18/TF_v3_usingfullRun2_BTagDeepCSV/";
 
-  //  f1 = new TFile("rootoutput/newselec_LE_v3/Run2018_METdata.root");
-  //  f1 = new TFile("TTWGJ_2016_CR.root");
+    }
+  else
+    {
+      //path="rootoutput/newselec_LE_noISRjet_METfilters_nogenpromptpho_forWGandTTG_EW_hadjetID_v18/TF_v3_usingfullRun2/";
+      //      path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID_v18/TF_v3_usingfullRun2/";
+      //      path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID/TF_v3_usingfullRun2/";
+      path="./";
+      //path="rootoutput/newselec_LE_noISRjet_METfilters_EW_hadjetID/TF_v3_usingfullRun2/";
+      
+    }
+  TLatex textOnTop,intLumiE;
+  
+  TString filename;
+  TString b="Run2_METdata";
+  TString a="TTWGJ";
 
-  //  f1 = new TFile("rootoutput/newselec_LM_v3/Run2_METdata.root");
-  //   f1 = new TFile("rootoutput/oldselec_LM_v2/TTWGJ_CR.root");
-   //  f2 = new TFile("Run2016_TF_LE_v6_CD.root");
-  //  f2 = new TFile("Run2_TF_LE_v6_CD_SP.root");
-  //   f1 = new TFile("Run2_METdata.root");
-  f2 = new TFile("rootoutput/newselec_LE_v3/Run2016_METdata_CR.root");
-  f1 = new TFile("rootoutput/newselec_LE_v3/TTWGJ_2016_CR.root");
-  // f1 = new TFile("rootoutput/newselec_LE_v3/WJets_CR.root");
-  /* f3 = new TFile("rootoutput/newselec_LE_v3/TTWGJ_SR.root"); */
-  //f = new TFile("rootoutput/newselec_LM_v3/WJets_CR.root");
-  /* f1 = new TFile("rootoutput/tmp/TTWGJ_CR.root"); */
-  /* f2 = new TFile("rootoutput/tmp/Run2_METdata_CR.root"); */
+  if(data_pred && ntuples=="v18")
+    {
+      if(year == "full_Run2")
+	filename  = path+b+"_CR_v18.root";
+      else
+	filename= path+"Run"+year+"_METdata_CR_v18.root";  
+      f2 = new TFile(filename);
+    }
+  if(ntuples=="v18")
+    {
+      if(year == "full_Run2")
+	filename  = path+a+"_CR_v18.root";
+      else 
+	filename= path+a+"_"+year+"_CR_v18.root";
+    }
+  else
+    {
+      if(year == "full_Run2")
+	filename  = path+a+"_CR_v18.root";
+      else 
+	filename= path+a+"_"+year+"_CR_v18.root";
+    }
 
-  /* f1 = new TFile("rootoutput/newselec_LM_v3/TTWGJ_2016_CR.root"); */
-  /* f2 = new TFile("rootoutput/newselec_LM_v3/Run2016_METdata_CR.root"); */
-
+  /* if(ntuples=="v18") */
+  /*   { */
+  /*     if(year == "full_Run2") */
+  /* 	filename  = path+"TTWGJ_CR_v18.root"; */
+  /*     else  */
+  /* 	filename= path+"TTWGJ_"+year+"_CR_v18.root"; */
+  /*   } */
+  /* else */
+  /*   { */
+  /*     if(year == "full_Run2") */
+  /* 	filename  = path+"TTWGJ_CR.root"; */
+  /*     else  */
+  /* 	filename= path+"TTWGJ_"+year+"_CR.root"; */
+  /*   } */
+  f1 = new TFile(filename);
   
   double xmin,xmax,bin,xmin_,xmax_;
   double ymin=0.5 , ymax=1.5, ymin_=0.0001 , ymax_=1000;
 
   TH1D *cr,*sr,*tf,*pred_sr;
-  
-  //  string varName="AllSBins_v7_CD_SP";
-  // TString varName="AllSBins_v6_CD_SP";
-  // string varName="AllSBins_v6_CD";
-  //  string varName="AllSBins_v7_CD";
-  //  TString varName="AllSBins_v6_CD_EW_50bin";
-  TString varName="MET";
-  //  TString varName="BestPhotonPt";
-  //TString varName="nJets";
-  bool ExpvsPred,DatavsMC;
-  ExpvsPred=false,DatavsMC=true;
+ 
+  TString title;
+  //  ExpvsPred=false,DatavsMC=true;
   //  ExpvsPred=true,DatavsMC=false;
-  
+
+  if(varName=="AllSBins_v6_CD_EW_50bin")
+    title="closure test using optimized search bins";
+  else
+    title="closure test using "+ varName +" variable";
+  TString png,pdf;
+  if(ExpvsPred)
+    {
+      png = path+"/PDF/closure/"+varName+"_"+year+".pdf";
+      pdf= path+"/PDF/closure/"+varName+"_"+year+".png";
+    }
+  else if(SRvsCR)
+    {
+      png = path+"/PDF/TF/"+varName+"_"+year+".pdf";
+      pdf= path+"/PDF/TF/"+varName+"_"+year+".png";
+    }
+  //  TCanvas *c1 = new TCanvas("stackhist","stackhist",600,500);
+  TCanvas *c1;
+  TString varName1,varName2;
+  if(ExpvsPred)  varName2=varName+"_elec1_closure";
+  else if(SRvsCR) varName2=varName;
+  varName1=varName+"_elec0";
+
+
   double nbin,bin0, bin1,yset_;
   TH1D *total;
   int rebin=1;
   if(varName=="AllSBins_v6_CD_SP"){
-    pred_sr          = (TH1D*)f1->Get("AllSBins_v6_CD_SP_elec1_closure");
+    c1 = new TCanvas("stackhist","stackhist",1000,1000);
+    if(ExpvsPred)    pred_sr          = (TH1D*)f1->Get("AllSBins_v6_CD_SP_elec1_closure");
+    if(SRvsCR)       pred_sr          = (TH1D*)f1->Get("AllSBins_v6_CD_SP_elec1");
     sr          = (TH1D*)f1->Get("AllSBins_v6_CD_SP_elec0");
-    cr          = (TH1D*)f1->Get("AllSBins_v6_CD_SP_elec1");
-    //    xmin=0,xmax = 37,bin=40;
     xmin=-100000,xmax = 100000,xmin_=0,xmax_=37;
-    ymin=-0.5 , ymax=2.5, ymin_=0.0001 , ymax_=1000;
+    ymin=0 , ymax=1.99, ymin_=0.0001 , ymax_=1000;
   }
   else if(varName=="AllSBins_v7_CD_SP"){
-    cr          = (TH1D*)f1->Get("AllSBins_v7_CD_SP_elec1");
-    sr          = (TH1D*)f1->Get("AllSBins_v7_CD_SP_elec1");
+    gStyle->SetOptStat(0);
+    c1 = new TCanvas("stackhist","stackhist",1000,1000);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    if(ExpvsPred)    pred_sr     = (TH1D*)f1->Get(varName2);
+    if(SRvsCR)    pred_sr     = (TH1D*)f1->Get("AllSBins_v7_CD_SP_elec1");
+    /* cr          = (TH1D*)f1->Get("AllSBins_v7_CD_SP_elec1"); */
+    /* sr          = (TH1D*)f1->Get("AllSBins_v7_CD_SP_elec0"); */
+    /* pred_sr     = (TH1D*)f1->Get("AllSBins_v7_CD_SP_elec1_closure"); */
+    xmin_=1,xmax_=11,xmin=1,xmax = 11,bin=10;
+   ymin=0 , ymax=1.99, ymin_=0.01 , ymax_=10000;
+  pred_sr->GetXaxis()->SetTitle("Bin no.");
+
   }
  else if(varName=="AllSBins_v7_CD"){
+    c1 = new TCanvas("stackhist","stackhist",1000,1000);
     cr          = (TH1D*)f1->Get("AllSBins_v7_CD_elec1");
     sr          = (TH1D*)f1->Get("AllSBins_v7_CD_elec0");
-  }
+    pred_sr     = (TH1D*)f1->Get("AllSBins_v7_CD_elec1_closure");
+  pred_sr->GetXaxis()->SetTitle("Bin no.");
+
+ }
   else if(varName=="AllSBins_v6_CD"){
     //cr          = (TH1D*)f1->Get("AllSBins_v6_CD_elec1");
+    c1 = new TCanvas("stackhist","stackhist",1000,1000);
     sr          = (TH1D*)f1->Get("AllSBins_v6_CD_elec0");
-    pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_elec1_closure");
+    if(ExpvsPred) pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_elec1_closure");
+    if(SRvsCR) pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_elec1");
     xmin_=1,xmax_=8,xmin=1,xmax = 9,bin=8;
-   ymin=0.5 , ymax=1.5, ymin_=0.01 , ymax_=1000;
+   ymin=0 , ymax=1.99, ymin_=0.01 , ymax_=1000;
   }  
  else if(varName=="AllSBins_v6_CD_EW_50bin"){
+   gStyle->SetOptStat(0);
+   c1 = new TCanvas("stackhist","stackhist",1000,1000);
     cr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
-    if(DatavsMC)
-      {
-	sr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
-	pred_sr     = (TH1D*)f2->Get("AllSBins_v6_CD_EW_50bin_elec1");
-      }
-    if(ExpvsPred)
+    if(!data_pred)
       {
 	sr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec0");
-	pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1_closure");
+	if(ExpvsPred)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1_closure");
+	if(SRvsCR)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
       }
+    if(data_pred)
+      {
+	sr          = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
+	if(ExpvsPred)   pred_sr     = (TH1D*)f2->Get("AllSBins_v6_CD_EW_50bin_elec1_closure");
+	if(SRvsCR)   pred_sr     = (TH1D*)f1->Get("AllSBins_v6_CD_EW_50bin_elec1");
+      }
+    pred_sr->GetYaxis()->SetTitle("Bin no.");
+     
     bin=51.5;
     //    xmin=-100000,xmax = 100000,xmin_=0,xmax_=50;
-    xmin=-1,xmax = 50,xmin_=-1,xmax_=50;
-    ymin=0 , ymax=2, ymin_=0.005 , ymax_=100000, yset_=200;
+    //  xmin=-1,xmax = 50,xmin_=-1,xmax_=50;
+    xmin=0,xmax = 52,xmin_=0,xmax_=52;
+    ymin=0 , ymax=1.99, ymin_=0.005 , ymax_=100000, yset_=200;
+    title="closure test using optimized search bins";
+  pred_sr->SetTitle(0);
   }
- else if(varName=="BestPhotonPt" || varName=="MET" )
+
+ else if(varName=="BestPhotonPt_0b_vBin" || varName=="BestPhotonPt_ge1b_vBin" ) 
     {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
     cr          = (TH1D*)f1->Get(varName);
-    sr          = (TH1D*)f1->Get(varName);
-    pred_sr     = (TH1D*)f2->Get(varName);
-    xmin_=200,xmax_=1200,xmin=200,xmax=1200;
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    xmin_=0,xmax_=2000,xmin=0,xmax=2000;
+    rebin=1;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=10000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    title="closure test using "+ varName +" variable";
+  pred_sr->SetTitle(title);
+
+    }
+ else if(varName=="BestPhotonPt_ge1b" || varName=="BestPhotonPt_0b") 
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    xmin_=0,xmax_=2000,xmin=0,xmax=2000;
     rebin=10;
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
-    ymin=0 , ymax=2.6, ymin_=0.01 , ymax_=10000000;
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=10000;
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    title="closure test using "+ varName +" variable";
+  pred_sr->SetTitle(title);
+
     }
- else if(varName=="nJets" )
+ else if(varName=="BestPhotonPt" || varName=="ElectronPt" || varName=="JetPt" || varName=="leadJetPt" || varName=="hadAk8jetPt")
     {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
     cr          = (TH1D*)f1->Get(varName);
-    sr          = (TH1D*)f1->Get(varName);
-    pred_sr     = (TH1D*)f2->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    xmin_=0,xmax_=2000,xmin=0,xmax=2000;
+    if(varName=="hadAk8jetPt") rebin=100;
+    if(varName=="BestPhotonPt") rebin=10;
+    else rebin=10;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=10000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    title="closure test using "+ varName +" variable";
+  pred_sr->SetTitle(title);
+
+    }
+ else if( varName=="BestPhotonPt_vBin")
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    xmin_=0,xmax_=2000,xmin=0,xmax=2000;
+    rebin=1;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=10000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    title="closure test using "+ varName +" variable";
+  pred_sr->SetTitle(title);
+
+    }
+ else if( varName=="hadAk8Mass")
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    xmin_=0,xmax_=300,xmin=0,xmax=300;
+    rebin=30;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=10000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    title="closure test using "+ varName +" variable";
+  pred_sr->SetTitle(title);
+
+    }
+ else if(varName=="MET"||varName=="ST")
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    if(varName=="ST")
+      {
+	xmin_=100,xmax_=4000,xmin=100,xmax=4000;
+	rebin=10;
+      }
+    else
+      {
+      	xmin_=100,xmax_=1200,xmin=100,xmax=1200;
+	rebin=5;
+      }
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=10000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    title="closure test using "+ varName +" variable";
+  pred_sr->SetTitle(title);
+
+    }
+ else if(varName=="BestPhotonPhi"||varName=="BestPhotonEta"||varName=="JetEta" || varName == "JetPhi" || varName=="leadJetPhi" || varName == "leadJetEta")
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    xmin_=-5,xmax_=5,xmin=-5,xmax=5;
+    rebin=10;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=10000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    title="closure test using "+ varName +" variable";
+  pred_sr->SetTitle(title);
+
+    }
+ else if(varName=="METvBin2" || varName =="METvBin_EW_v2" || varName =="METvBin_SP_v2")
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    xmin_=250,xmax_=2000,xmin=250,xmax=2000;
+    rebin=1;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    ymin=0 , ymax=1.99, ymin_=0.1 , ymax_=1000;
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+  pred_sr->SetTitle(title);
+    }
+ else if(varName=="nJets" || varName=="nJets_EW" ||varName=="nJets_SP")
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
     xmin_=2,xmax_=11,xmin=2,xmax=11;
     rebin=1;
-    ymin=0 , ymax=2.6, ymin_=0.01 , ymax_=1000000;
+    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=100000;
     pred_sr->Rebin(rebin);
     sr->Rebin(rebin);
     pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
     sr->GetXaxis()->SetRangeUser(xmin,xmax);
+  pred_sr->SetTitle(title);
     }
-  /* for(int i=xmin_;i<=xmax_;i++) */
-  /*   { cout<<cr->GetBinContent(i)<<endl;} */
-  /* cout<<"The cr error in bin"<<endl; */
-  /* for(int i=xmin_;i<=xmax_;i++) */
-  /*   { cout<<cr->GetBinError(i)<<endl;} */
+ else if(varName=="nBTags" || varName=="nBTags_EW" || varName=="nBTags_SP"  )
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    xmin_=0,xmax_=8,xmin=0,xmax=8;
+    rebin=1;
+    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=100000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+   pred_sr->SetTitle(title);
+   }
+ else if(varName=="h_minDr_bestphoEle" || varName == "h_minDr_bestphoJets" || varName=="h_minDr_bestphoEle_EW" || varName == "h_minDr_bestphoJets_EW" ||varName=="h_minDr_bestphoEle_SP" || varName == "h_minDr_bestphoJets_SP" || varName=="dPhi_phojet1"||varName=="dPhi_METjet1")
+    {
+    c1 = new TCanvas("stackhist","stackhist",600,500);
+    cr          = (TH1D*)f1->Get(varName);
+    sr          = (TH1D*)f1->Get(varName1);
+    pred_sr     = (TH1D*)f1->Get(varName2);
+    // rebin=20;
+    //    xmin_=0,xmax_=5,xmin=0,xmax=5;
+    rebin=20;
+    xmin_=-5,xmax_=5,xmin=-5,xmax=5;
+    ymin=0 , ymax=1.99, ymin_=0.2 , ymax_=1000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    pred_sr->SetTitle(title);
+    }
+
+  cout<<"Pred.  ==========  obs. "<<endl; 
+  for(int i=xmin_;i<=52;i++)
+    cout<<setprecision(4)<<pred_sr->GetBinContent(i)<<" +- "<<pred_sr->GetBinError(i)<<endl;
+
+    /* { cout<<pred_sr->GetBinContent(i)<<endl;//" ====== "<<sr->GetBinContent(i)<<endl;} */
+    /* } */
+  cout<<"The sr content"<<endl;
+  for(int i=xmin_;i<=52;i++)
+    cout<<setprecision(4)<<sr->GetBinContent(i)<<" +- "<<sr->GetBinError(i)<<endl;
+
+  //{ cout<<sr->GetBinContent(i)<<endl;}
+  cout<<"==============="<<endl;
+
+  /* for(int i=0;i<=53;i++) */
+  /* /\*   { cout<<i<<" , CR : "<<cr->GetBinContent(i)<<" , Pred : SR : "<<pred_sr->GetBinContent(i)<<" ,  SR : "<<sr->GetBinContent(i)<<endl;} */
+
   /* cout<<"==============="<<endl; */
 
-  for(int i=0;i<=53;i++)
-    { cout<<i<<" , CR : "<<cr->GetBinContent(i)<<" , Pred : SR : "<<pred_sr->GetBinContent(i)<<" ,  SR : "<<sr->GetBinContent(i)<<endl;}
-
-  cout<<"==============="<<endl;
-  gStyle->SetOptStat(0);
-
-  TPad *pad1 = new TPad("pad1","pad1",0,0.3,1,1);
-  //  pad1->SetBottomMargin(0);
+  TPad *pad1 = new TPad("pad1","pad1",0,0.325,1,1);
+  pad1->SetBottomMargin(0);
   pad1->SetBottomMargin(0.3);
 
   pad1->Draw();pad1->SetGridx();
 
   pad1->cd();
   pad1->SetLogy();
+    pred_sr->SetTitle(0);
+
   pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
   sr->GetXaxis()->SetRangeUser(xmin,xmax);
-  pred_sr->SetLabelSize(0.01);
-  sr->SetLabelSize(0.01);
+  pred_sr->GetYaxis()->SetLabelSize(0.07);
+  pred_sr->GetYaxis()->SetTitle("Entries");
+  pred_sr->GetYaxis()->SetTitleSize(0.07);
+  pred_sr->GetYaxis()->SetTitleOffset(0.72);
   sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
   pred_sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
   pred_sr->SetMarkerStyle(20);
@@ -144,78 +431,270 @@ void plotclosure()
   sr->SetMarkerColor(kBlue);
   sr->SetLineColor(kBlue);
 
-  //  pred_sr->SetLineStyle(kBlue);  
-  pred_sr->Draw("e1");
-  sr->Draw("e1 same");
+  
+  //  pred_sr->SetLineStyle(kBlue);
+  pred_sr->Draw("hists");
+  sr->Draw("hists sames");
 
+   TPaveStats *ptstats = new TPaveStats(0.680602,0.620556,0.8812709,0.7822321,"brNDC");
+   ptstats->SetName("stats");
+   ptstats->SetBorderSize(1);
+   ptstats->SetFillColor(0);
+   ptstats->SetLineColor(2);
+   ptstats->SetTextAlign(12);
+   ptstats->SetTextColor(2);
+   ptstats->SetTextFont(42);
+   //   TText *ptstats_LaTex = ptstats->AddText("Integral =  140.5");
+   ptstats->SetOptStat(1000000);
+   ptstats->SetOptFit(0);
+   ptstats->Draw();
+   pred_sr->GetListOfFunctions()->Add(ptstats);
+   ptstats->SetParent(pred_sr);
+   TPaveStats *ptstats2 = new TPaveStats(0.680602,0.4555803,0.8812709,0.6172565,"brNDC");
+   ptstats2->SetName("stats");
+   ptstats2->SetBorderSize(1);
+   ptstats2->SetFillColor(0);
+   ptstats2->SetLineColor(4);
+   ptstats2->SetTextAlign(12);
+   ptstats2->SetTextColor(4);
+   ptstats2->SetTextFont(42);
+   //   TText *ptstats2_LaTex = ptstats2->AddText("Integral =  140.5");
+   ptstats2->SetOptStat(1000000);
+   ptstats2->SetOptFit(0);
+   ptstats2->Draw();
+   sr->GetListOfFunctions()->Add(ptstats2);
+   ptstats2->SetParent(sr);
+  double chi=pred_sr->Chi2Test(sr,"WW CHI2");
+  int NDF=chi/pred_sr->Chi2Test(sr,"WW CHI2/NDF");
+  double p=pred_sr->Chi2Test(sr,"WW p");
+  textOnTop.SetTextSize(0.06);
+  intLumiE.SetTextSize(0.06);
+  //  if(isPaper) textOnTop.DrawLatexNDC(0.12,0.91,"CMS #it{#bf{Simulation Supplementary}}");                                                                 
+  textOnTop.DrawLatexNDC(0.1,0.91,"CMS #it{#bf{Simulation Preliminary}}");
+  if(year=="2016")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{35.9 fb^{-1} (13 TeV)}");
+  if(year=="2017")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{41.5 fb^{-1} (13 TeV)}");
+  if(year=="2018")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{59.6 fb^{-1} (13 TeV)}");
+  if(year=="full_Run2")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{137 fb^{-1} (13 TeV)}");
+  char chi2[1000],chi1[1000];
+  // sprintf(chi2,"Chi2/NDF = %f",chi_NDF);
+  sprintf(chi1,"Chi2/NDF = %f / %d , p = %f",chi,NDF,p);
+
+  TLegend *legend = new TLegend(0.5,0.78,0.9,0.9);
+  legend->SetNColumns(1);
+  legend->SetBorderSize(1);
+  TLegend *legend1 = new TLegend(0.1,0.82,0.45,0.9);
+  //  legend1->SetHeader("with HEM veto","C");                               // option "C" allows to center the header                                      
+  //  legend1->SetHeader(chi2,"C");
+  legend1->SetHeader(chi1,"C");
+  //  legend1->SetHeader(p,"C");
+  cout<<"Chi ===> "<<chi<<endl;
+  cout<<"Chi1 ===> "<<chi1<<endl;
+  legend1->SetTextSize(0.04);
+  legend->SetTextSize(0.08);
+  // legend1->Draw();
+  if(data_pred)
+    {
+      if(ExpvsPred )
+	{
+	  if(lep=="LE")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1e + #gamma )","lp");
+	      legend->AddEntry(sr,"Obs. : (1e + #gamma )","lp");
+	    }
+	  else if (lep=="LM")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1 #mu + #gamma )","lp");
+	      legend->AddEntry(sr,"Obs. : (1 #mu + #gamma )","lp");
+	    }
+	  else if(lep=="LL")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1 l + #gamma )","lp");
+	      legend->AddEntry(sr,"Obs. : (1 l + #gamma )","lp");
+	    }
+	}
+    }
+  if(!data_pred)
+    {
+      if(ExpvsPred )
+	{
+	  if(lep=="LE")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1e + #gamma )","lp");
+	      legend->AddEntry(sr,"Exp : (0e + #gamma )","lp");
+	    }
+	  else if (lep=="LM")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1 #mu + #gamma )","lp");
+	      legend->AddEntry(sr,"Exp : (0 #mu + #gamma )","lp");
+	    }
+	  else if(lep=="LL")
+	    {
+	      legend->AddEntry(pred_sr,"Pred : TF x (1 l + #gamma )","lp");
+	      legend->AddEntry(sr,"Exp : (0 l + #gamma )","lp");
+	    }
+	}
+    
+      
+      if(SRvsCR)
+	{
+	  if(lep=="LE")
+	    {
+	      legend->AddEntry(pred_sr,"CR : (1e + #gamma )","lp");
+	      legend->AddEntry(sr,"SR : (0e + #gamma )","lp");
+	    }
+	  else if (lep=="LM")
+	    {
+	      legend->AddEntry(pred_sr,"CR : (1 #mu + #gamma )","lp");
+	      legend->AddEntry(sr,"SR : (0 #mu + #gamma )","lp");
+	    }
+	  else if(lep=="LL")
+	    {
+	      legend->AddEntry(pred_sr,"CR : TF x (1 l + #gamma )","lp");
+	      legend->AddEntry(sr,"SR : (0 l + #gamma )","lp");
+	    }
+	}
+    }
+  /* else(LM){ */
+      
+  /*   }    */
+  legend->SetTextSize(0.06);
+  
   if(varName=="AllSBins_v6_CD_EW_50bin"  ){
-    TLine *line1V6=new TLine( 6.5,ymin_,  6.5,ymax_);
-    TLine *line2V6=new TLine(12.5,ymin_, 12.5,ymax_);
-    TLine *line3V6=new TLine(18.5,ymin_, 18.5,ymax_);
-    TLine *line4V6=new TLine(24.5,ymin_, 24.5,ymax_);
-    TLine *line5V6=new TLine(30.5,ymin_, 30.5,ymax_);
-    TLine *line6V6=new TLine(36.5,ymin_, 36.5,ymax_);
-    TLine *line7V6=new TLine(43.5,ymin_, 43.5,ymax_);
+    TLine *line1V6=new TLine( 8,ymin_,  8,ymax_);
+    TLine *line2V6=new TLine(14,ymin_, 14,ymax_);
+    TLine *line3V6=new TLine(20,ymin_, 20,ymax_);
+    TLine *line4V6=new TLine(26,ymin_, 26,ymax_);
+    TLine *line5V6=new TLine(32,ymin_, 32,ymax_);
+    TLine *line6V6=new TLine(38,ymin_, 38,ymax_);
+    TLine *line7V6=new TLine(45,ymin_, 45,ymax_);
     
     pad1->cd(); pad1->SetGridx(0); pad1->SetGridy(0);
 
     line1V6->Draw();      line2V6->Draw();  line3V6->Draw();
     line4V6->Draw();      line5V6->Draw();
     line6V6->Draw();      line7V6->Draw();
-    TArrow *arrow1 = new TArrow( -0.5,yset_, 6.5,yset_,0.01,"<|>");
-    TArrow *arrow2 = new TArrow( 6.5,yset_,12.5,yset_,0.01,"<|>");
-    TArrow *arrow3 = new TArrow(12.5,yset_,18.5,yset_,0.01,"<|>");
-    TArrow *arrow4 = new TArrow(18.5,yset_, 24.5,yset_,0.01,"<|>");
-    TArrow *arrow5 = new TArrow(24.5,yset_, 30.5,yset_,0.01,"<|>");
-    TArrow *arrow6 = new TArrow(30.5,yset_, 36.5,yset_,0.01,"<|>");
-    TArrow *arrow7 = new TArrow(36.5,yset_, 43.5,yset_,0.01,"<|>");
-    TArrow *arrow8 = new TArrow(43.5,yset_, 50.5,yset_,0.01,"<|>");
+    TArrow *arrow1 = new TArrow( 1,yset_, 8,yset_,0.01,"<|>");
+    TArrow *arrow2 = new TArrow( 8,yset_, 14,yset_,0.01,"<|>");
+    TArrow *arrow3 = new TArrow(14,yset_, 20,yset_,0.01,"<|>");
+    TArrow *arrow4 = new TArrow(20,yset_, 26,yset_,0.01,"<|>");
+    TArrow *arrow5 = new TArrow(26,yset_, 32,yset_,0.01,"<|>");
+    TArrow *arrow6 = new TArrow(32,yset_, 38,yset_,0.01,"<|>");
+    TArrow *arrow7 = new TArrow(38,yset_, 45,yset_,0.01,"<|>");
+    TArrow *arrow8 = new TArrow(45,yset_, 51,yset_,0.01,"<|>");
 
     arrow1->Draw(); arrow2->Draw(); arrow3->Draw();
     arrow4->Draw(); arrow5->Draw(); arrow6->Draw();
     arrow7->Draw(); arrow8->Draw();
     TLatex Tl;
+    Tl.SetTextSize(0.05);
+    Tl.DrawLatex(2.5,2*yset_,"N^{ 0}_{ 2-4}");
+    Tl.DrawLatex(9.0,2*yset_,"N^{ 0}_{ 5-6}");
+    Tl.DrawLatex(15.0,2*yset_,"N^{ 0}_{ #geq7}");
+    Tl.DrawLatex(21.0,2*yset_,"N^{ #geq1}_{ 2-4}");
+    Tl.DrawLatex(26.0,2*yset_,"N^{ #geq1}_{ 5-6}");
+    Tl.DrawLatex(32.0,2*yset_,"N^{ #geq1}_{ #geq7}");
     Tl.SetTextSize(0.04);
-    Tl.DrawLatex(3.0,2*yset_,"N^{ 0}_{ 2-4}");
-    Tl.DrawLatex(9.5,2*yset_,"N^{ 0}_{ 5-6}");
-    Tl.DrawLatex(15.5,2*yset_,"N^{ 0}_{ #geq7}");
-    Tl.DrawLatex(21.5,2*yset_,"N^{ #geq1}_{ 2-4}");
-    Tl.DrawLatex(26.5,2*yset_,"N^{ #geq1}_{ 5-6}");
-    Tl.DrawLatex(32.5,2*yset_,"N^{ #geq1}_{ #geq7}");
-    Tl.SetTextSize(0.03);
-    Tl.DrawLatex(37.5,2*yset_,"EW : W tag");
-    Tl.DrawLatex(44.5,2*yset_,"EW : H tag");
+    Tl.DrawLatex(37.0,2*yset_,"EW : W tag");
+    Tl.DrawLatex(44.0,2*yset_,"EW : H tag");
+    /* TLine *line1V6=new TLine( 6.5,ymin_,  6.5,ymax_); */
+    /* TLine *line2V6=new TLine(12.5,ymin_, 12.5,ymax_); */
+    /* TLine *line3V6=new TLine(18.5,ymin_, 18.5,ymax_); */
+    /* TLine *line4V6=new TLine(24.5,ymin_, 24.5,ymax_); */
+    /* TLine *line5V6=new TLine(30.5,ymin_, 30.5,ymax_); */
+    /* TLine *line6V6=new TLine(36.5,ymin_, 36.5,ymax_); */
+    /* TLine *line7V6=new TLine(43.5,ymin_, 43.5,ymax_); */
+    
+    /* pad1->cd(); pad1->SetGridx(0); pad1->SetGridy(0); */
+
+    /* line1V6->Draw();      line2V6->Draw();  line3V6->Draw(); */
+    /* line4V6->Draw();      line5V6->Draw(); */
+    /* line6V6->Draw();      line7V6->Draw(); */
+    /* TArrow *arrow1 = new TArrow( -0.5,yset_, 6.5,yset_,0.01,"<|>"); */
+
+    /* TArrow *arrow2 = new TArrow( 6.5,yset_,12.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow3 = new TArrow(12.5,yset_,18.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow4 = new TArrow(18.5,yset_, 24.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow5 = new TArrow(24.5,yset_, 30.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow6 = new TArrow(30.5,yset_, 36.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow7 = new TArrow(36.5,yset_, 43.5,yset_,0.01,"<|>"); */
+    /* TArrow *arrow8 = new TArrow(43.5,yset_, 50.5,yset_,0.01,"<|>"); */
+
+    /* arrow1->Draw(); arrow2->Draw(); arrow3->Draw(); */
+    /* arrow4->Draw(); arrow5->Draw(); arrow6->Draw(); */
+    /* arrow7->Draw(); arrow8->Draw(); */
+    /* TLatex Tl; */
+    /* Tl.SetTextSize(0.05); */
+    /* Tl.DrawLatex(2.5,2*yset_,"N^{ 0}_{ 2-4}"); */
+    /* Tl.DrawLatex(9.0,2*yset_,"N^{ 0}_{ 5-6}"); */
+    /* Tl.DrawLatex(15.0,2*yset_,"N^{ 0}_{ #geq7}"); */
+    /* Tl.DrawLatex(21.0,2*yset_,"N^{ #geq1}_{ 2-4}"); */
+    /* Tl.DrawLatex(26.0,2*yset_,"N^{ #geq1}_{ 5-6}"); */
+    /* Tl.DrawLatex(32.0,2*yset_,"N^{ #geq1}_{ #geq7}"); */
+    /* Tl.SetTextSize(0.04); */
+    /* Tl.DrawLatex(37.0,2*yset_,"EW : W tag"); */
+    /* Tl.DrawLatex(44.0,2*yset_,"EW : H tag"); */
   }
   
   if(varName=="AllSBins_v7_CD_SP"){
-    TLine *line1V7=new TLine( 7,0,  6.5,1000);
-    TLine *line2V7=new TLine(12,0, 11.5,1000);
-    TLine *line3V7=new TLine(16.5,0, 16.5,1000);
-    TLine *line4V7=new TLine(21.5,0, 21.5,1000);
-    TLine *line5V7=new TLine(26.5,0, 26.5,1000);
+        TLine *line1V6=new TLine( 1,0,  1,ymax_);
+        TLine *line2V6=new TLine( 2,0,  2,ymax_);
+        TLine *line3V6=new TLine( 3,0,  3,ymax_);
+        TLine *line4V6=new TLine( 4,0,  4,ymax_);
+        TLine *line5V6=new TLine( 5,0,  5,ymax_);
+        TLine *line6V6=new TLine( 6,0,  6,ymax_);
+        TLine *line7V6=new TLine( 7,0,  7,ymax_);
+        TLine *line8V6=new TLine( 8,0,  8,ymax_);
+        TLine *line9V6=new TLine( 9,0,  9,ymax_);
+        TLine *line10V6=new TLine( 10,0,  10,ymax_);
+        TLine *line11V6=new TLine( 11,0,  11,ymax_);
+        TLine *line12V6=new TLine( 12,0,  12,ymax_);
 
-    pad1->cd(); pad1->SetGridx(0); pad1->SetGridy(0);
-    line1V7->Draw();      line2V7->Draw();  line3V7->Draw();
-    line4V7->Draw();      line5V7->Draw();
+        pad1->cd(); pad1->SetGridx(0); pad1->SetGridy(0);
+        line1V6->Draw();      line2V6->Draw();  line3V6->Draw();
+        line4V6->Draw();      line5V6->Draw(); line6V6->Draw();
+        line7V6->Draw(); line8V6->Draw();
+        line9V6->Draw(); line10V6->Draw();
+        line11V6->Draw(); line12V6->Draw();
 
-    TArrow *arrow1 = new TArrow( -0.5,0.4, 6.5,0.4,0.01,"<|>");
-    TArrow *arrow2 = new TArrow( 6.5,0.4,11.5,0.4,0.01,"<|>");
-    TArrow *arrow3 = new TArrow(11.5,0.4,16.5,0.4,0.01,"<|>");
-    TArrow *arrow4 = new TArrow(16.5,0.4, 21.5,0.4,0.01,"<|>");
-    TArrow *arrow5 = new TArrow(21.5,0.4, 26.5,0.4,0.01,"<|>");
-    TArrow *arrow6 = new TArrow(26.5,0.4, 31.5,0.4,0.01,"<|>");
-    
-    arrow1->Draw(); arrow2->Draw(); arrow3->Draw();
-    arrow4->Draw(); arrow5->Draw(); arrow6->Draw();
+	TArrow *arrow1 = new TArrow( 1, 0.1, 2, 0.1,0.01,"<|>");
+        TArrow *arrow2 = new TArrow( 2, 0.1, 3, 0.1,0.01,"<|>");
+        TArrow *arrow3 = new TArrow( 3, 0.1, 4, 0.1,0.01,"<|>");
+        TArrow *arrow4 = new TArrow( 4, 0.1, 5, 0.1,0.01,"<|>");
+        TArrow *arrow5 = new TArrow( 5, 0.1, 6, 0.1,0.01,"<|>");
+        TArrow *arrow6 = new TArrow( 6,0.1, 7,0.1,0.01,"<|>");
+        TArrow *arrow7 = new TArrow( 7,0.1, 8,0.1,0.01,"<|>");
+        TArrow *arrow8 = new TArrow( 8,0.1, 9,0.1,0.01,"<|>");
+        TArrow *arrow9 = new TArrow( 9, 0.1, 10, 0.1,0.01,"<|>");
+        TArrow *arrow10 = new TArrow( 10,0.1, 11,0.1,0.01,"<|>");
+        TArrow *arrow11 = new TArrow( 1,0.7, 9,0.7,0.01,"<|>");
+        TArrow *arrow12 = new TArrow( 9,0.7, 11,0.7,0.01,"<|>");
 
-    TLatex Tl;
-    Tl.SetTextSize(0.04);
-    Tl.DrawLatex(3.,0.47,"N^{ 0}_{ 2-4}");
-    Tl.DrawLatex(8.5,0.47,"N^{ 0}_{ 5-6}");
-    Tl.DrawLatex(13.5,0.47,"N^{ 0}_{ #geq7}");
-    Tl.DrawLatex(18.5,0.47,"N^{ #geq1}_{ 2-4}");
-    Tl.DrawLatex(23.5,0.47,"N^{ #geq1}_{ 5-6}");
-    Tl.DrawLatex(28.5,0.47,"N^{ #geq1}_{ #geq7}");
+        arrow1->Draw(); arrow2->Draw(); arrow3->Draw();
+        arrow4->Draw();
+        arrow5->Draw(); arrow6->Draw();
+        arrow7->Draw(); arrow8->Draw();
+        arrow9->Draw(); arrow10->Draw();
+        arrow11->Draw(); arrow12->Draw();
+      TLatex Tl,T2;
+        Tl.SetTextSize(0.05);
+        Tl.DrawLatex(1.25,0.2,"N^{ 0}_{ 2}");
+        Tl.DrawLatex(2.25,0.2,"N^{ 0}_{ 3}");
+        Tl.DrawLatex(3.25,0.2,"N^{ 0}_{ 4}");
+        Tl.DrawLatex(4.25,0.2,"N^{ 0}_{ 5-6}");
+        Tl.DrawLatex(5.25,0.2,"N^{ 0}_{ #geq7}");
+        Tl.DrawLatex(6.25,0.2,"N^{ #geq1}_{ 2-4}");
+        Tl.DrawLatex(7.25,0.2,"N^{ #geq1}_{ 5-6}");
+        Tl.DrawLatex(8.25,0.2,"N^{ #geq1}_{ #geq7}");
+        Tl.DrawLatex(9,0.2,"W tag");
+        Tl.DrawLatex(10,0.2,"H tag");
+        T2.DrawLatex(4.5,0.8,"SP region");
+        T2.DrawLatex(9.5,0.8,"EW region");
+ 
+
   }
   if(varName=="AllSBins_v7_CD"){
     TLine *line1V7=new TLine( 7,0,  7,100);
@@ -320,29 +799,11 @@ void plotclosure()
     Tl.DrawLatex(7.5,0.47,"N^{ #geq1}_{ 5-6}");
     Tl.DrawLatex(8.5,0.47,"N^{ #geq1}_{ #geq7}");
   }
-  TLegend *legend = new TLegend(0.4,0.76,0.9,0.9);
-  legend->SetNColumns(1);
-  legend->SetBorderSize(1);
-
-
-  if(DatavsMC)
-    {
-      legend->AddEntry(pred_sr,"Data : Lost Lepton (CR region)","lp");
-      legend->AddEntry(sr,"MC : Lost Lepton (CR region)","lp");
-    }
-
-  if(ExpvsPred)
-    {
-      legend->AddEntry(sr,"Exp : (0e + photon )","lp");
-      legend->AddEntry(pred_sr,"Pred : TF x (1e + photon)","lp");
-      /* legend->AddEntry(sr,"Exp : (0mu,had tau + photon )","lp"); */
-      /* legend->AddEntry(pred_sr,"Pred : TF x (1mu + photon)","lp"); */
-    }
-  legend->SetTextSize(0.04);
 
   legend->Draw();
-
-  TH1D *h4 = (TH1D*)pred_sr->Clone("h4");
+  //  legend1->Draw();
+  
+   TH1D *h4 = (TH1D*)pred_sr->Clone("h4");
   TH1D *h3 = (TH1D*)sr->Clone("h3");
 
   TPad *pad2 = new TPad("pad1","pad1",0,0.0,1,0.3);
@@ -353,12 +814,33 @@ void plotclosure()
   pad2->SetGrid(1);
 
   h3->GetYaxis()->SetRangeUser(0.5,1.5);
-  /* h3->GetXaxis()->SetRangeUser(xmin,xmax); */
+  /*h3->GetXaxis()->SetRangeUser(xmin,xmax); */
   /* h4->GetXaxis()->SetRangeUser(xmin,xmax); */
 
-  h3->SetLineColor(kGreen);
-  h3->SetMinimum(ymin);  // Define Y ..                                                                                                       
-  h3->SetMaximum(ymax); // .. range                                                                                                           
+  
+  h3->SetLineColor(kBlack);
+  h3->SetLineStyle(1);
+  h3->SetLineWidth(2);
+
+  if(ExpvsPred)
+    {
+      h3->SetMinimum(0);  // Define Y ..                                                                                                   
+      h3->SetMaximum(2); // .. range                                                                                                         
+    }
+    
+  else if(SRvsCR)
+    {
+      if(lep=="LE")
+	{
+	  h3->SetMinimum(0);  // Define Y ..                                                                                                   
+	  h3->SetMaximum(1); // .. range                                                                                                       
+	}
+      else
+	{
+	  h3->SetMinimum(0);  // Define Y ..                                                                                                   
+	  h3->SetMaximum(2); // .. range                                                                                                         
+	}
+    }
   h3->Sumw2();
   h3->SetStats(0);      // No statistics on lower plot                                                                                        
   h3->Divide(h4);
@@ -368,53 +850,46 @@ void plotclosure()
   h3->Draw("ep");       // Draw the ratio plot                                                                                                
 
   h3->SetTitle(0);
+  h3->GetXaxis()->SetTitleOffset(0.9);
+   h3->GetXaxis()->SetTitle(varName);
+  h3->GetXaxis()->SetTitleSize(0.17);
+  h3->GetXaxis()->SetLabelSize(0.22);
 
-  h3->GetXaxis()->SetTitle(0);
-  h3->GetXaxis()->SetLabelSize(0.20);
+  if(ExpvsPred)  h3->GetYaxis()->SetTitle("Exp/Pred");
+  else if(SRvsCR) h3->GetYaxis()->SetTitle("SR/CR");
+  TLine *line;
+  
+  if(lep=="LE" && SRvsCR)
+    line = new TLine(xmin_,0.5,xmax_,0.5);
+  else
+    line = new TLine(xmin_,1.0,xmax_,1.0);
 
-  if(ExpvsPred) h3->GetYaxis()->SetTitle("Exp/Pred");
-  if(DatavsMC) h3->GetYaxis()->SetTitle("Data/MC");
-  h3->GetYaxis()->SetTitleOffset(0.18);
-  h3->GetYaxis()->SetTitleSize(0.13);
-  h3->GetYaxis()->SetLabelSize(0.09);
-  
-  TLine *line= new TLine(xmin_,1.0,xmax_,1.0);
-  
   line->SetLineColor(1);
-  line->SetLineWidth(2);
+  line->SetLineStyle(1);
+  line->SetLineWidth(1);
   line->Draw();
 
   
+
+  h3->GetYaxis()->SetNdivisions(5);
+  h3->GetYaxis()->SetTitleOffset(0.20);
+  h3->GetYaxis()->SetTitleSize(0.23);
+  h3->GetYaxis()->SetLabelSize(0.20);
+
+
   
-  /* TH1D *TF = new TH1D("tf","Transfer factor",nbin,bin0,bin1); */
-  /* TF->Add(sr); */
-  /* TF->GetYaxis()->SetRangeUser(0,2); */
-  /* TF->Sumw2(); */
-  /* TF->SetStats(0); */
-  /* TF->Divide(cr); */
-  /* TF->Draw("ep"); */
-  /* TF->SetTitle(0); */
-
-  /* TF->GetXaxis()->SetTitle(0); */
-  /* TF->GetXaxis()->SetLabelSize(0.20); */
-
-  /* TF->GetYaxis()->SetTitle("Transfer factor"); */
-  /* TF->GetYaxis()->SetTitleOffset(0.18); */
-  /* TF->GetYaxis()->SetTitleSize(0.13); */
-  /* TF->GetYaxis()->SetLabelSize(0.09); */
-
-  /* TF->SetLineWidth(3); */
-  /* //TF->SetMaximum(1.99); */
-  /* //TF->SetMinimum(0.01); */
-
   if(varName=="AllSBins_v6_CD_EW_50bin"  ){
-    TLine *line1V6=new TLine( 6.5,ymin,  6.5,ymax);
-    TLine *line2V6=new TLine(12.5,ymin, 12.5,ymax);
-    TLine *line3V6=new TLine(18.5,ymin, 18.5,ymax);
-    TLine *line4V6=new TLine(24.5,ymin, 24.5,ymax);
-    TLine *line5V6=new TLine(30.5,ymin, 30.5,ymax);
-    TLine *line6V6=new TLine(36.5,ymin, 36.5,ymax);
-    TLine *line7V6=new TLine(43.5,ymin, 43.5,ymax);
+  h3->SetTitle(0);
+  h3->GetXaxis()->SetTitleOffset(0.9);
+   h3->GetXaxis()->SetTitle("Bin no.");
+  h3->GetXaxis()->SetTitleSize(0.17);
+    TLine *line1V6=new TLine( 8,ymin,  8,ymax);
+    TLine *line2V6=new TLine(14,ymin, 14,ymax);
+    TLine *line3V6=new TLine(20,ymin, 20,ymax);
+    TLine *line4V6=new TLine(26,ymin, 26,ymax);
+    TLine *line5V6=new TLine(32,ymin, 32,ymax);
+    TLine *line6V6=new TLine(38,ymin, 38,ymax);
+    TLine *line7V6=new TLine(45,ymin, 45,ymax);
     
     pad2->cd(); pad2->SetGridx(0);
 
@@ -452,16 +927,28 @@ void plotclosure()
   }
 
   if(varName=="AllSBins_v7_CD_SP"){
-    TLine *line1V7=new TLine( 6.5,ymin,  6.5,ymax);
-    TLine *line2V7=new TLine(11.5,ymin, 11.5,ymax);
-    TLine *line3V7=new TLine(16.5,ymin, 16.5,ymax);
-    TLine *line4V7=new TLine(21.5,ymin, 21.5,ymax);
-    TLine *line5V7=new TLine(26.5,ymin, 26.5,ymax);
+  h3->SetTitle(0);
+  h3->GetXaxis()->SetTitleOffset(0.9);
+   h3->GetXaxis()->SetTitle("Bin no.");
+  h3->GetXaxis()->SetTitleSize(0.17);
+    TLine *line1V7=new TLine( 1,0,  1,2);
+        TLine *line2V7=new TLine( 2,0,  2,2);
+        TLine *line3V7=new TLine( 3,0,  3,2);
+        TLine *line4V7=new TLine( 4,0,  4,2);
+        TLine *line5V7=new TLine( 5,0,  5,2);
+	TLine *line6V7=new TLine( 6,0,  6,2);
+        TLine *line7V7=new TLine( 7,0,  7,2);
+        TLine *line8V7=new TLine( 8,0,  8,2);
+        TLine *line9V7=new TLine( 9,0,  9,2);
+	TLine *line10V7=new TLine( 10,0,  10,2);
 
-    pad2->cd(); pad2->SetGridx(0); //pad1->SetGridy(0);
-    line1V7->Draw();      line2V7->Draw();  line3V7->Draw();
-    line4V7->Draw();      line5V7->Draw();
-  }
+
+        pad2->cd(); pad2->SetGridx(0);// pad2->SetGridy(0);                                                                                                                  
+        line1V7->Draw();      line2V7->Draw();  line3V7->Draw();
+        line4V7->Draw();      line5V7->Draw(); line6V7->Draw();
+        line7V7->Draw(); line8V7->Draw();
+        line9V7->Draw(); line10V7->Draw();
+   }
   /* /\* for(int i=bin0;i<=bin1;i++) *\/ */
   /* /\*   { cout<<TF->GetBinContent(i)<<" +- "<<TF->GetBinError(i)<<endl;} *\/ */
   /* /\* cout<<"The TF content in bin"<<endl; *\/ */
@@ -471,6 +958,7 @@ void plotclosure()
   /* /\* for(int i=bin0;i<=bin1;i++) *\/ */
   /* /\*   { cout<<TF->GetBinError(i)<<endl;} *\/ */
   /* /\* cout<<"==============="<<endl; *\/ */
-
+  c1->SaveAs(png);
+  // c1->SaveAs(png);
 }
 
