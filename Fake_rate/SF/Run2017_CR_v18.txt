@@ -1,0 +1,6 @@
+/eos/uscms/store/user/bkansal/GMSB_skims_TreesV18/for_bkg_estimation/SF/CR_Run2017B-31Mar2018-v1.SingleElectron.root
+/eos/uscms/store/user/bkansal/GMSB_skims_TreesV18/for_bkg_estimation/SF/CR_Run2017C-31Mar2018-v1.SingleElectron.root
+/eos/uscms/store/user/bkansal/GMSB_skims_TreesV18/for_bkg_estimation/SF/CR_Run2017D-31Mar2018-v1.SingleElectron.root
+/eos/uscms/store/user/bkansal/GMSB_skims_TreesV18/for_bkg_estimation/SF/CR_Run2017E-31Mar2018-v1.SingleElectron.root
+/eos/uscms/store/user/bkansal/GMSB_skims_TreesV18/for_bkg_estimation/SF/CR_Run2017F-31Mar2018-v1.SingleElectron_ext_job0.root
+/eos/uscms/store/user/bkansal/GMSB_skims_TreesV18/for_bkg_estimation/SF/CR_Run2017F-31Mar2018-v1.SingleElectron.root
