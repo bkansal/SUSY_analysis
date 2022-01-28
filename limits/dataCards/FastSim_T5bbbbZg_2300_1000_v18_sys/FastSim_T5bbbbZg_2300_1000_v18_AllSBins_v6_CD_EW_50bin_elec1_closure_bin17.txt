@@ -1,0 +1,39 @@
+# - - - - - - - - - - - - - - - - - - -
+# Datacard for mGl= 2300 mNLSP= 1000
+# - - - - - - - - - - - - - - - - - - - 
+imax * number of bins
+jmax *  number of backgrounds('*' = automatic)
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+bin 	 	 Bin17 	 bin17 	 
+observation 	3.72817	3
+------------
+bin 	 	 	Bin17	Bin17	Bin17	Bin17	Bin17	bin17	bin17	bin17	bin17	bin17	
+process 	 	sig 	LL	FR	Zin	QCD	sig 	LL	FR	Zin	QCD	
+process 	 	0	1	2	3	4	0	1	2	3	4	
+rate 	 	0.00515004	1.06522	2.06794	0.194698	0.400307	0.0010598	1.48611	0.20479	0.00396317	1.30513	
+------------
+LL_Bin17 gmN 2 - 0.532611  -  - - - - - - - 
+LL_bin17 gmN 4 - - - - - - 0.371528  -  - - 
+FR_Bin17 gmN 116 -  - 0.0178271  - - - - - - - 
+FR_bin17 gmN 15 - - - - - -  - 0.0136526  - - 
+Zin_0b gmN 138 - - - 0.00141086 - - - - 2.87186e-05 - 
+stLL_Bin17 lnN  - 1.1007  -  -  - - - - - - 
+stLL_bin17 lnN  - - - - - - 1.31074  -  -  - 
+stFR_Bin17 lnN  -  - 1.11169  -  - - - - - - 
+stFR_bin17 lnN  - - - - - -  - 1.24996  -  - 
+stZin_Bin17 lnN  -  -  - 1.49631  - - - - - - 
+stZin_bin17 lnN  - - - - - -  -  - 1.61112  - 
+stQCD_0b_7j lnN  - - - - 1.82152 - - - - 1.82152
+sys_lumi lnN  1.016 - - - - - - - - - 
+sys_leptonSF lnN  - 1.17 - - - - 1.17 - - - 
+sys_btagSF lnN  - 1.008 1.015 - - - 1.008 1.015 - - 
+sys_JEC lnN  - 1.03781 1.0262 1.11134 - - 1.03781 1.0262 1.11134 - 
+sys_JER lnN  - 1.03781 1.0262 1.11134 - - 1.03781 1.0262 1.11134 - 
+sys_scalepdf lnN  - 1.02 1.03 1.02 - - 1.02 1.03 1.02 - 
+sys_dataMC lnN  - -  1.03 1.03 - - -  1.03 1.03 - 
+sys_scalepdf lnN  - 1.02 1.03 1.02 - - 1.02 1.03 1.02 - 
+
+------------
+rateparam_Bin17   rateParam   Bin17   QCD (@0*@1) rateparam1_CbyA,rateparam_bin17
+rateparam_bin17   rateParam   bin17   QCD 1.0
