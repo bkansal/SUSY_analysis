@@ -1,0 +1,105 @@
+void plotSMS(TString Sig="T5bbbbZg", TString name="Efficiency")
+{
+  int rebin=5;
+  gStyle->SetOptStat(0);
+  gStyle->SetTitle(0);
+  gStyle->SetPadTickX(1);
+  gStyle->SetPadTickY(1);
+  const Int_t NRGBs = 5;
+  const Int_t NCont = 255;
+  
+  Double_t stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
+  Double_t red[NRGBs]   = { 0.50, 0.50, 1.00, 1.00, 1.00 };
+  Double_t green[NRGBs] = { 0.50, 1.00, 1.00, 0.60, 0.50 };
+  Double_t blue[NRGBs]  = { 1.00, 1.00, 0.50, 0.40, 0.50 };
+
+  TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
+  gStyle->SetNumberContours(NCont);
+  //  gStyle->SetPalette(1);
+  gStyle->SetOptStat(0);
+
+  TLatex textOnTop,intLumiE;
+  TCanvas *c = new TCanvas();
+  c->cd();
+  TString path="FastSim_"+ Sig +".root";
+  TFile *f1 = new TFile(path);
+  TString varName, varName1, title;
+  TH2D *sr1,*sr2;
+  if(Sig.Contains("TChi")) rebin=5;
+  if(Sig.Contains("T5bbb")) title=" pp #rightarrow #tilde{g}#tilde{g}  ,  #tilde{g} #rightarrow b #bar{b} #tilde{#chi}_{1}^{0} , #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G}";
+  else if(Sig.Contains("T5qqq")) title=" pp #rightarrow #tilde{g}#tilde{g}  ,  #tilde{g} #rightarrow q #bar{q} #tilde{#chi}_{1}^{0} , #tilde{#chi}_{1}^{0} #rightarrow #gamma/H #tilde{G}";
+  else if(Sig.Contains("T5ttt")) title=" pp #rightarrow #tilde{g}#tilde{g}  ,  #tilde{g} #rightarrow t #bar{t} #tilde{#chi}_{1}^{0} , #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G}";
+  else if(Sig.Contains("T6tt")) title=" pp #rightarrow #tilde{t}#tilde{\bar{t}}  , #tilde{t}  #rightarrow t #tilde{#chi}_{1}^{0} , #tilde{#chi}_{1}^{0} #rightarrow #gamma/Z #tilde{G}";
+  else if(Sig.Contains("TChiWG")) title="pp #rightarrow #tilde{#chi}_{1}^{+/-}#tilde{#chi}_{1}^{0}/#tilde{#chi}_{1}^{+/-}#tilde{#chi}_{1}^{+/-} ,  #tilde{#chi}_{1}^{0}/#tilde{#chi}_{1}^{+/-} #rightarrow #gamma/W^{#pm} #tilde{G}";
+  else if(Sig.Contains("TChiNG")) title="pp #rightarrow #tilde{#chi}_{1}^{+/-}#tilde{#chi}_{1}^{+/-}/#tilde{#chi}_{1}^{0}#tilde{#chi}_{2}^{0}/#tilde{#chi}_{1/2}^{0}#tilde{#chi}_{1}^{+/-}  ,  #tilde{#chi}_{1}^{0} #rightarrow #gamma/H/Z #tilde{G}";
+  
+  if(name=="Efficiency"){
+    varName="mGlmNLSP_evt";
+    varName1="mGlmNLSP_evt_nocut";
+    sr1          = (TH2D*)f1->Get(varName);
+    sr2          = (TH2D*)f1->Get(varName1);
+    sr1->RebinX(rebin);
+    sr1->RebinY(rebin);
+    sr2->RebinX(rebin);
+    sr2->RebinY(rebin);
+    sr1->Divide(sr2);
+    sr1->GetXaxis()->SetRangeUser(1400,3000);
+    if(Sig.Contains("T6"))     sr1->GetXaxis()->SetRangeUser(1000,1850);
+    sr1->GetYaxis()->SetRangeUser(0,3000);
+    sr1->SetTitle(0);
+    sr1->GetXaxis()->SetTitle("m_{#tilde{g}} (GeV)");
+    sr1->GetYaxis()->SetTitle("m_{#chi_{1}^{0}} (GeV)");
+    sr1->GetZaxis()->SetTitle("Acceptance x Efficiency");
+    if(Sig.Contains("TChi")) {sr1->GetXaxis()->SetRangeUser(0,25); sr1->GetYaxis()->SetRangeUser(100,2000);sr1->GetXaxis()->SetTitle(0);sr1->GetYaxis()->SetTitle("m_{#chi_{1}^{0}} (GeV)"); }
+    sr1->Draw("colz");
+  }
+  if(name=="yield"){
+    varName="mGlmNLSP_evt";
+    sr1          = (TH2D*)f1->Get(varName);
+    sr1->RebinX(rebin);
+    sr1->RebinY(rebin);
+    sr1->GetXaxis()->SetRangeUser(1800,3000);
+    sr1->GetYaxis()->SetRangeUser(0,3000);
+    if(Sig.Contains("T6"))     sr1->GetXaxis()->SetRangeUser(1000,1850);
+    sr1->SetTitle(0);
+    sr1->GetXaxis()->SetTitle("m_{#tilde{g}} (GeV)");
+    sr1->GetYaxis()->SetTitle("m_{#chi_{1}^{0}} (GeV)");
+    if(Sig.Contains("TChi")) {sr1->GetXaxis()->SetRangeUser(0,25); sr1->GetYaxis()->SetRangeUser(100,2000);sr1->GetXaxis()->SetTitle(0);sr1->GetYaxis()->SetTitle("m_{#chi_{1}^{0}} (GeV)"); }
+    sr1->GetZaxis()->SetTitle(name);
+    sr1->Draw("colz");
+  }
+  if(name=="Crosssection"){
+    varName="mGlmNLSP_xsec";
+    sr1          = (TH2D*)f1->Get(varName);
+    sr1->RebinX(rebin);
+    sr1->RebinY(rebin);
+    sr1->GetXaxis()->SetRangeUser(1800,3000);
+    sr1->GetYaxis()->SetRangeUser(0,3000);
+    if(Sig.Contains("T6"))     sr1->GetXaxis()->SetRangeUser(1000,1850);
+    sr1->SetTitle(0);
+    sr1->GetXaxis()->SetTitle("m_{#tilde{g}} (GeV)");
+    sr1->GetYaxis()->SetTitle("m_{#chi_{1}^{0}} (GeV)");
+    TString tmp=name+" [pb]";
+    sr1->GetZaxis()->SetTitle(tmp);
+    if(Sig.Contains("TChi")) {sr1->GetXaxis()->SetRangeUser(0,25); sr1->GetYaxis()->SetRangeUser(100,2000);sr1->GetXaxis()->SetTitle(0);sr1->GetYaxis()->SetTitle("m_{#chi_{1}^{0}} (GeV)"); }
+    sr1->Draw("colz");
+  }
+
+  c->Update();
+  TPaletteAxis * palette = (TPaletteAxis *) sr1->GetListOfFunctions()->FindObject("palette");
+  palette->SetX2NDC(0.93);
+  c->Modified();
+  c->Update();
+  TLegend *legend = new TLegend(0.1,0.8,0.5,0.9);
+  legend->SetHeader(title,"C");
+  legend->SetTextSize(0.04);
+  legend->Draw();
+  textOnTop.SetTextSize(0.04);
+  intLumiE.SetTextSize(0.04);
+  textOnTop.DrawLatexNDC(0.12,0.91,"CMS #it{#bf{Simulation Preliminary}}");
+  intLumiE.DrawLatexNDC(0.7,0.91,"#bf{137 fb^{-1} (13 TeV)}");
+  TString filename="plots/"+Sig+"/"+Sig+"_"+name+".pdf";
+  c->SaveAs(filename);
+  filename="plots/"+Sig+"/"+Sig+"_"+name+".png";
+  c->SaveAs(filename);
+}

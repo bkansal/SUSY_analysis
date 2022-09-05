@@ -1,0 +1,544 @@
+#include"TFile.h"
+#include"TDirectory.h"
+#include"TTree.h"
+#include"TBrowser.h"
+#include"TF1.h"
+#include<string>
+#include<vector>
+#include"TGraphErrors.h"
+#include"TGraph.h"
+#include"TLegend.h"
+#include"TLatex.h"
+#include"TCanvas.h"
+#include"THStack.h"
+#include"TStyle.h"
+
+
+vector<int> col={kGray,kTeal+9,kOrange,kCyan-1,kBlack};
+void decorate(TH1D*,int,const char*);
+
+void plotclosure(TString varName,  TString year,  TString ntuples , bool ExpvsPred = true, bool SRvsCR=false)
+{
+  //  gStyle->SetOptStat(kFALSE);  
+  TFile *f1, *f2,*f3,*f4,*f5,*f6;
+  string lep="LL";
+  TString path,path1;
+  //  path="./v2/";
+  //      path1="rootoutput/SF_without_csv_cut/";
+  //      path1="rootoutput/before_qmulticut/SF_with_csv_cut/";
+  //  path="rootoutput/SF_withtrgprescale_noHLTmatch/";
+  //  path="./rootoutput/without_trig/";
+   path="./rootoutput/with_trig/";
+   path="./rootoutput/SF_withtrgprescale_HLTmatch/";
+   //     path="./rootoutput/SF_withtrgprescale_HLTmatch_M80to100/";
+   path="./rootoutput/v1/withsimpleselections/";
+   path="./rootoutput/v1/withsimpleselections_1isoetrack/";
+   //   path="./rootoutput/v1/withcomplexselections/";
+   path="./rootoutput/v1/withsimpleselections_nomatch/";
+   //   path="./";
+   path="./rootoutput/v1/withsimpleselections_oldfake_MET100/";
+   //   path="./rootoutput/v1/withcomplexselections_oldfake/";                     
+    path="./rootoutput/v1/withsimpleselections_nofake/";
+  path="./rootoutput/v1/withsimpleselections_ST200/";
+  path="./rootoutput/v1/withsimpleselections_ST200_nopxveto/"; 
+  // path="./rootoutput/v1/withsimpleselections_ST200_pxveto_higheta/";
+  //  path="./rootoutput/v1/withsimpleselections_ST200_pxveto_higheta_trackiso_trgeff/";
+  path="./rootoutput/v1/withsimpleselections_ST200_nopxveto_trackiso/";
+  //  path="./rootoutput/v1/withsimpleselections_ST200_px/";
+
+  TLatex textOnTop,intLumiE;
+  
+   TString filename,filename2,filename3,filename4,filename5,filename6;
+  if(ntuples=="v18")
+    {
+ 
+      //      if(year == "2016")
+	{
+	  filename= path+"Run2016_SF_FR_data.root";
+	  filename2= path+"Run2016_SF_FR_mc.root";
+	}
+    }
+  else
+    {
+	  //Run2016_SF_FR_data.root
+	  /* filename= path+"Run2016_SF_FR_data.root"; */
+	  /* filename2= path+"Run2016_SF_FR_mc.root"; */
+	  //	  filename= path+"Run2016_CR_v18.root";
+      	  filename= path+"Run"+year+"_CR_v18.root";
+	  filename2= path+"TTJets_"+year+"_CR_v18.root";                                                                                                               
+	  //filename2= path+"ZGJ_"+year+"_CR_v18.root";
+	  //	 	  filename2= path+"TTDYG_"+year+"_CR_v18.root";
+	  filename3= path+"DYJets_"+year+"_CR_v18.root";
+	  filename4= path+"ZGJets_"+year+"_CR_v18.root";
+	  filename5= path+"TTGJ_"+year+"_CR_v18.root";
+	  filename6= path+"WGJ_"+year+"_CR_v18.root";
+          //filename5= path+"TTJets_"+year+"_CR_v18.root";
+          //filename6= path+"TTGJets_"+year+"_CR_v18.root";
+
+	  // filename2= path+"ZGJ_"+year+"_CR_v18.root";
+    }
+    
+
+  f1 = new TFile(filename);
+  f2 = new TFile(filename2);
+  f3 = new TFile(filename3);
+  f4 = new TFile(filename4);
+  f5 = new TFile(filename5);
+  f6 = new TFile(filename6);
+  
+  
+  double xmin,xmax,bin,xmin_,xmax_;
+  double ymin=0.5 , ymax=1.5, ymin_=0.0001 , ymax_=1000;
+
+  TH1D *cr,*sr,*tf,*pred_sr,*DY,*ZG,*TTG,*WG;
+  THStack *stack;
+  THStack *hs_var=new THStack("var_Stack",varName);
+
+  TString title;
+
+  if(varName=="AllSBins_v6_CD_EW_50bin")
+    title="closure test using optimized search bins";
+  else
+    title="closure test using "+ varName +" variable";
+  TString png,pdf;
+  if(ExpvsPred)
+    {
+      png = path1+"/PDF/closure/"+varName+"_"+year+".pdf";
+      pdf= path1+"/PDF/closure/"+varName+"_"+year+".png";
+    }
+  else if(SRvsCR)
+    {
+      png = path1+"/PDF/SF/"+varName+"_"+year+".pdf";
+      pdf= path1+"/PDF/SF/"+varName+"_"+year+".png";
+    }
+  //  TCanvas *c1 = new TCanvas("stackhist","stackhist",600,500);
+  TCanvas *c1;
+  TString varName1,varName2;
+  //  if(ExpvsPred)  varName2=varName+"_elec1_closure";
+  if(ExpvsPred)  varName2=varName+"_elec0";
+  else if(SRvsCR) varName2=varName;
+  varName1=varName;
+
+
+  double nbin,bin0, bin1,yset_;
+  TH1D *total;
+  int rebin=1;
+  //  c1 = new TCanvas("stackhist","stackhist",600,500);
+  c1 = new TCanvas("stackhist","stackhist",900,1000);
+      //  c1 = new TCanvas("stackhist","stackhist",600,500);
+  sr          = (TH1D*)f1->Get(varName2);
+ pred_sr     = (TH1D*)f2->Get(varName2);
+ DY     = (TH1D*)f3->Get(varName2);
+ ZG     = (TH1D*)f4->Get(varName2);
+ TTG    = (TH1D*)f5->Get(varName2);
+ WG     = (TH1D*)f6->Get(varName2);
+
+ if(varName=="nJets" || varName=="nvtx" || varName=="nJets_EW" ||varName=="nJets_SP"||varName=="Qmulti" || varName=="nvtx_all" )
+    {
+    rebin=1;
+    if(varName=="Qmulti")    rebin=2,xmin_=0,xmax_=20,xmin=0,xmax=20,    ymin=0 , ymax=3.99, ymin_=0.0005 , ymax_=0.05 , title="Qmultiplicity";
+    if(varName=="nJets")    rebin=20,xmin_=0,xmax_=15,xmin=0,xmax=15 , ymin=0 , ymax=2.99, ymin_=0.0005 , ymax_=0.04;
+    //    if(varName=="nJets")    rebin=1,xmin_=0,xmax_=15,xmin=0,xmax=15 , ymin=0 , ymax=1.99, ymin_=0.0005 , ymax_=0.04;
+
+    if(varName=="nvtx"|| varName=="nvtx_all")    rebin=1,xmin_=0,xmax_=100,xmin=0,xmax=100, ymin=0 , ymax=2.99, ymin_=0.0005 , ymax_=0.04, title="no. of vertices";
+    
+    // ymin_=0.0005 , ymax_=100000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+
+    // pred_sr->SetTitle(title);
+    }
+
+ else if(varName=="nBTags" || varName=="nBTags_EW" || varName=="nBTags_SP"  )
+    {
+    xmin_=0,xmax_=8,xmin=0,xmax=8;
+    rebin=1;
+    ymin=0 , ymax=4.99, ymin_=0 , ymax_=0.1;
+    // ymin_=0.0005 , ymax_=100000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+   pred_sr->SetTitle(title);
+   }
+ else if(varName=="cutflows")
+   {
+     xmin_=0,xmax_=13,xmin=0,xmax=13;
+     rebin=1;
+     ymin=0 , ymax=3.99, ymin_=0 , ymax_=0.05;
+
+     title="";
+     pred_sr->Rebin(rebin);
+     sr->Rebin(rebin);
+     DY->Rebin(rebin);
+     ZG->Rebin(rebin);
+     TTG->Rebin(rebin);
+
+   }
+ else if(varName=="invMass" || varName=="invMass_elec0"  )
+    {
+      title="invMass";
+    xmin_=80,xmax_=100,xmin=80,xmax=100;
+    //    xmin_=60,xmax_=120,xmin=60,xmax=120;
+    rebin=5;
+    ymin=0 , ymax=3.99, ymin_=0 , ymax_=0.05;
+    //    ymin_=0.0005 , ymax_=100000;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    DY->Rebin(rebin);
+    ZG->Rebin(rebin);
+    TTG->Rebin(rebin);
+    WG->Rebin(rebin);
+
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    DY->GetXaxis()->SetRangeUser(xmin,xmax);
+    ZG->GetXaxis()->SetRangeUser(xmin,xmax);
+    TTG->GetXaxis()->SetRangeUser(xmin,xmax);
+    WG->GetXaxis()->SetRangeUser(xmin,xmax);
+
+    pred_sr->SetTitle(title);
+   }
+
+ else if(varName=="ST" || varName=="HT")
+    {
+      title=varName;
+    xmin_=100,xmax_=2000,xmin=100,xmax=2000;
+    rebin=5;
+    ymin=0 , ymax=2.99, ymin_=0.001 , ymax_=0.1;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+   pred_sr->SetTitle(title);
+   }
+ else if(varName=="MET")
+    {
+      title="MET";
+    xmin_=0,xmax_=200,xmin=0,xmax=200;
+    rebin=1;
+    ymin=0 , ymax=2.99, ymin_=0 , ymax_=0.1;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    DY->Rebin(rebin);
+    ZG->Rebin(rebin);
+    TTG->Rebin(rebin);
+    WG->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+   pred_sr->SetTitle(title);
+   }
+ else if(varName=="BestPhotonEta" || varName=="BestPhotonPhi" ||varName=="ElectronEta" || varName=="ElectronPhi")
+    {
+    xmin_=-5,xmax_=5,xmin=-5,xmax=5;
+    rebin=10;
+    ymin=0 , ymax=3.99, ymin_=0 , ymax_=0.1;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    DY->Rebin(rebin);
+    ZG->Rebin(rebin);
+    TTG->Rebin(rebin);
+    WG->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+   pred_sr->SetTitle(title);
+   title=varName;
+   }
+ else if(varName=="EMObj_Pt" || varName=="tagObj_Pt" || varName=="hlt_Pt"   || varName=="EMObj_Pt_elec0" || varName=="tagObj_Pt_elec0" || varName=="leadElectronPt" || varName=="leadElectronPt_elec0"  )
+    {
+      if(varName=="leadElectronPt" || varName=="leadElectronPt_elc0")
+	{         xmin_=0,xmax_=1000,xmin=0,xmax=1000;
+	  title="z pt";
+	}
+      else
+	xmin_=0,xmax_=600,xmin=0,xmax=600;
+      rebin=2;
+      ymin=0 , ymax=2.99, ymin_=0 , ymax_=0.05;
+    pred_sr->Rebin(rebin);
+    sr->Rebin(rebin);
+    DY->Rebin(rebin);
+    ZG->Rebin(rebin);
+    TTG->Rebin(rebin);
+    WG->Rebin(rebin);
+    pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+    sr->GetXaxis()->SetRangeUser(xmin,xmax);
+   pred_sr->SetTitle(title);
+   }
+
+  
+ for(int i=0;i<=3;i++)
+     { cout<<pred_sr->GetBinContent(i)<<"+-"<<pred_sr->GetBinError(i)<<endl;} 
+ cout<<"The sr content"<<endl; 
+ for(int i=xmin_;i<=3;i++) 
+   { cout<<sr->GetBinContent(i)<<"+-"<<sr->GetBinError(i)<<endl;} 
+ cout<<"==============="<<endl; 
+
+  
+
+
+  TPad *pad1 = new TPad("pad1","pad1",0,0.325,1,1);
+  pad1->SetBottomMargin(0);
+  pad1->SetBottomMargin(0.3);
+  //TPad *pad1 = new TPad("pad1","pad1",0,0.9,1,0.1);                                                                                                         
+  TPad *pad2 = new TPad("pad1","pad1",0,0.0,1,0.3);
+  pad2->SetTopMargin(0);
+  pad2->SetBottomMargin(0.3);
+
+  pad1->Draw();pad1->SetGridx();
+
+  pad1->cd();
+  if(ntuples!="v18" && !(varName=="BestPhotonEta" || varName=="BestPhotonPhi" ||varName=="ElectronEta" || varName=="ElectronPhi"))
+    {
+      ymin_=1 , ymax_=10000000 , ymax=10000000,ymin=1;
+      pad1->SetLogy();
+    }
+  if(varName=="BestPhotonEta" || varName=="BestPhotonPhi" ||varName=="ElectronEta" || varName=="ElectronPhi")
+    {
+      if(SRvsCR)      ymin_=0.01 , ymax_=7000 , ymax=7000, ymin=0;
+      if(!SRvsCR)      ymin_=0.01 , ymax_=250 , ymax=250, ymin=0;
+    }
+  pred_sr->SetTitle(0);
+
+  pred_sr->GetXaxis()->SetRangeUser(xmin,xmax);
+  sr->GetXaxis()->SetRangeUser(xmin,xmax);
+  pred_sr->GetYaxis()->SetLabelSize(0.07);
+  if(ntuples=="v18")
+    {
+      pred_sr->GetYaxis()->SetTitle("Fake rate");
+      ymin_=0.01,ymax_=0.05;
+      //           pad1->SetLogy();
+
+    }
+  else
+    pred_sr->GetYaxis()->SetTitle("Entries");
+
+  pred_sr->GetXaxis()->SetTitle(0);
+  pred_sr->GetYaxis()->SetTitleSize(0.07);
+  pred_sr->GetYaxis()->SetTitleOffset(0.72);
+
+  //  sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
+  pred_sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
+  pred_sr->SetMarkerStyle(20);
+  pred_sr->SetMarkerSize(0.7);
+  pred_sr->SetMarkerColor(kRed);
+  pred_sr->SetLineColor(kRed);
+  sr->SetMarkerStyle(20);
+  sr->SetMarkerSize(0.7);
+  sr->SetMarkerColor(kBlack);
+  sr->SetLineColor(kBlack);
+  DY->GetXaxis()->SetRangeUser(xmin,xmax);
+  ZG->GetXaxis()->SetRangeUser(xmin,xmax);
+  TTG->GetXaxis()->SetRangeUser(xmin,xmax);
+  WG->GetXaxis()->SetRangeUser(xmin,xmax);
+  decorate(DY,0,f3->GetName());
+  decorate(ZG,1,f4->GetName());
+  decorate(TTG,2,f5->GetName());
+  decorate(WG,3,f6->GetName());
+
+
+  hs_var->Add(WG);
+  hs_var->Add(TTG);
+  hs_var->Add(ZG);
+  hs_var->Add(DY);
+
+  hs_var->Draw("hist");
+
+  hs_var->GetXaxis()->SetLimits(xmin_,xmax_);
+  hs_var->GetYaxis()->SetLimits(0.1,100000);
+  sr->GetYaxis()->SetRangeUser(ymin_,ymax_);
+  hs_var->SetMinimum(ymin_);
+  hs_var->SetMaximum(ymax_);
+  
+  //  pred_sr->SetLineStyle(kBlue);
+  //  pred_sr->Draw();
+  sr->Draw("sames");
+  if(varName=="cutflows")
+    hs_var->GetXaxis()->SetNdivisions(-1);
+
+   TPaveStats *ptstats = new TPaveStats(0.7,0.85,0.9,0.9,"brNDC");
+   ptstats->SetName("stats");
+   ptstats->SetBorderSize(1);
+   ptstats->SetFillColor(0);
+   ptstats->SetLineColor(2);
+   ptstats->SetTextAlign(12);
+   ptstats->SetTextColor(2);
+   ptstats->SetTextFont(42);
+   //   TText *ptstats_LaTex = ptstats->AddText("Integral =  140.5");
+   ptstats->SetOptStat(1000000);
+   ptstats->SetOptFit(0);
+   pred_sr->GetListOfFunctions()->Add(ptstats);
+   ptstats->SetParent(pred_sr);
+   TPaveStats *ptstats2 = new TPaveStats(0.7,0.8,0.9,0.85,"brNDC");
+   ptstats2->SetName("stats");
+   ptstats2->SetBorderSize(1);
+   ptstats2->SetFillColor(0);
+   ptstats2->SetLineColor(4);
+   ptstats2->SetTextAlign(12);
+   ptstats2->SetTextColor(4);
+   ptstats2->SetTextFont(42);
+   //   TText *ptstats2_LaTex = ptstats2->AddText("Integral =  140.5");
+   ptstats2->SetOptStat(1000000);
+   ptstats2->SetOptFit(0);
+   sr->GetListOfFunctions()->Add(ptstats2);
+   ptstats2->SetParent(sr);
+  double chi=pred_sr->Chi2Test(sr,"WW CHI2");
+  int NDF=chi/pred_sr->Chi2Test(sr,"WW CHI2/NDF");
+  double p=pred_sr->Chi2Test(sr,"WW p");
+  textOnTop.SetTextSize(0.06);
+  intLumiE.SetTextSize(0.06);
+  //  if(isPaper) textOnTop.DrawLatexNDC(0.12,0.91,"CMS #it{#bf{Simulation Supplementary}}");                                                                 
+  textOnTop.DrawLatexNDC(0.1,0.91,"CMS #it{#bf{Simulation Preliminary}}");
+  if(year=="2016")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{35.9 fb^{-1} (13 TeV)}");
+  if(year=="2017")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{41.5 fb^{-1} (13 TeV)}");
+  if(year=="2018")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{58.7 fb^{-1} (13 TeV)}");
+  //    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{59.6 fb^{-1} (13 TeV)}");
+  if(year=="full_Run2")
+    intLumiE.DrawLatexNDC(0.7,0.91,"#bf{137 fb^{-1} (13 TeV)}");
+  char chi2[1000],chi1[1000];
+  // sprintf(chi2,"Chi2/NDF = %f",chi_NDF);
+  sprintf(chi1,"Chi2/NDF = %f / %d , p = %f",chi,NDF,p);
+
+  TLegend *legend = new TLegend(0.65,0.7,0.9,0.9);
+  legend->SetNColumns(1);
+  legend->SetBorderSize(1);
+  TLegend *legend1 = new TLegend(0.1,0.85,0.52,0.9);
+  //  legend1->SetHeader("with HEM veto","C");                               // option "C" allows to center the header                                      
+  //  legend1->SetHeader(chi2,"C");
+  legend1->SetHeader(chi1,"C");
+  //  legend1->SetHeader(p,"C");
+  cout<<"Data Events ===> "<<sr->Integral()<<endl;
+  cout<<"MC Events ===> "<<pred_sr->Integral()<<endl;
+  legend1->SetTextSize(0.04);
+  legend->SetTextSize(0.04);
+  // legend1->Draw();
+
+  legend->AddEntry(sr,"Data","lp");
+  legend->AddEntry(DY,"Z->ee + jets","f");
+  legend->AddEntry(ZG,"Z->ee + #gamma","f");
+  legend->AddEntry(TTG,"tt + jets","f");
+  legend->AddEntry(WG,"W + jets","f");
+
+  legend->SetTextSize(0.04);
+
+  ptstats2->Draw();
+  legend->Draw();
+  //legend1->Draw();
+
+  cout<<"Data : "<<endl;
+  double a=0;
+  //  cout<<sr->GetBinLowEdge(1)<<" : "<<sr->GetBinContent(1)<<endl;
+  /*
+  for(int i=2;i<=5;i++)
+    {
+      a=a+sr->GetBinContent(i);
+      cout<<sr->GetBinLowEdge(i)<<" : "<<sr->GetBinContent(i)<<endl;
+    }
+  cout<<"Qmult 0-1 = "<<sr->GetBinContent(1)<<endl;
+  cout<<"Qmult > 1 = "<<a<<endl;
+  a=0;
+  cout<<"MC : "<<endl;
+  
+  //  cout<<pred_sr->GetBinLowEdge(0)<<" : "<<pred_sr->GetBinContent(0)<<endl;
+  for(int i=2;i<=5;i++)
+    {
+      a=a+pred_sr->GetBinContent(i);
+      cout<<pred_sr->GetBinLowEdge(i)<<" : "<<pred_sr->GetBinContent(i)<<endl;
+    }
+  cout<<"Qmult 0-1 = "<<pred_sr->GetBinContent(1)<<endl;
+  cout<<"Qmult > 1 = "<<a<<endl;
+  */
+  TH1D *h4 = (TH1D*)pred_sr->Clone("h4");
+  TH1D *h3 = (TH1D*)sr->Clone("h3");
+
+  //  TPad *pad2 = new TPad("pad1","pad1",0,0.0,1,0.3);
+  pad2->Draw();
+  pad2->SetTopMargin(0);
+  pad2->SetBottomMargin(0.3);
+  pad2->cd();
+  pad2->SetGrid(1);
+
+  h3->GetYaxis()->SetRangeUser(0.5,1.5);
+  
+  h3->SetLineColor(kBlack);
+  h3->SetLineStyle(1);
+  h3->SetLineWidth(2);
+  if(SRvsCR)
+    {
+      h3->SetMinimum(0);  // Define Y ..                                                                                                   
+      h3->SetMaximum(1.99); // .. range                                                                                                         
+    }
+  
+  else if(ExpvsPred)
+    {
+      h3->SetMinimum(0.5);  // Define Y ..
+      h3->SetMaximum(2.99); // .. range                                                                                                                      
+    }
+  h3->Sumw2();
+  h3->SetStats(0);      // No statistics on lower plot                                                                                        
+  h3->Divide(h4);
+  h3->SetMarkerStyle(20);
+  h3->SetMarkerSize(0.6);
+  // gStyle->SetOptStat(0);                                                                                                                   
+  h3->Draw("ep");       // Draw the ratio plot                                                                                                
+
+  h3->SetTitle(0);
+  h3->GetXaxis()->SetTitleOffset(0.88);
+  h3->GetXaxis()->SetTitle(title);
+  h3->GetXaxis()->SetTitleSize(0.17);
+  h3->GetXaxis()->SetLabelSize(0.22);
+
+  h3->GetYaxis()->SetTitle("Data/MC");
+  TLine *line;
+  
+  line = new TLine(xmin_,1,xmax_,1);
+  h3->GetYaxis()->SetNdivisions(5);
+
+  line->SetLineColor(1);
+  line->SetLineStyle(1);
+  line->SetLineWidth(1);
+  line->Draw();
+
+  
+
+  //  h3->GetYaxis()->SetNdivisions(5);
+  h3->GetYaxis()->SetTitleOffset(0.17);
+  h3->GetYaxis()->SetTitleSize(0.25);
+  h3->GetYaxis()->SetLabelSize(0.21);
+
+  if(ntuples!="v18")
+
+    /*
+   for(int i=0;i<=45;i++) 
+     { cout<<h3->GetBinLowEdge(i)<<" : "<<h3->GetBinContent(i)<<endl;} 
+    */
+  /* cout<<"The TF content in bin"<<endl; */
+  /* for(int i=0;i<=45;i++) */
+  /*   { cout<<h3->GetBinLowEdge(i)<<" : "<<h3->GetBinContent(i)<<endl;} */
+  /* cout<<"==============="<<endl; */
+  
+  /* /\* for(int i=bin0;i<=bin1;i++) *\/ */
+  /* /\*   { cout<<TF->GetBinContent(i)<<endl;} *\/ */
+  /* /\* cout<<"The Transfer Factor error in bin"<<endl; *\/ */
+  /* for(int i=0;i<=45;i++) */
+  /*   { cout<<h3->GetBinError(i)<<endl;} */
+  c1->SaveAs(pdf);
+  c1->SaveAs(png);
+}
+
+void decorate(TH1D* hist,int i,const char* fname){
+  hist->SetLineColor(col[i]);
+  hist->SetFillColor(col[i]);
+  hist->SetLineColor(kBlack);
+  hist->SetLineWidth(1);
+  hist->SetTitle(0);
+  /* hist->GetXaxis()->SetLabelSize(.06); */
+  /* hist->GetYaxis()->SetLabelSize(.10); */
+  hist->GetXaxis()->SetTitleSize(0.06);
+  gStyle->SetOptStat(0);
+}
+
