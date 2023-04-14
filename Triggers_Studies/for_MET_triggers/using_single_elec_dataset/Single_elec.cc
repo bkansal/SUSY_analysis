@@ -119,7 +119,7 @@ void Single_elec::EventLoop(const char *data,const char *inputFileList) {
     if(HBHENoiseFilter != 1 || HBHEIsoNoiseFilter != 1 || eeBadScFilter != 1 || EcalDeadCellTriggerPrimitiveFilter != 1 || BadChargedCandidateFilter != 1 || BadPFMuonFilter != 1) continue;
     if(PFCaloMETRatio > 5) continue;
     if(MET/CaloMET > 2.0) continue;
-
+/*
     if(bestPhoton.Pt()>1) continue;
     //    cout<<"No photon "<<endl;
     int proxyJetIdx = -100;
@@ -137,7 +137,7 @@ void Single_elec::EventLoop(const char *data,const char *inputFileList) {
     isProxyPho = true;
     
     if(!isProxyPho) continue;//reject event if no proxy is found in VR
-
+*/
     if(bestPhoton.Pt()<100) continue;
 
     bool hadJetID=false;
